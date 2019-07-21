@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.OperationLogMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.OperationLog">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="before_time" jdbcType="VARCHAR" property="beforeTime" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="http_method" jdbcType="VARCHAR" property="httpMethod" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="class_method" jdbcType="VARCHAR" property="classMethod" />
+    <result column="after_time" jdbcType="VARCHAR" property="afterTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_name, before_time, url, http_method, ip, class_method, after_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_operation_log
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_operation_log
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.OperationLog">
+    insert into t_operation_log (id, code, name,
+      level, parent_code)
+    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{level,jdbcType=SMALLINT}, #{parentCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.OperationLog">
+    insert into t_operation_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="beforeTime != null">
+        before_time,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="httpMethod != null">
+        http_method,
+      </if>
+      <if test="ip != null">
+        ip,
+      </if>
+      <if test="classMethod != null">
+        class_method,
+      </if>
+      <if test="afterTime != null">
+        after_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="beforeTime != null">
+        #{beforeTime,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="httpMethod != null">
+        #{httpMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="classMethod != null">
+        #{classMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="afterTime != null">
+        #{afterTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="findOperationLogList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_operation_log;
+  </select>
+</mapper>

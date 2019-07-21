@@ -1,0 +1,448 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+
+<body>
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+    <section class="wapmbx fl"><a href="/backend/course/courseManage">课程管理</a><em></em><strong>问卷调查</strong></section>
+
+    <section th:replace="common/common_menu  :: menu"></section>
+
+    <input type="hidden" th:value="${courseId}" id="courseId">
+    <section class="conFl">
+
+        <div class="StuCon QuBaCon">
+            <div class="subNavTab subNavTab20">
+                <ul><li class="curr"><a th:href="@{/backend/course/inves/online/listPage(courseId=${courseId})}">新建问卷</a></li><li><a th:href="@{/backend/course/inves/result/listPage(courseId=${courseId})}">问卷结果</a></li></ul>
+            </div>
+            <div class="qubaTit bjG padd10 mart10 clearfix">
+                <b class="fl">问卷</b>
+                <span class="fr"><a href="javascript:" class="btnB addNew"><strong>+</strong> 新增问卷</a></span>
+            </div>
+            <div class="qubaCon bjG padd10 mart10 clearfix">
+                <div class="qubaBox">
+                    <div class="quItem clearfix">
+                        <div class="dt">问卷名称</div>
+                        <div class="dm"><input type="text" placeholder="请输入问卷名称" class="sInput siW10" id="name" maxlength="20"></div>
+                    </div>
+                    <div class="quItem clearfix">
+                        <div class="dt">问卷描述</div>
+                        <div class="dm"><input type="text" placeholder="请输入问卷描述" class="sInput siW10" id="describe"maxlength="52"></div>
+                    </div>
+                    <div class="quItem clearfix">
+                        <div class="dt">问卷题库</div>
+                        <input type="hidden" id="tempId">
+                        <div class="dm"><a href="javascript:;" class="btnUp quSel swt_but select-temp" data-sum="16">选 择</a><span style="padding-left: 10px"></span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="dl textCent botMarTop">
+            <a href="javascript:;" class="btnAi c_gray hover-shadow paper-cancel">取 消</a>
+            <a href="javascript:;" class="btnAi c_red hover-shadow addPaper">保 存</a>
+        </div>
+    </section>
+</article>
+
+
+<!-- 问卷题库 -->
+<div class="codeLayer addTestQu quLibrL" data-sum="16">
+    <div class="toptit">选择问卷题库<b class="close"></b></div>
+    <div class="layCon">
+        <div class="clearfix">
+            <div class="padTB20">
+                <div class="search"><input type="search" class="ipnSearch" placeholder="请输入您要查找的问卷模板名称"><input type="button" value="搜 索" class="ipnBtn"></div>
+            </div>
+            <div class="tableBox tabltHdbj">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tbody>
+                        <tr>
+                            <th>问卷模板名称</th>
+                            <th>
+                                <select class="stySelS">
+                                    <option  selected value="1">创建时间</option>
+                                    <option value="1">最新发布</option>
+                                    <option value="2">最早发布</option>
+                                </select></th>
+                            <th>操作</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="page-box" id="invesPager"></div>
+        </div>
+        <div class="btnBox">
+            <a href="javascript:;" class="btnA but_none" data-sum="16">取 消</a>
+            <a href="javascript:;" class="btnB but_yes add-temp" data-sum="16">确 定</a>
+        </div>
+    </div>
+</div>
+<div class="codeLayerbj"></div>
+
+<!-- 点击预览str -->
+<div class="codeLayer codeLayer2" data-sum="02">
+    <div class="toptit">预览<b class="close"></b></div>
+    <div class="layCon layCon01">
+        <div class="clearfix temp-view scroll40">
+
+        </div>
+        <div class="btnBox">
+            <a href="javascript:;" class="btnA but_none" data-sum="0301">关闭</a>
+        </div>
+    </div>
+</div>
+<div class="codeLayerbj2"></div>
+<script th:src="@{/assets/js/custom/common/selectAll.js}"></script>
+<script th:src="@{/assets/js/custom/common/divResize.js}"></script>
+<script>
+    $(function () {
+        // 设置tf_type方法
+        Handlebars.registerHelper('tf_type', function(v1) {
+            if(v1 == 1){
+                return "单选题";
+            }else if(v1 == 2){
+                return "多选题";
+            }else if(v1 == 3){
+                return "问答题";
+            }else{
+                return "未定义";
+            }
+        });
+
+        // 设置tf_isRequired方法
+        Handlebars.registerHelper('tf_isRequired', function(v1) {
+            if(v1 == 0){
+                return "选答";
+            }else if(v1 == 1) {
+                return "必答";
+            }else{
+                return "未定义";
+            }
+        });
+
+        Handlebars.registerHelper('tf_selected', function(v1, v2) {
+            if(v1 == v2){
+                return "radio_bg_check"
+            }
+            return "";
+        });
+
+        Handlebars.registerHelper('if_eq', function(v1, v2, opts) {
+            if(v1 == v2) {
+                return opts.fn(this);
+            }
+            else
+                return opts.inverse(this);
+        });
+
+        $('pre code').each(function (i, block) {
+            hljs.highlightBlock(block);
+        });
+
+        /**
+         * 追加点击事件初始化查询
+         */
+        $(".swt_but").on("click", function () {
+            search();
+        })
+
+        // 监听div高度变化
+        $(".codeLayer").resize(function () {
+            var thmlH= $(window).height();
+            var layerH = $(this).height();
+            $(this).css("top",(thmlH-layerH)/2+"px");
+        })
+
+        // 追加点击弹层的关闭按钮、取消按钮时触发事件
+        $(".close,.but_none").click(function(){
+            // 恢复初始值
+            var $parent =$(this).parents(".codeLayer");
+            $parent.find("input[type=search]").val('');
+            $parent.find("select").find("option").eq(0).prop("selected", true);
+        });
+
+        // 绑定查询按钮事件
+        $(".ipnBtn").on("click", function () {
+            search();
+        });
+
+        // 绑定排序select事件
+        $(".stySelS").change(function () {
+            search();
+        })
+
+        // 分页查询方法
+        function search() {
+            var search = $.trim($(".ipnSearch").val());
+            var order = $(".stySelS").find("option:selected").attr("value");
+            var isDesc = order == 1 ? true : false;
+
+//            $("#selectAll").prop("checked", false).parent('i').removeClass('checkbox_bg_check');
+            initPager(search, isDesc, 5);
+        }
+
+        /**
+         * 数据查询
+         * @param pageNo
+         * @param pageSize
+         */
+        function dataQuery(search, isDesc, pageNo, pageSize) {
+            $.ajax({
+                type: 'GET',
+                dataType: 'json',
+                data:{
+                    search: search,
+                    isDesc: isDesc,
+                    pageNo: pageNo,
+                    pageSize: pageSize
+                },
+                url: '/backend/course/inves/temp/list/admin',
+                success: function (data) {
+                    if(data.message == "success"){
+                        $("tbody tr").eq(0).siblings().remove();
+                        $(".no-content").remove();
+                        if(data.data.dataList.length ==0){
+                            $(".tableBox").after($("#no-content").html());
+                            $("#invesPager").hide();
+                        }else{
+                            $("#invesPager").show();
+                            var source = $("#invesTemp-list").html();
+                            var template = Handlebars.compile(source);
+                            data.data.select_id = $("#tempId").val();
+                            var templateHtml = template(data.data);
+                            $("tbody").append(templateHtml);
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * 初始化分页插件
+         * @param pageSize
+         */
+        function initPager(search, isDesc, pageSize){
+            //调用分页
+            laypage.render({
+                elem: 'invesPager',
+                count: getTotalData(search),
+                limit: pageSize,
+                theme: '#1962a9',
+                jump: function(obj, first){
+                    dataQuery(search, isDesc, obj.curr, pageSize);
+                }
+            });
+        }
+
+        /**
+         * 第一次查询总数
+         * @returns {number}
+         */
+        function getTotalData(search) {
+            var count = 0;
+            $.ajax({
+                type: 'GET',
+                dataType: 'json',
+                url: '/backend/course/inves/temp/count/admin',
+                async: false,
+                data: {search: search},
+                success: function(data){
+                    if(data.message == "success"){
+                        count = data.data;
+                    }else{
+                    }
+                },
+                error: function(){
+                }
+            });
+            return count;
+        }
+
+        /**
+         * 选中测试卷模板
+         */
+        $(".add-temp").on("click", function () {
+            var $checkedRedio = $("tbody").find('input[type="radio"]:checked');
+            var length = $checkedRedio.length;
+            if(length == 1){
+                var id = $checkedRedio.data("id");
+                var name = $checkedRedio.data("name");
+                passToPaperForm(id, name);
+            }
+            $(".but_none").trigger("click");
+        })
+
+        /**
+         * 修改页面元素
+         * @param id
+         */
+        function passToPaperForm(id, name) {
+            if(id){
+                $("#tempId").val(id);
+                $(".select-temp").text("已 选  择").next().text(name);
+            }
+        }
+
+        ///////////////////预览//////////////////
+        $(".codeLayer").on("click", ".swt_but2", function () {
+            var id = $(this).data("id");
+            if(getTemp(id)){
+                var swt_but_name=$(this).data("sum");
+                if($(".codeLayer2").length>0){
+                    $(".codeLayer2").each(function(){
+                        if($(this).data("sum")==swt_but_name){
+                            var thmlH= $(window).height();
+                            var layerH = $(this).height();
+                            $(this).css("top",(thmlH-layerH)/2+"px");
+                            $(this).fadeIn();
+                            $(".codeLayerbj2").fadeIn();
+                            // $(".codeLayer,.codeLayerbj").fadeIn();
+                        }
+                    })
+                }
+            }
+        });
+
+        /**
+         * 获取模板数据
+         * @param id
+         * @returns {boolean}
+         */
+        function getTemp(id) {
+            var flag = true;
+            $.ajax({
+                type: 'GET',
+                dataType: 'json',
+                url: '/backend/course/inves/temp/single',
+                data: {
+                    id: id
+                },
+                async: false,
+                success:function(data){
+                    console.log(data)
+                    if(data.message == "success"){
+                        var source = $("#invesTemp-view-item").html();
+                        var template = Handlebars.compile(source);
+                        var templateHtml = template(data.data);
+                        $(".temp-view").html(templateHtml);
+                    }else{
+                        flag = false;
+                    }
+                },
+                error: function(){
+                    layer.msg("预览问卷模板失败！", {icon: 5});
+                    flag = false;
+                }
+            })
+            return flag;
+        }
+    });
+</script>
+<script id="invesTemp-list" type="text/x-handlebars-template">
+    {{#each dataList}}
+    <tr>
+        <td>
+            <i class='input_style radio_bg {{tf_selected id ../select_id}}'><input type="radio" name="identity" value="5" data-id="{{id}}" data-name="{{name}}"></i>{{name}}</td>
+        <td>{{createTime}}</td>
+        <td><a href="javascript:;" class="swt_but2" data-sum="02" data-id="{{id}}">预览</a></td>
+    </tr>
+    {{/each}}
+</script>
+<script id="invesTemp-view-item" type="text/x-handlebars-template">
+    <div class="box_wbt box_wbtTop">{{name}}</div>
+    {{#each quests}}
+    <div class="box_w">
+        <div class="dt" style="word-wrap: break-word">{{sequence}}.（{{tf_type type}}）（{{tf_isRequired isRequired}}）{{question}}</div>
+        {{#if_eq type 3}}
+
+        {{else}}
+        <div class="dd">
+            <ul>
+                {{#each options}}
+                <li>{{sequence}}：{{content}}</li>
+                {{/each}}
+            </ul>
+        </div>
+        {{/if_eq}}
+    </div>
+    {{/each}}
+</script>
+<script id="no-content" type="text/x-handlebars-template">
+    <div class="padTB20 no-content"><div class="m-style">搜索无结果！</div></div>
+</script>
+
+<script th:inline="javascript">
+    $(function () {
+        /**
+         * 新增问卷
+         */
+        $(".addPaper").on("click", function () {
+            var name = $.trim($("#name").val());
+            if(isEmpty(name)){
+                layer.msg("请设置问卷名称！", {icon: 5});
+                $("#name").focus();
+                return;
+            }
+            var describe = $.trim($("#describe").val());
+            if(isEmpty(describe)){
+                layer.msg("请设置问卷描述！", {icon: 5});
+                $("#describe").focus();
+                return;
+            }
+            var tempId = $("#tempId").val();
+            if(isEmpty(tempId)){
+                layer.msg("请选择问卷模板！", {icon: 5});
+                return;
+            }
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: '/backend/course/inves/online/add',
+                data: {
+                    name: name,
+                    describe: describe,
+                    tempId: tempId,
+                    /*<![CDATA[*/
+                    courseId: [[${courseId}]]
+                    /*]]>*/
+                },
+                success:function(data){
+                    if(data.message == "success"){
+                        layer.msg('新增问卷成功!', {icon: 1});
+                        /*<![CDATA[*/
+                        setTimeout("window.location = '/backend/course/inves/online/listPage?courseId=[[${courseId}]]'", 500);
+                        /*]]>*/
+                    }else if(data.message == "same name"){
+                        layer.msg("新增问卷失败！问卷名称重复！", {icon: 5});
+                        $("#name").focus();
+                    }
+                },
+                error: function(){
+                    layer.msg("新增问卷失败！", {icon: 5});
+                }
+            })
+
+        })
+
+        /**
+         * 取消新增
+         */
+        $(".paper-cancel").on("click", function () {
+            /*<![CDATA[*/
+            window.location = '/backend/course/inves/online/listPage?courseId=[[${courseId}]]';
+            /*]]>*/
+        })
+
+        /**
+         * 新增问卷
+         */
+        $(".addNew").on("click", function () {
+            layer.confirm('确认放弃编辑当前问卷？',function(index){
+                window.location.reload(true);
+            });
+        })
+    })
+</script>
+</body>
+</html>

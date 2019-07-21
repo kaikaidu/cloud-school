@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.CourseSignUpMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.CourseSignUp">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="course_id" jdbcType="INTEGER" property="courseId" />
+    <result column="adainfo_md5" jdbcType="VARCHAR" property="adainfoMd5" />
+    <result column="singup_time" jdbcType="TIMESTAMP" property="singupTime" />
+    <result column="via_state" jdbcType="SMALLINT" property="viaState" />
+    <result column="formId" jdbcType="VARCHAR" property="formid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, course_id, adainfo_md5, singup_time, via_state, formId
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_course_signup
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_course_signup
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.CourseSignUp">
+    insert into t_course_signup (id, course_id, adainfo_md5, 
+      singup_time, via_state, formId
+      )
+    values (#{id,jdbcType=INTEGER}, #{courseId,jdbcType=INTEGER}, #{adainfoMd5,jdbcType=VARCHAR}, 
+      #{singupTime,jdbcType=TIMESTAMP}, #{viaState,jdbcType=SMALLINT}, #{formid,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.CourseSignUp">
+    insert into t_course_signup
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="courseId != null">
+        course_id,
+      </if>
+      <if test="adainfoMd5 != null">
+        adainfo_md5,
+      </if>
+      <if test="singupTime != null">
+        singup_time,
+      </if>
+      <if test="viaState != null">
+        via_state,
+      </if>
+      <if test="formid != null">
+        formId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="adainfoMd5 != null">
+        #{adainfoMd5,jdbcType=VARCHAR},
+      </if>
+      <if test="singupTime != null">
+        #{singupTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="viaState != null">
+        #{viaState,jdbcType=SMALLINT},
+      </if>
+      <if test="formid != null">
+        #{formid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.CourseSignUp">
+    update t_course_signup
+    <set>
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="adainfoMd5 != null">
+        adainfo_md5 = #{adainfoMd5,jdbcType=VARCHAR},
+      </if>
+      <if test="singupTime != null">
+        singup_time = #{singupTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="viaState != null">
+        via_state = #{viaState,jdbcType=SMALLINT},
+      </if>
+      <if test="formid != null">
+        formId = #{formid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.CourseSignUp">
+    update t_course_signup
+    set course_id = #{courseId,jdbcType=INTEGER},
+      adainfo_md5 = #{adainfoMd5,jdbcType=VARCHAR},
+      singup_time = #{singupTime,jdbcType=TIMESTAMP},
+      via_state = #{viaState,jdbcType=SMALLINT},
+      formId = #{formid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="countByCourseId" resultType="java.lang.Integer">
+    select count(0) from t_course_signup where course_id = #{courseId}
+  </select>
+
+  <select id="selectByUserAndCourse" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_course_signup where course_id = #{courseId} And adainfo_md5 = #{adaInfoMd5}
+  </select>
+
+  <select id="selectByUserAndCourseList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_course_signup where course_id = #{courseId} And adainfo_md5 = #{adaInfoMd5}
+  </select>
+
+  <select id="selectByUserAndCourseList000" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_course_signup where  adainfo_md5 = #{adaInfoMd5}
+  </select>
+
+  <select id="selectSignupCount" parameterType="Integer" resultType="int">
+    SELECT
+      count(1)
+    FROM
+        t_course_signup c,
+        t_user u
+    WHERE
+        c.adainfo_md5 = u.adainfo_md5
+    AND c.course_id = #{courseId}  and u.state = 1
+  </select>
+
+  <!-- 批量新增报名 -->
+  <insert id="insertByList" parameterType="com.amway.acti.model.CourseSignUp">
+    insert into t_course_signup ( course_id, adainfo_md5,
+    singup_time, via_state, formId
+    ) values
+    <foreach collection="list" index="i" item="s" separator=",">
+      (#{s.courseId,jdbcType=INTEGER}, #{s.adainfoMd5,jdbcType=VARCHAR},
+      #{s.singupTime,jdbcType=TIMESTAMP}, #{s.viaState,jdbcType=SMALLINT}, #{s.formid,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+
+  <delete id="deleteByCourseAndAdainfoMd5">
+    delete from t_course_signup
+    where course_id = #{courseId}
+    And adainfo_md5 = #{adaInfoMd5}
+  </delete>
+
+  <update id="updateAdainfoMd5" parameterType="String">
+    update t_course_signup set adainfo_md5 = #{adaInfoN} where adainfo_md5 = #{adaInfoO}
+  </update>
+
+  <!-- 根据课程id查询报名学员 add wsc -->
+  <select id="selectSignUpByCourseId" resultType="com.amway.acti.model.CourseApproval">
+    select
+    s.course_id as courseId,
+    u.id as userId,
+    1 as apprResult
+    from
+    t_course_signup s,
+    t_user u
+    where
+    s.adainfo_md5 = u.adainfo_md5 and
+    course_id = #{courseId}
+  </select>
+
+  <!-- 根据adainfoMd5集合删除报名表 add wsc -->
+  <delete id="deleteByAdainfoMd5List">
+    delete
+    from
+    t_course_signup
+    where
+    adainfo_md5 in (
+    <foreach collection="userList" separator="," item="s">
+      #{s.adainfoMd5}
+    </foreach>
+    )
+  </delete>
+
+  <!-- 根据课程id查询报名学员 -->
+  <select id="selectSignByCourseId" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"/>
+    from
+      t_course_signUp
+    where
+      course_id = #{courseId}
+  </select>
+</mapper>

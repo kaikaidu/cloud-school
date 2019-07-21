@@ -1,0 +1,749 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.CourseMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.Course">
+    <id column="sys_id" jdbcType="INTEGER" property="sysId" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="label" jdbcType="INTEGER" property="label" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
+    <result column="overview" jdbcType="VARCHAR" property="overview" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="qr_code" jdbcType="VARCHAR" property="qrCode" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="is_share" jdbcType="TINYINT" property="isShare" />
+    <result column="is_verify" jdbcType="TINYINT" property="isVerify" />
+    <result column="max_apply_num" jdbcType="INTEGER" property="maxApplyNum" />
+    <result column="is_sign" jdbcType="TINYINT" property="isSign" />
+    <result column="is_questionnaire" jdbcType="TINYINT" property="isQuestionnaire" />
+    <result column="is_test" jdbcType="TINYINT" property="isTest" />
+    <result column="is_ballot" jdbcType="TINYINT" property="isBallot" />
+    <result column="is_score" jdbcType="TINYINT" property="isScore" />
+    <result column="is_download" jdbcType="TINYINT" property="isDownload" />
+    <result column="is_shelve" jdbcType="SMALLINT" property="isShelve" />
+    <result column="state" jdbcType="SMALLINT" property="state" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="signup_begin_time" jdbcType="TIMESTAMP" property="signUpBeginTime" />
+    <result column="signup_end_time" jdbcType="TIMESTAMP" property="signUpEndTime" />
+    <result column="create_man" jdbcType="INTEGER" property="createMan" />
+    <result column="sitem_temp_id" jdbcType="INTEGER" property="sitemTempId" />
+    <result column="class_state" jdbcType="INTEGER" property="classState" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sys_id, status, title, label, code, picture, overview, address, start_time, end_time, 
+    qr_code, url, is_share, is_verify, max_apply_num, is_sign, is_questionnaire, is_test, 
+    is_ballot, is_score, is_download, is_shelve, state, create_time, signup_begin_time,
+    signup_end_time, create_man, sitem_temp_id, class_state
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_course
+    where sys_id = #{sysId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_course
+    where sys_id = #{sysId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.Course">
+    insert into t_course (sys_id, status, title, 
+      label, code, picture, 
+      overview, address, start_time, 
+      end_time, qr_code, url, 
+      is_share, is_verify, max_apply_num, 
+      is_sign, is_questionnaire, is_test, 
+      is_ballot, is_score, is_download, 
+      is_shelve, state, create_time,
+      signup_begin_time, signup_end_time, create_man,
+      sitem_temp_id, class_state)
+    values (#{sysId,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
+      #{label,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR},
+      #{overview,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, 
+      #{endTime,jdbcType=TIMESTAMP}, #{qrCode,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{isShare,jdbcType=TINYINT}, #{isVerify,jdbcType=TINYINT}, #{maxApplyNum,jdbcType=INTEGER}, 
+      #{isSign,jdbcType=TINYINT}, #{isQuestionnaire,jdbcType=TINYINT}, #{isTest,jdbcType=TINYINT}, 
+      #{isBallot,jdbcType=TINYINT}, #{isScore,jdbcType=TINYINT}, #{isDownload,jdbcType=TINYINT}, 
+      #{isShelve,jdbcType=SMALLINT}, #{state,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP},
+      #{signUpBeginTime,jdbcType=TIMESTAMP}, #{signUpEndTime,jdbcType=TIMESTAMP}, #{createMan,jdbcType=INTEGER},
+      #{sitemTempId,jdbcType=INTEGER}, #{classState,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.Course" useGeneratedKeys="true" keyProperty="sysId">
+    insert into t_course
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="sysId != null">
+        sys_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="label != null">
+        label,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="picture != null">
+        picture,
+      </if>
+      <if test="overview != null">
+        overview,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="qrCode != null">
+        qr_code,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="isShare != null">
+        is_share,
+      </if>
+      <if test="isVerify != null">
+        is_verify,
+      </if>
+      <if test="maxApplyNum != null">
+        max_apply_num,
+      </if>
+      <if test="isSign != null">
+        is_sign,
+      </if>
+      <if test="isQuestionnaire != null">
+        is_questionnaire,
+      </if>
+      <if test="isTest != null">
+        is_test,
+      </if>
+      <if test="isBallot != null">
+        is_ballot,
+      </if>
+      <if test="isScore != null">
+        is_score,
+      </if>
+      <if test="isDownload != null">
+        is_download,
+      </if>
+      <if test="isShelve != null">
+        is_shelve,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="signUpBeginTime != null">
+        signup_begin_time,
+      </if>
+      <if test="signUpEndTime != null">
+        signup_end_time,
+      </if>
+      <if test="createMan != null">
+        create_man,
+      </if>
+      <if test="sitemTempId != null">
+        sitem_temp_id,
+      </if>
+      <if test="classState != null">
+        class_state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="sysId != null">
+        #{sysId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="label != null">
+        #{label,jdbcType=INTEGER},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="picture != null">
+        #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="overview != null">
+        #{overview,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="qrCode != null">
+        #{qrCode,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="isShare != null">
+        #{isShare,jdbcType=TINYINT},
+      </if>
+      <if test="isVerify != null">
+        #{isVerify,jdbcType=TINYINT},
+      </if>
+      <if test="maxApplyNum != null">
+        #{maxApplyNum,jdbcType=INTEGER},
+      </if>
+      <if test="isSign != null">
+        #{isSign,jdbcType=TINYINT},
+      </if>
+      <if test="isQuestionnaire != null">
+        #{isQuestionnaire,jdbcType=TINYINT},
+      </if>
+      <if test="isTest != null">
+        #{isTest,jdbcType=TINYINT},
+      </if>
+      <if test="isBallot != null">
+        #{isBallot,jdbcType=TINYINT},
+      </if>
+      <if test="isScore != null">
+        #{isScore,jdbcType=TINYINT},
+      </if>
+      <if test="isDownload != null">
+        #{isDownload,jdbcType=TINYINT},
+      </if>
+      <if test="isShelve != null">
+        #{isShelve,jdbcType=SMALLINT},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="signUpBeginTime != null">
+        #{signUpBeginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="signUpEndTime != null">
+        #{signUpEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createMan != null">
+        #{createMan,jdbcType=INTEGER},
+      </if>
+      <if test="sitemTempId != null">
+        #{sitemTempId,jdbcType=INTEGER},
+      </if>
+      <if test="classState != null">
+        #{classState,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.Course">
+    update t_course
+    <set>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="label != null">
+        label = #{label,jdbcType=INTEGER},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="picture != null">
+        picture = #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="overview != null">
+        overview = #{overview,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="qrCode != null">
+        qr_code = #{qrCode,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="isShare != null">
+        is_share = #{isShare,jdbcType=TINYINT},
+      </if>
+      <if test="isVerify != null">
+        is_verify = #{isVerify,jdbcType=TINYINT},
+      </if>
+      <if test="maxApplyNum != null">
+        max_apply_num = #{maxApplyNum,jdbcType=INTEGER},
+      </if>
+      <if test="isSign != null">
+        is_sign = #{isSign,jdbcType=TINYINT},
+      </if>
+      <if test="isQuestionnaire != null">
+        is_questionnaire = #{isQuestionnaire,jdbcType=TINYINT},
+      </if>
+      <if test="isTest != null">
+        is_test = #{isTest,jdbcType=TINYINT},
+      </if>
+      <if test="isBallot != null">
+        is_ballot = #{isBallot,jdbcType=TINYINT},
+      </if>
+      <if test="isScore != null">
+        is_score = #{isScore,jdbcType=TINYINT},
+      </if>
+      <if test="isDownload != null">
+        is_download = #{isDownload,jdbcType=TINYINT},
+      </if>
+      <if test="isShelve != null">
+        is_shelve = #{isShelve,jdbcType=SMALLINT},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="signUpBeginTime != null">
+        signup_begin_time = #{signUpBeginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="signUpEndTime != null">
+        signup_end_time = #{signUpEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createMan != null">
+        create_man = #{createMan,jdbcType=INTEGER},
+      </if>
+      <if test="sitemTempId != null">
+        sitem_temp_id = #{sitemTempId,jdbcType=INTEGER},
+      </if>
+      <if test="classState != null">
+        class_state = #{classState,jdbcType=INTEGER},
+      </if>
+    </set>
+    where sys_id = #{sysId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.Course">
+    update t_course
+    set status = #{status,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      label = #{label,jdbcType=INTEGER},
+      code = #{code,jdbcType=VARCHAR},
+      picture = #{picture,jdbcType=VARCHAR},
+      overview = #{overview,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      qr_code = #{qrCode,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      is_share = #{isShare,jdbcType=TINYINT},
+      is_verify = #{isVerify,jdbcType=TINYINT},
+      max_apply_num = #{maxApplyNum,jdbcType=INTEGER},
+      is_sign = #{isSign,jdbcType=TINYINT},
+      is_questionnaire = #{isQuestionnaire,jdbcType=TINYINT},
+      is_test = #{isTest,jdbcType=TINYINT},
+      is_ballot = #{isBallot,jdbcType=TINYINT},
+      is_score = #{isScore,jdbcType=TINYINT},
+      is_download = #{isDownload,jdbcType=TINYINT},
+      is_shelve = #{isShelve,jdbcType=SMALLINT},
+      state = #{state,jdbcType=SMALLINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      signup_begin_time = #{signUpBeginTime,jdbcType=TIMESTAMP},
+      signup_end_time = #{signUpEndTime,jdbcType=TIMESTAMP},
+      create_man = #{createMan,jdbcType=INTEGER},
+      sitem_temp_id = #{sitemTempId,jdbcType=INTEGER},
+      class_state = #{classState,jdbcType=INTEGER}
+    where sys_id = #{sysId,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateBasicInfo" parameterType="com.amway.acti.model.Course">
+    update t_course
+    set
+    title = #{title,jdbcType=VARCHAR},
+    label = #{label,jdbcType=VARCHAR},
+    code = #{code,jdbcType=VARCHAR},
+    picture = #{picture,jdbcType=VARCHAR},
+    overview = #{overview,jdbcType=VARCHAR},
+    address = #{address,jdbcType=VARCHAR},
+    start_time = #{startTime,jdbcType=TIMESTAMP},
+    end_time = #{endTime,jdbcType=TIMESTAMP},
+    qr_code = #{qrCode,jdbcType=VARCHAR},
+    url = #{url,jdbcType=VARCHAR},
+    is_share = #{isShare,jdbcType=TINYINT},
+    is_verify = #{isVerify,jdbcType=TINYINT},
+    max_apply_num = #{maxApplyNum,jdbcType=INTEGER},
+    is_sign = #{isSign,jdbcType=TINYINT},
+    signup_begin_time = #{signUpBeginTime,jdbcType=TIMESTAMP},
+    signup_end_time = #{signUpEndTime,jdbcType=TIMESTAMP}
+    where sys_id = #{sysId,jdbcType=INTEGER}
+  </update>
+
+  <!--可参加课程-->
+  <select id="selectPartCourse" resultMap="BaseResultMap">
+    select
+      sys_id,
+      title,
+      label,
+      picture,
+      overview,
+      start_time,
+      end_time,
+      is_verify
+    from t_course where sys_id not in
+    (select course_id from t_course_signup where adainfo_md5 = #{adainfoMd5})
+    and label =3
+    and is_shelve = 1 and state = 1
+    and #{localTime} >= signup_begin_time and #{localTime} &lt; signup_end_time
+    order by create_time desc
+  </select>
+
+  <!--已报名课程-->
+  <select id="selectRegistedCourse" resultMap="BaseResultMap">
+      SELECT
+          c.sys_id,
+          c.title,
+          c.label,
+          c.picture,
+          c.overview,
+          c.start_time,
+          c.end_time,
+          c.is_verify
+      FROM
+          t_course c,
+          (
+              SELECT
+                  course_id course_id
+              FROM
+                  t_course_signup
+              WHERE
+                  adainfo_md5 = #{adaInfoMd5}
+          ) cs
+      WHERE
+          c.sys_id = cs.course_id
+      AND c.is_shelve = 1
+      AND c.state = 1
+      AND c.end_time > #{localTime}
+      order by create_time desc
+  </select>
+
+  <!--已完成课程-->
+  <select id="selectFinishedCourse" resultMap="BaseResultMap">
+    SELECT
+      c.sys_id,
+      c.title,
+      c.label,
+      c.picture,
+      c.overview,
+      c.start_time,
+      c.end_time,
+      c.is_verify
+    FROM
+    t_course AS c
+    INNER JOIN t_course_signup AS cs ON c.sys_id = cs.course_id
+    LEFT JOIN t_course_approval AS ca ON c.sys_id = ca.course_id
+    and user_id= (select id from t_user where adainfo_md5=#{adainfoMd5})
+    WHERE
+    c.is_shelve = 1
+    AND cs.adainfo_md5 = #{adainfoMd5}
+    AND c.end_time &lt; #{localTime}
+    AND c.state = 1
+    AND (
+    ca.appr_result = 1
+    OR ca.appr_result IS NULL
+    )
+    ORDER BY
+    create_time DESC
+  </select>
+
+
+  <select id="selectByTeacher" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_course where sys_id in (select course_id from t_course_teacher
+    where user_id = #{userId}) and is_shelve = 1 and state = 1 ORDER BY create_time desc
+  </select>
+
+  <select id="selectCourseList" parameterType="Map" resultMap="BaseResultMap">
+      SELECT
+      <include refid="Base_Column_List" />
+      from t_course where state = 1
+      <if test="title != null and title != ''">
+          and title like '%${title}%'
+      </if>
+      <if test="createTime != null and createTime != ''">
+          and #{createTime} = CONVERT(VARCHAR,create_time,23)
+      </if>
+      <if test="startTime != null and startTime != ''">
+          and #{startTime} = CONVERT(VARCHAR,start_time,23)
+      </if>
+      <if test="endTime != null and endTime != ''">
+          and #{endTime} = CONVERT(VARCHAR,end_time,23)
+      </if>
+      <if test="label != null">
+          and label = #{label}
+      </if>
+      <if test="shelve != null">
+          and is_shelve = #{shelve}
+      </if>
+      <choose>
+          <when test="ident == 3">
+              and (create_man = #{userId})
+              or (sys_id in(select course_id
+              from t_course_assist
+              where user_id =#{userId})
+            and state=1)
+          </when>
+      </choose>
+      <choose>
+        <when test="order != null and order != '' and order == 1 ">
+          order by create_time asc
+        </when>
+        <otherwise>
+          order by create_time desc
+        </otherwise>
+      </choose>
+  </select>
+
+  <select id="countCourse" parameterType="Map" resultType="java.lang.Long">
+    SELECT count(0)
+    from t_course where state = 1
+    <if test="title != null and title != ''">
+      and title like '%${title}%'
+    </if>
+    <if test="createTime != null and createTime != ''">
+      and #{createTime} = CONVERT(VARCHAR,create_time,23)
+    </if>
+    <if test="startTime != null and startTime != ''">
+      and #{startTime} = CONVERT(VARCHAR,start_time,23)
+    </if>
+    <if test="endTime != null and endTime != ''">
+      and #{endTime} = CONVERT(VARCHAR,end_time,23)
+    </if>
+    <if test="label != null">
+      and label = #{label}
+    </if>
+    <if test="shelve != null">
+      and is_shelve = #{shelve}
+    </if>
+    <choose>
+      <when test="ident == 3">
+        and create_man = #{userId}
+      </when>
+    </choose>
+  </select>
+
+  <select id="countUserWithinCourses" resultType="java.lang.Integer">
+    select count(0) from t_course where create_man = #{userId} and sys_id in
+    <foreach close=")" collection="courseIds" item="courseId" open="(" separator=",">
+      #{courseId}
+    </foreach>
+    or sys_id in (select course_id from t_course_assist where user_id = #{userId} and course_id in
+
+    <foreach close=")" collection="courseIds" item="courseId" open="(" separator=",">
+      #{courseId}
+    </foreach>)
+  </select>
+
+  <update id="updateShelveByIds">
+    UPDATE t_course
+    set
+    <choose>
+      <when test="shelve">
+        is_shelve = 1
+      </when>
+      <otherwise>
+        is_shelve = 0
+      </otherwise>
+    </choose>
+    where sys_id in
+    <foreach close=")" collection="courseIds" item="courseId" open="(" separator=",">
+      #{courseId}
+    </foreach>
+  </update>
+
+  <!--删除课程，state置为0，绑定评分模板置为null-->
+  <update id="deleteByIds">
+    update t_course
+    set state = 0, sitem_temp_id = null
+    where sys_id in
+    <foreach close=")" collection="courseIds" item="courseId" open="(" separator=",">
+      #{courseId}
+    </foreach>
+  </update>
+
+  <!--dk Begin-->
+  <select id="selectSitemTempBySysId" resultType="java.lang.Integer">
+    select sitem_temp_id from t_course where sys_id = #{sysId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectTitleBySysId" resultType="java.lang.String">
+    select title from t_course where sys_id = #{sysId,jdbcType=INTEGER}
+  </select>
+  <!--dk End-->
+  
+  <update id="updateCourseActivity">
+    UPDATE t_course set ${activityName} = #{value} where sys_id = #{courseId}
+  </update>
+
+  <select id="selectCourseCount" resultType="int">
+    select
+      count(1)
+    from
+      t_course c ,t_label l
+    where
+      c.label = l.id and
+      c.state = 1
+    <if test="name != null and name != ''">
+      and c.title like CONCAT('%',#{name},'%')
+    </if>
+    <if test="label != null and label != ''">
+      and c.label = #{label}
+    </if>
+  </select>
+
+  <select id="selectCourseByName" resultType="com.amway.acti.model.CourseExport">
+    select
+      c.sys_id as id,
+      c.title as title,
+      c.create_time as createTime,
+      l.name as label
+    from
+      t_course c ,t_label l
+    where
+      c.label = l.id and
+      c.state = 1
+    <if test="name != null and name != ''">
+      and c.title like CONCAT('%',#{name},'%')
+    </if>
+    <if test="label != null and label != ''">
+      and c.label = #{label}
+    </if>
+    order by c.create_time
+    <if test="sort == 1">
+      desc
+    </if>
+    <if test="sort == 2">
+      asc
+    </if>
+  </select>
+
+  <select id="selectApplyStatusByCourseAndUser" resultType="com.amway.acti.model.CourseApprStatus">
+    SELECT
+	c.title,
+	format (
+		c.start_time,
+		'yyyy年MM月dd日 HH:mm'
+	) AS startTime,
+	(
+		SELECT
+			name
+		FROM
+			t_label
+		WHERE
+			id = c.label
+	) AS name,
+	(select name from t_user where id = #{uid}) as uname,
+	(select formId from t_course_signup where adainfo_md5 = #{adaInfoMd5} and course_id = #{courseId}) as formId,
+	CASE (SELECT appr_result FROM t_course_approval WHERE course_id = #{courseId} AND user_id = #{uid})
+
+		WHEN 0 THEN
+			'审核失败'
+		WHEN 1 THEN
+			'审核通过'
+		WHEN 2 THEN
+			'审核中'
+        ELSE '审核通过'
+		END AS apprResult
+		FROM
+			t_course AS c
+		WHERE
+			c.sys_id = #{courseId}
+  </select>
+
+  <select id="countByTitle" resultType="java.lang.Integer">
+    select count(0) from t_course where title = #{title} and state = 1
+    <if test="courseId != null">
+        and sys_id != #{courseId}
+    </if>
+  </select>
+
+  <!-- qj -->
+  <select id="selectCourseBySitemTemp" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from
+      t_course
+    where 1=1
+      AND state = 1
+      AND sitem_temp_id = #{sitemTempId}
+  </select>
+  <!-- end qj -->
+
+  <!-- 根据标签id查询课程 -->
+  <select id="selectCourseByLabel" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from
+      t_course
+    where
+      label = #{labelId}
+  </select>
+
+  <!-- 根据课程id查询关联的标签名称 -->
+  <select id="getLabelByCourseId" parameterType="Integer" resultType="String">
+    select
+      l.name
+    from
+      t_course c,t_label l
+    where
+      c.label = l.id and
+      c.sys_id = #{courseId}
+  </select>
+
+  <select id="selectCourseByDocId" resultMap="BaseResultMap">
+    SELECT * from t_course a
+    inner join t_course_doc b
+    on a.sys_id = b.course_id
+    where b.doc_id = #{docId}
+  </select>
+
+  <!-- 根据学员id查询报名的课程 -->
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    SELECT
+        c.sys_id, c.status, c.title, c.label, c.code, c.picture, c.overview, c.address, c.start_time, c.end_time,
+        c.qr_code, c.url, c.is_share, c.is_verify, c.max_apply_num, c.is_sign, c.is_questionnaire, c.is_test,
+        c.is_ballot, c.is_score, c.is_download, c.is_shelve, c.state, c.create_time, c.signup_begin_time,
+        c.signup_end_time, c.create_man, c.sitem_temp_id, c.class_state, c.is_cert
+    FROM
+        t_course_signup s,
+        t_user u,
+        t_course c
+    WHERE
+        s.adainfo_md5 = u.adainfo_md5
+    AND s.course_id = c.sys_id
+    AND u.id = #{userId} and u.state = 1
+  </select>
+
+  <!-- 修改课程classState -->
+  <update id="updateCourseForClassState">
+    update t_course set class_state = null where sys_id = #{courseId}
+  </update>
+</mapper>

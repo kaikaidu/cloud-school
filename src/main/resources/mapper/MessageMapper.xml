@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.MessageMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.Message">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="course_id" jdbcType="INTEGER" property="courseId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="is_read" jdbcType="INTEGER" property="isRead" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, course_id, user_id, is_read, content, type, create_time, title
+  </sql>
+
+  <select id="selectCountWithNotReadedByUserId" parameterType="int" resultType="int">
+    SELECT count(*) FROM t_message WHERE user_id = #{userId} AND is_read = 0
+  </select>
+
+  <select id="selectByUserId" parameterType="int" resultMap="BaseResultMap">
+    SELECT
+      <include refid="Base_Column_List"/>
+    FROM t_message
+    WHERE user_id = #{userId} ORDER BY create_time DESC
+  </select>
+
+  <select id="selectById" parameterType="int" resultMap="BaseResultMap">
+    SELECT
+      <include refid="Base_Column_List"/>
+    FROM t_message
+    WHERE id = #{id}
+  </select>
+
+  <update id="updateReadStateById" parameterType="int">
+    UPDATE t_message SET is_read = 1 WHERE id = #{id}
+  </update>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_message
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_message
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.Message">
+    insert into t_message (id, course_id, user_id, 
+      is_read, content, type, 
+      create_time, title)
+    values (#{id,jdbcType=INTEGER}, #{courseId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{isRead,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{title,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.Message">
+    insert into t_message
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="courseId != null">
+        course_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="isRead != null">
+        is_read,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="isRead != null">
+        #{isRead,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.Message">
+    update t_message
+    <set>
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="isRead != null">
+        is_read = #{isRead,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.Message">
+    update t_message
+    set course_id = #{courseId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      is_read = #{isRead,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      title = #{title,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- 批量新增消息 -->
+  <insert id="insertList">
+    insert into t_message ( course_id, user_id, is_read, content, type, create_time, title
+    ) values
+    <foreach collection="list" index="i" item="s" separator=",">
+      (#{s.courseId,jdbcType=INTEGER}, #{s.userId,jdbcType=INTEGER},
+      #{s.isRead,jdbcType=INTEGER}, #{s.content,jdbcType=VARCHAR}, #{s.type,jdbcType=INTEGER},
+      #{s.createTime,jdbcType=TIMESTAMP},#{s.title,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+
+  <!-- 根据课程id或者用户id删除消息 -->
+  <delete id="deleteMessageByCourseIdAndUserId">
+    delete from t_message where 1 = 1
+    <if test="courseId != null">
+      and course_id = #{courseId}
+    </if>
+    <if test="userId != null">
+      and user_id = #{userId}
+    </if>
+    and type = #{type}
+  </delete>
+
+  <!-- 根据用户id和课程id查询消息 -->
+  <select id="selectMessageByUserIdAndCourseId" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"/>
+    from
+      t_message
+    where
+      user_id = #{userId} and
+      course_id = #{courseId}
+  </select>
+
+  <update id="updateList" parameterType="com.amway.acti.model.Message">
+    <foreach collection="list" item="s" index="index" open="" close="" separator=";">
+      update t_message
+      <set>
+        <if test="s.content != null">
+          content = #{s.content,jdbcType=VARCHAR},
+        </if>
+        <if test="s.title != null">
+          title = #{s.title,jdbcType=VARCHAR},
+        </if>
+      </set>
+      where
+      course_id = #{s.courseId,jdbcType=INTEGER} and
+      user_id = #{s.userId,jdbcType=INTEGER}
+    </foreach>
+  </update>
+
+  <select id="selectMessageById" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"/>
+    from
+      t_message
+    where
+      course_id = #{courseId} and type = 1
+  </select>
+</mapper>

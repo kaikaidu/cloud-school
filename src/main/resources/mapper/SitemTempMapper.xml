@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.SitemTempMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.SitemTemp">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="stand" jdbcType="VARCHAR" property="stand" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="state" jdbcType="SMALLINT" property="state" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, stand, create_time, state
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_sitem_temp
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_sitem_temp
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.SitemTemp">
+    insert into t_sitem_temp (id, name, stand, 
+      create_time, state)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{stand,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=SMALLINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.SitemTemp" keyProperty="id" useGeneratedKeys="true">
+    insert into t_sitem_temp
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="stand != null">
+        stand,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="stand != null">
+        #{stand,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.SitemTemp">
+    update t_sitem_temp
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="stand != null">
+        stand = #{stand,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.SitemTemp">
+    update t_sitem_temp
+    set name = #{name,jdbcType=VARCHAR},
+      stand = #{stand,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      state = #{state,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- begin qj-->
+  <select id="selectSitemTempList" resultMap="BaseResultMap">
+    SELECT
+      <include refid="Base_Column_List" />
+    FROM t_sitem_temp
+    WHERE 1=1
+    AND state = 1
+    <if test="name != null">
+      AND name like '%'+#{name}+'%'
+    </if>
+    <choose>
+      <when test="createTimeType == 1">
+        ORDER BY create_time ASC
+      </when>
+      <otherwise>
+        ORDER BY create_time DESC
+      </otherwise>
+    </choose>
+  </select>
+
+  <select id="selectSitemByCourseId" resultMap="BaseResultMap">
+      SELECT
+          tst.id,
+          tst.name,
+          tst.stand,
+          tst.create_time,
+          tst.state
+      FROM
+          t_course_sitem tcs
+      LEFT JOIN t_sitem_temp tst ON tcs.sitem_temp_id = tst.id
+      WHERE
+          tcs.course_id = #{courseId}
+  </select>
+
+  <select id="selectSitemByName" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_sitem_temp
+    where name=#{name} and state = 1
+  </select>
+  <!-- end -->
+</mapper>

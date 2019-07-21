@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>云学堂后台-分班抽签-分班列表</title>
+    <link th:href="@{/assets/css/amwayCSS.css}" type="text/css" rel="stylesheet">
+    <link th:href="@{/assets/js/bootstrapSelect/bootstrap.min.css}" rel="stylesheet">
+    <link rel="icon" th:href="@{/assets/images/favicon.ico}" type="image/x-icon" />
+    <link rel="shortcut icon" th:href="@{/assets/images/favicon.ico}" type="image/x-icon" />
+    <!--[if lt ie 9]>
+    <script th:src="@{/assets/js/html5.js}" type="text/javascript"></script>
+    <![endif]-->
+    <script th:src="@{/assets/js/jquery-1.11.1.min.js}" type="text/javascript"></script>
+    <script th:src="@{/assets/js/public.js}" type="text/javascript"></script>
+    <!---bootstrapSelect-->
+    <script th:src="@{/assets/js/bootstrapSelect/bootstrap-select.js}" type="text/javascript" ></script>
+    <script th:src="@{/assets/js/bootstrapSelect/bootstrap.min.js}"></script>
+    <script th:src="@{/assets/js/custom/course/draw-list.js}"></script>
+    <script type="text/javascript">
+        $(window).on('load', function () {
+            $('.selectpicker').selectpicker({
+                'selectedText': 'cat'
+            });
+        });
+    </script>
+</head>
+<body>
+<!-- 一级菜单 -->
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+    <section class="wapmbx fl">
+        <a href="/backend/course/courseManage">课程管理</a><em></em><a href="#">分班抽签</a><em></em><strong>分班列表</strong>
+    </section>
+    <!-- 二级菜单 -->
+    <section th:replace="common/common_menu  :: menu"></section>
+    <section class="conFl">
+        <div class="StuCon">
+
+            <div class="clearfix StuTle">
+                <div class="fl search" style=" margin: 0">
+                    <input type="search" class="ipnSearch" id="name" placeholder="请输入您要查找的学员姓名或安利卡号">
+                    <input type="button" value="搜 索" class="ipnBtn"></div>
+                <div class="fr">
+                    <a href="javascript:updateClass()" class="btnA">重建班级</a>
+                    <a href="javascript:exprotDraw();" class="btnA">批量导出</a>
+                </div>
+            </div>
+        </div>
+        <div class="tableWrap">
+            <div class="tableBox">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tbody>
+                    <tr id="draw">
+                        <th width="10%">班级名称</th>
+                        <th width="16%">讲师</th>
+                        <th width="11%">演讲序号</th>
+                        <th width="25%">演讲内容</th>
+                        <th width="12%">安利卡号</th>
+                        <th width="10%">姓名</th>
+                        <th width="8%">性别</th>
+                        <th width="8%">操作</th>
+                    </tr>
+                    <!-- 渲染数据 -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="padTB20"><div class="m-style M-box4"></div></div>
+        </div>
+    </section>
+</article>
+<div class="codeLayer addTestQu" data-sum="03">
+    <div class="toptit">更改学员分班信息<b class="close"></b></div>
+    <div class="layCon layCon01">
+        <div class="clearfix">
+            <div class="boxDl">
+                <div class="dt">安利卡号</div>
+                <div class="dd lin40" id="adaNumber"></div>
+            </div>
+            <div class="boxDl">
+                <div class="dt">姓名</div>
+                <div class="dd lin40" id="userName"></div>
+            </div>
+            <div class="boxDl">
+                <div class="dt">性别</div>
+                <div class="dd lin40" id="sex"></div>
+            </div>
+            <div class="boxDl">
+                <div class="dt">班级名称</div>
+                <div class="dd lin40">
+                    <select name="" id="mySelect" class="sInput fl w200">
+
+                    </select></div>
+            </div>
+            <div class="boxDl">
+                <div class="dt">演讲内容</div>
+                <div class="dd">
+                    <textarea rows="3" placeholder="" maxlength="1000" class="sTexta siW10" id="content"></textarea>
+                </div>
+            </div>
+            <div class="btnBox">
+                <a href="#" class="btnA but_none" data-sum="03">取 消</a>
+                <a href="javascript:void(0);" class="btnB addDefine" data-sum="03">确 定</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="codeLayerbj"></div>
+</body>
+</html>

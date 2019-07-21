@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.WeightExportMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.WeightExport">
+    <result column="courseId" jdbcType="INTEGER" property="courseId" />
+    <result column="name" jdbcType="VARCHAR" property="userName" />
+    <result column="ada_number" jdbcType="VARCHAR" property="adaNumber" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="answer" jdbcType="VARCHAR" property="answer" />
+  </resultMap>
+  <select id="selectWeightByCourseId" resultMap="BaseResultMap">
+    SELECT
+      tc.sys_id courseId,
+      tu.name,
+      tu.ada_number,
+      CASE tu.sex
+      WHEN 0 THEN
+      '男'
+      WHEN 1 THEN
+      '女'
+      WHEN 2 THEN
+      '夫妻'
+      ELSE
+      '未知'
+      END sex,
+      CASE
+      WHEN tsm.score IS NULL THEN
+      '未完成'
+      ELSE
+      '已完成'
+      END state,
+      tsm.score answer
+      FROM
+      t_user tu
+      LEFT JOIN t_course_signup tcs ON tu.adainfo_md5 = tcs.adainfo_md5
+      LEFT JOIN t_course tc ON tcs.course_id = tc.sys_id
+      LEFT JOIN t_spee_mark tsm ON tsm.course_id = tc.sys_id
+  WHERE 1=1
+  AND tc.sys_id = #{id}
+  </select>
+</mapper>

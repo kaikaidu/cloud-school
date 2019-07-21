@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.CourseExportMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.CourseExport">
+    <id column="sys_id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="start_time" jdbcType="VARCHAR" property="startTime" />
+    <result column="end_time" jdbcType="VARCHAR" property="endTime" />
+    <result column="label" jdbcType="VARCHAR" property="label" />
+    <result column="is_shelve" jdbcType="VARCHAR" property="isShelve" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="maxApplyNum" jdbcType="VARCHAR" property="maxApplyNum" />
+    <result column="signNum" jdbcType="INTEGER" property="signNum" />
+    <result column="successNum" jdbcType="INTEGER" property="successNum" />
+    <result column="registerNum" jdbcType="INTEGER" property="registerNum" />
+    <result column="agreeNum" jdbcType="INTEGER" property="agreeNum" />
+  </resultMap>
+
+  <!-- 查询自定义报表课程导出 add wsc -->
+  <select id="exportCourseById" resultMap="BaseResultMap">
+    SELECT
+      c.sys_id,
+      c.title,
+      c.create_time,
+      c.start_time,
+      c.end_time,
+      l.name AS label,
+      case
+        when (c.is_shelve > 0) then '已发布' else '未发布'
+      end as is_shelve,
+      c.address,
+      case
+        when (c.max_apply_num is null) then '---' else convert(varchar,c.max_apply_num)
+      end as maxApplyNum,
+      case
+        when (s.signNum is null) then 0 else s.signNum
+      end as signNum,
+      case
+        when (s.signNum is null) then 0
+        when (c.is_verify = 0) then s.signNum
+        when (a.signNum > 0) then a.signNum
+        when (a.signNum is null) then 0
+      end as successNum,
+      case
+        when (r.registerNum > 0) then r.registerNum else 0
+      end as registerNum,
+      case
+        when (e.agreeNum > 0) then e.agreeNum else 0
+      end as agreeNum
+    FROM
+      t_course c
+    inner join t_label l on c.label = l.id
+    left join (
+      select course_id,count(1) signNum from t_course_signup group by course_id
+    ) s on s.course_id = c.sys_id
+    left join (
+      select course_id,count(1) signNum from t_course_approval where appr_result = 1 group by course_id
+    ) a on a.course_id = c.sys_id
+    left join (
+      select course_id,count(1) registerNum from t_course_register group by course_id
+    ) r on r.course_id = c.sys_id
+    left join (
+      select course_id,count(1) agreeNum from t_course_agree group by course_id
+    ) e on e.course_id = c.sys_id
+    WHERE
+    c.state = 1
+    <if test="list != null">
+        and c.sys_id in (
+        <foreach collection="list" item="s" separator=",">
+          #{s}
+        </foreach>
+        )
+    </if>
+    <if test="name != null and name != ''">
+      and c.title like CONCAT('%',#{name},'%')
+    </if>
+    <if test="label != null and label != ''">
+      and c.label = #{label}
+    </if>
+    order by c.sys_id
+  </select>
+</mapper>

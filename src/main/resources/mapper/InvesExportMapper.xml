@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.InvesExportMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.InvesExport">
+    <result column="courseId" jdbcType="INTEGER" property="courseId" />
+    <result column="userName" jdbcType="VARCHAR" property="userName" />
+    <result column="adaNumber" jdbcType="VARCHAR" property="adaNumber" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="invesName" jdbcType="VARCHAR" property="invesName" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+  </resultMap>
+
+  <select id="selectInvesByCourseId" resultMap="BaseResultMap">
+
+  </select>
+</mapper>

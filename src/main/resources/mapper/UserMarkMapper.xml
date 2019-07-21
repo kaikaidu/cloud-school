@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.UserMarkMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.UserMark">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="paper_id" jdbcType="INTEGER" property="paperId" />
+    <result column="score" jdbcType="NUMERIC" property="score" />
+    <result column="state" jdbcType="SMALLINT" property="state" />
+    <result column="time_length" jdbcType="VARCHAR" property="timeLength" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, paper_id, score, state, time_length
+  </sql>
+
+  <!-- 前端小程序接口 -->
+  <select id="selectByUserIdAndPaperId" resultMap="BaseResultMap">
+    SELECT * FROM t_user_mark WHERE state = 1 AND user_id = #{userId} and paper_id = #{paperId}
+  </select>
+
+  <!-- 前端小程序接口 -->
+  <select id="selectdk002" resultMap="BaseResultMap">
+    SELECT * FROM t_user_mark WHERE state = 1 AND user_id = #{userId}
+  </select>
+
+  <insert id="insert" parameterType="com.amway.acti.model.UserMark">
+    INSERT INTO t_user_mark(user_id, paper_id, score, time_length, state,create_time)
+    VALUES (#{userId}, #{paperId}, #{score},#{timeLength}, 1,#{createTime})
+  </insert>
+
+  <!-- 后台新增 -->
+  <update id="updateScoreByUserIdAndPaperId">
+    UPDATE t_user_mark SET score = #{score} WHERE user_id = #{userId} AND paper_id = #{paperId}
+  </update>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_user_mark
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+</mapper>

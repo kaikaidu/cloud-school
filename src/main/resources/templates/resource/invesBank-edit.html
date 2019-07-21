@@ -1,0 +1,535 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+
+<body>
+<input type="hidden" th:value="${temp.id}" id="tempId">
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+    <section class="wapmbx fl"><a href="/backend/resource/label">课程资源</a><em></em><a href="javascript:;">问卷题库</a><em></em><strong>新增问卷模板</strong></section>
+
+    <section th:replace="common/common_menu  :: menu"></section>
+
+    <section class="conFl pf_com">
+        <div class="StuCon QuBaCon">
+            <div class="qubaTit bjG padd10 mart10 clearfix">
+                <b class="fl">问卷模板</b>
+                <span class="fr"><a href="javascript:;" class="btnB addNew"><strong>+</strong> 新增问卷模板</a></span>
+            </div>
+            <div class="qubaCon bjG padd10 mart10 clearfix">
+                <div class="qubaBox questionBox">
+                    <div class="quItem  quItemTHD clearfix">
+                        <div class="dt">问卷模板名称</div>
+                        <div class="dm dm2"><input type="text" placeholder="请输入问卷模板名称" class="sInput siW10 temp-name" maxlength="13" th:value="${temp.name}"></div>
+                        <!--<div class="dd"><a class="btnA pf_com_a swt_but" href="javascript:;" data-sum="02">预览模板</a></div>-->
+                    </div>
+                    <div class="quItem quItem01 clearfix" th:each="question, state : ${temp.quests}">
+                        <div class="dt" th:switch="${question.type}">
+                            题目（<span class="selectTypeTxt selectType"  th:data-select_type="${question.isRequired == 1} ? '1' : '0'" th:text="${question.isRequired == 1} ? '必答' : '选答'"></span>）（<span th:case="1" class="selectTxt type"  th:data-type="1">单选</span><span th:case="2" class="selectTxt type"  th:data-type="2">多选</span><span th:case="3" class="selectTxt type"  th:data-type="3">问答</span>）
+                        </div>
+                        <div class="dm"><input type="text" class="sInput siW10 question" th:value="${question.question}" maxlength="100"></div>
+                        <input type="hidden" th:value="${question.id}" class="questionId">
+                        <input type="hidden" th:value="${question.options}" class="options">
+                        <div class="dd">
+                            <a href="javascript:;" class="editLink editLink01 editQuest" data-sum="03">编辑</a>
+                            <a href="javascript:;" class="deleteLink deleteLink01 deleteQuest">删除</a>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="addQuItem swt_but" data-sum="06"><strong>+</strong> 添加问卷题目</div>
+            </div>
+            <div class="dl textCent botMarTop">
+                <a href="javascript:;" class="btnAi c_gray  hover-shadow question-cancel">取 消</a>
+                <a href="javascript:;" class="btnAi c_red hover-shadow question-submit">保 存</a>
+            </div>
+        </div>
+    </section>
+</article>
+
+<!-- 添加问卷题目 -->
+<div class="codeLayer addTestQu addQuest" data-sum="06">
+    <div class="toptit">编辑问卷题<b class="close"></b></div>
+    <div class="layCon">
+        <div class="clearfix scroll40">
+            <input type="hidden" value="" id="questionId">
+            <div class="boxDl">
+                <div class="dt">题目类型</div>
+                <div class="dd">
+                    <select name="" id="mySelect" class="sInput fl w200">
+                        <option value="1" selected>单选题</option>
+                        <option value="2" >多选题</option>
+                        <option value="3" >问答题</option>
+                    </select>
+                </div>
+            </div>
+            <div class="boxDl">
+                <div class="dt">是否必填</div>
+                <div class="dd">
+                    <select name="" id="selectType" class="sInput fl w200">
+                        <option value="1" selected>是</option>
+                        <option value="0" >否</option>
+                    </select>
+                </div>
+            </div>
+            <div class="boxDl">
+                <div class="dt">问卷题内容</div>
+                <div class="dd"><textarea rows="2" id="qiTie" placeholder="请输入问卷题内容" class="sTexta siW10 question" maxlength="118"></textarea></div>
+            </div>
+            <div class="boxDl options-box">
+                <div class="dt">问卷题选项</div>
+                <div class="dd">
+                    <ul class="dd201841 dd201842">
+                        <li>
+                            <div class="lidt">
+                                <input type="hidden" class="optionId">
+                                <span class="fl" data-sequence="A">选项A：</span>
+                                <div class="fr">
+                                    <span  class="inbox">
+                                        <input type="text" class="sTexta siW10" placeholder="请输入选项内容" maxlength="34">
+                                    </span>
+                                    <a href="javascript:;" class="option-remove">删除</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="lidt">
+                                <input type="hidden" class="optionId">
+                                <span class="fl" data-sequence="B">选项B：</span>
+                                <div class="fr">
+                                    <span  class="inbox">
+                                        <input type="text" class="sTexta siW10" placeholder="请输入选项内容" maxlength="34">
+                                    </span>
+                                    <a href="javascript:;" class="option-remove">删除</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="lidt">
+                                <input type="hidden" class="optionId">
+                                <span class="fl" data-sequence="C">选项C：</span>
+                                <div class="fr">
+                                    <span  class="inbox">
+                                        <input type="text" class="sTexta siW10" placeholder="请输入选项内容" maxlength="34">
+                                    </span>
+                                    <a href="javascript:;" class="option-remove">删除</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="lidt">
+                                <input type="hidden" class="optionId">
+                                <span class="fl" data-sequence="D">选项D：</span>
+                                <div class="fr">
+                                    <span  class="inbox">
+                                        <input type="text" class="sTexta siW10" placeholder="请输入选项内容" maxlength="34">
+                                    </span>
+                                    <a href="javascript:;" class="option-remove">删除</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li><a href="javascript:;" class="addclass">+ 添加新的选项</a></li>
+                    </ul>
+                </div>
+            </div>
+            <input type="hidden" id="isEdit" class="isEdit" value="">
+            <input type="hidden" id="divIndex" class="divIndex" value="">
+        </div>
+        <div class="btnBox">
+            <a href="javascript:;" class="btnA but_none" data-sum="06">取 消</a>
+            <a href="javascript:;" class="btnB addDefine" data-sum="06">确 定</a>
+        </div>
+    </div>
+</div>
+<div class="codeLayerbj"></div>
+<script th:src="@{/assets/js/custom/common/selectAll.js}"></script>
+<script>
+    $(function () {
+        /**
+         *当是问答题时的事件
+         */
+        $("#mySelect").on("change", function () {
+            if($(this).val() == 3){
+                $(".options-box").hide();
+            }else{
+                $(".options-box").show();
+            }
+        })
+        // 设置if_eq方法
+        Handlebars.registerHelper('if_eq', function(v1, v2, opts) {
+            if(v1 == v2) {
+                return opts.fn(this);
+            }
+            else
+                return opts.inverse(this);
+        });
+        // 设置tf_type方法
+        Handlebars.registerHelper('tf_type', function(v1) {
+            if(v1 == 1) {
+                return "单选";
+            }else if(v1 == 2){
+                return "多选";
+            }else if(v1 == 3){
+                return "问答";
+            }else{
+                return "未定义";
+            }
+        });
+        // 设置tf_selectType方法
+        Handlebars.registerHelper('tf_selectType', function(v1) {
+            if(v1 == 1) {
+                return "必答";
+            }else if(v1 == 0){
+                return "选答";
+            }else{
+                return "未定义";
+            }
+        });
+
+        // 追加点击弹层的关闭按钮时触发事件
+        $(".close,.but_none").click(function(){
+            // 恢复初始值
+            var $parent =$(this).parents(".codeLayer");
+            $parent.find("input[type=hidden]").val('');
+            $parent.find("textarea").val('');
+            $parent.find("select").find("option").eq(0).prop("selected", true);
+            $parent.find("select#selectType").find("option").eq(0).prop("selected", true);
+            $(".options-box").show();
+            var source = $("#option-template").html();
+            var template = Handlebars.compile(source);
+            var templateHtml = template();
+            $parent.find(".options-box").html(templateHtml);
+        });
+
+        // 新增一个选项
+        $(".addQuest").on("click", ".addclass", function () {
+            var li_len = $(".dd201841 li").length;
+            if(li_len > 10){
+                layer.msg("选项不能超过10个！", {icon: 5});
+                return false;
+            }
+            var data = {
+                sequence: numToChar(li_len)
+            }
+            var source = $("#option-item").html();
+            var template = Handlebars.compile(source);
+            var templateHtml = template(data);
+            $(".addclass").parent("li").before(templateHtml);
+        })
+
+        // 删除选项，并排序
+        $(".options-box").on("click", ".option-remove", function () {
+            $(this).parents("li").remove();
+            optionSort();
+        })
+
+        // 排序，发现一个问题，jQuery用data-取值赋值时操作的是缓存，如果有取值和赋值操作，还是用attr
+        function optionSort() {
+            $(".dd201841 li").not(":last").each(function (index, element) {
+                var char = numToChar(index + 1);
+                $(this).find("span.fl").html("选项"+char+"：");
+                $(this).find("span.fl").attr("data-sequence", char);
+            });
+        }
+
+        /**
+         * 新增试卷模板
+         */
+        $(".addNew").on("click", function () {
+            layer.confirm('确认放弃当前模板？',function(index){
+                window.location = '/backend/resource/inves/temp/add';
+            });
+        })
+
+        /**
+         * 页面删除模板下的某条试题
+         */
+        $(".qubaCon").on("click", ".deleteQuest", function () {
+            var $this = $(this);
+            layer.confirm('确认删除？',function(index){
+                $this.parents(".quItem").remove();
+                layer.close(index);
+            });
+        })
+
+        /**
+         * 页面编辑模板下的某条试题
+         */
+        $(".qubaCon").on("click", ".editQuest", function () {
+            // 给模板赋值
+            var $item = $(this).parents(".quItem");
+            var type = $item.find(".type").data("type");
+            var selectType = $item.find(".selectType").data("select_type");
+            var question = $item.find(".question").val();
+            var questionId = $item.find(".questionId").val();
+            $("#mySelect").val(type);
+            $("#selectType").val(selectType);
+            $("#qiTie").val(question);
+            $("#questionId").val(questionId);
+            if(type == 3){
+                $(".options-box").hide();
+            }else{
+                // 解析选项集合
+                var options = JSON.parse($item.find(".options").val());
+                var source = $("#option-item-edit").html();
+                var template = Handlebars.compile(source);
+                var templateHtml = template(options);
+                $(".dd201841 li").not(":last").remove();
+                $(".addclass").parent("li").before(templateHtml);
+            }
+            $("#isEdit").val("edit");
+            $("#divIndex").val($(this).parents(".quItem").index());
+            $(".swt_but").trigger("click");
+        })
+
+        /**
+         * 新增试题到页面
+         */
+        $(".addQuest").on("click", ".addDefine", function () {
+            var $addQuest = $(this).parents(".addQuest");
+            var type = $addQuest.find("#mySelect").val();
+            var selectType = $addQuest.find("#selectType").val();
+            var question = $addQuest.find(".question").val();
+            if(isEmpty(question)){
+                layer.msg("请设置试题题干！", {icon: 5});
+                $addQuest.find(".question").focus();
+                return;
+            }
+            var questionId = $addQuest.find("#questionId").val();
+            // 单选、多选遍历得到选项
+            var options = [];
+            if(type != 3){
+                var flag = true;
+                $(".dd201841 li").not(":last").each(function (index, element) {
+                    var option = {};
+                    option.id = $(this).find("input[type=hidden]").val();
+                    option.type = type;
+                    var sequence = $(this).find("span.fl").attr("data-sequence");
+                    option.sequence = sequence;
+                    var content = $(this).find("input[type=text]").val();
+                    if(isEmpty(content)){
+                        flag = false;
+                        layer.msg("请设置选项"+sequence+"的内容！", {icon: 5});
+                        $(this).find("input[type=text]").focus();
+                        return false;
+                    }
+                    option.content = content;
+                    options.push(option);
+                })
+                if(!flag){
+                    return;
+                }
+                // 判断选项大小
+                if(options.length <= 0){
+                    layer.msg("请设置选项", {icon: 5});
+                    return;
+                }
+            }
+            var data = {
+                type: type,
+                selectType: selectType,
+                question: question,
+                options: JSON.stringify(options),
+                questionId: questionId
+            }
+            var source = $("#question-item").html();
+            var template = Handlebars.compile(source);
+            var templateHtml = template(data);
+
+            var isEdit = $addQuest.find(".isEdit").val();
+            if(isEdit == 'edit'){
+                var divIndex = $addQuest.find(".divIndex").val();
+                $(".questionBox").find(".quItem").eq(divIndex).replaceWith(templateHtml)
+            }else{
+                $(".questionBox").append(templateHtml);
+            }
+            $(".but_none").trigger("click");
+        })
+
+        /**
+         * 设置取消事件
+         */
+        $(".question-cancel").on("click", function () {
+            window.location = "/backend/resource/inves/temp/listPage";
+        })
+
+        /**
+         * 添加提交保存事件
+         */
+        $(".question-submit").on("click", function () {
+            var temp = {};
+            temp.id = $("#tempId").val();
+            var temp_name = $(".temp-name").val();
+            if(isEmpty(temp_name)){
+                layer.msg("请设置问卷模板名称！", {icon: 5});
+                $(".temp-name").focus();
+                return;
+            }
+            temp.name = $.trim(temp_name);
+
+            var questions = [];
+            var $questionBox = $(".questionBox").find(".quItem").not(":first");
+            var length = $questionBox.length;
+            if(length == 0){
+                layer.msg("请添加问卷模板试题！", {icon: 5});
+                $(".addQuItem").focus();
+                return;
+            }
+            var flag = true;
+            $questionBox.each(function (index, e) {
+                var quest = {};
+                quest.id = $(e).find("input.questionId").val();
+                var sequence = index + 1;
+                quest.sequence = sequence;
+                var type = $(e).find("span.selectTxt").data("type");
+                var selectType = $(e).find("span.selectTypeTxt").data("select_type");
+                quest.type = type;
+                quest.isRequired = selectType;
+                var question = $(e).find("input.question").val();
+                quest.question = question;
+                //添加选项
+                if(type != 3){
+                    var optionsStr = $(e).find("input.options").val();
+                    if(isEmpty(optionsStr)){
+                        layer.msg("请设置试题选项！", {icon: 5});
+                        flag = false;
+                        return false;
+                    }
+                    quest.options = JSON.parse(optionsStr);
+                }
+                questions.push(quest);
+            })
+            if(!flag){
+                return;
+            }
+            temp.questions = questions;
+            console.log(temp);
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: '/backend/resource/inves/temp/edit',
+                data: {
+                    data: JSON.stringify(temp)
+                },
+                success:function(data){
+                    if(data.message == "success"){
+                        layer.msg('修改成功!', {icon: 1});
+                        setTimeout("window.location = '/backend/resource/inves/temp/listPage'", 500);
+                    }else if(data.message == "same name"){
+                        layer.msg("修改失败！问卷模板名称重复！", {icon: 5});
+                        $(".temp-name").focus();
+                    }else{
+                        layer.msg("修改失败！"+data.message, {icon: 5});
+                        $(".temp-name").focus();
+                    }
+                },
+                error: function(){
+                    layer.msg("修改失败！", {icon: 5});
+                }
+            })
+        })
+
+    })
+</script>
+<script id="question-item" type="text/x-handlebars-template">
+    <div class="quItem quItem01 clearfix">
+        <div class="dt">
+            题目（<span class="selectTypeTxt selectType" data-select_type="{{selectType}}">{{tf_selectType selectType}}</span>）（<span class="selectTxt type" data-type="{{type}}">{{tf_type type}}</span>）
+        </div>
+        <div class="dm"><input type="text" class="sInput siW10 question" value="{{question}}" maxlength="100"></div>
+        <input type="hidden" value="{{questionId}}" class="questionId">
+        <input type="hidden" value="{{options}}" class="options">
+        <div class="dd">
+            <a href="javascript:;" class="editLink editLink01 editQuest" data-sum="06">编辑</a>
+            <a href="javascript:;" class="deleteLink deleteLink01 deleteQuest">删除</a>
+        </div>
+    </div>
+</script>
+<script id="option-item" type="text/x-handlebars-template">
+    <li>
+        <div class="lidt">
+            <input type="hidden" class="optionId">
+            <span class="fl" data-sequence="{{sequence}}">选项{{sequence}}：</span>
+            <div class="fr">
+                <span  class="inbox">
+                    <input type="text" class="sTexta siW10" placeholder="请输入选项内容" maxlength="34">
+                </span>
+                <a href="javascript:;" class="option-remove">删除</a>
+            </div>
+        </div>
+    </li>
+</script>
+<script id="option-item-edit" type="text/x-handlebars-template">
+    {{#each this}}
+    <li>
+        <div class="lidt">
+            <input type="hidden" class="optionId" value="{{id}}">
+            <span class="fl" data-sequence="{{sequence}}">选项{{sequence}}：</span>
+            <div class="fr">
+                <span  class="inbox">
+                    <input type="text" class="sTexta siW10" placeholder="请输入选项内容" maxlength="34" value="{{content}}">
+                </span>
+                <a href="javascript:;" class="option-remove">删除</a>
+            </div>
+        </div>
+    </li>
+    {{/each}}
+</script>
+<script id="option-template" type="text/x-handlebars-template">
+    <div class="dt">问卷题选项</div>
+    <div class="dd">
+        <ul class="dd201841 dd201842">
+            <li>
+                <div class="lidt">
+                    <input type="hidden" class="optionId">
+                    <span class="fl" data-sequence="A">选项A：</span>
+                    <div class="fr">
+                            <span  class="inbox">
+                                <input type="text" class="sTexta siW10" placeholder="请输入选项内容" maxlength="34">
+                            </span>
+                        <a href="javascript:;" class="option-remove">删除</a>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="lidt">
+                    <input type="hidden" class="optionId">
+                    <span class="fl" data-sequence="B">选项B：</span>
+                    <div class="fr">
+                            <span  class="inbox">
+                                <input type="text" class="sTexta siW10" placeholder="请输入选项内容" maxlength="34">
+                            </span>
+                        <a href="javascript:;" class="option-remove">删除</a>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="lidt">
+                    <input type="hidden" class="optionId">
+                    <span class="fl" data-sequence="C">选项C：</span>
+                    <div class="fr">
+                        <span  class="inbox">
+                            <input type="text" class="sTexta siW10" placeholder="请输入选项内容" maxlength="34">
+                        </span>
+                        <a href="javascript:;" class="option-remove">删除</a>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="lidt">
+                    <input type="hidden" class="optionId">
+                    <span class="fl" data-sequence="D">选项D：</span>
+                    <div class="fr">
+                        <span  class="inbox">
+                            <input type="text" class="sTexta siW10" placeholder="请输入选项内容" maxlength="34">
+                        </span>
+                        <a href="javascript:;" class="option-remove">删除</a>
+                    </div>
+                </div>
+            </li>
+            <li><a href="javascript:;" class="addclass">+ 添加新的选项</a></li>
+        </ul>
+    </div>
+</script>
+</body>
+</html>

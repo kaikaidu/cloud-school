@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.CourseDocMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.CourseDoc">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="course_id" jdbcType="INTEGER" property="courseId" />
+    <result column="doc_id" jdbcType="INTEGER" property="docId" />
+    <result column="is_shelve" jdbcType="SMALLINT" property="isShelve" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, course_id, doc_id, is_shelve
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_course_doc
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_course_doc
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.CourseDoc">
+    insert into t_course_doc (id, course_id, doc_id, 
+      is_shelve)
+    values (#{id,jdbcType=INTEGER}, #{courseId,jdbcType=INTEGER}, #{docId,jdbcType=INTEGER}, 
+      #{isShelve,jdbcType=SMALLINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.CourseDoc">
+    insert into t_course_doc
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="courseId != null">
+        course_id,
+      </if>
+      <if test="docId != null">
+        doc_id,
+      </if>
+      <if test="isShelve != null">
+        is_shelve,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="docId != null">
+        #{docId,jdbcType=INTEGER},
+      </if>
+      <if test="isShelve != null">
+        #{isShelve,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.CourseDoc">
+    update t_course_doc
+    <set>
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="docId != null">
+        doc_id = #{docId,jdbcType=INTEGER},
+      </if>
+      <if test="isShelve != null">
+        is_shelve = #{isShelve,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.CourseDoc">
+    update t_course_doc
+    set course_id = #{courseId,jdbcType=INTEGER},
+      doc_id = #{docId,jdbcType=INTEGER},
+      is_shelve = #{isShelve,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <delete id="deleteByDocs">
+    delete from t_course_doc where doc_id in
+    <foreach collection="docs" open="(" separator="," close=")" item="doc">
+      #{doc.id}
+    </foreach>
+  </delete>
+
+  <delete id="deleteByDoc">
+    delete from t_course_doc where doc_id = #{docId}
+  </delete>
+
+  <select id="countByCourseId" resultType="java.lang.Integer">
+    select count(0) from t_course_doc where course_id = #{courseId} AND doc_id is NOT NULL
+  </select>
+
+  <insert id="addCourseDocs">
+    INSERT into t_course_doc (course_id, doc_id) VALUES
+    <foreach collection="docIds" separator="," item="docId">
+      (#{courseId},#{docId})
+    </foreach>
+  </insert>
+  
+  <select id="selectDocIdsByCourse" resultType="java.lang.Integer">
+    SELECT doc_id from t_course_doc where course_id = #{courseId}
+  </select>
+  
+  <update id="updateShelveByCourseAndDoc">
+    update t_course_doc set is_shelve = #{shelve} where course_id = #{courseId} and doc_id IN
+    <foreach collection="docIds" open="(" separator="," close=")" item="docId">
+      #{docId}
+    </foreach>
+  </update>
+
+  <delete id="deleteByCourseAndDoc">
+    DELETE from t_course_doc where course_id = #{courseId} and doc_id IN
+    <foreach collection="docIds" open="(" separator="," close=")" item="docId">
+      #{docId}
+    </foreach>
+  </delete>
+
+  <select id="countByCourseIdAndShelve" resultType="Integer">
+      SELECT
+        COUNT (0)
+      FROM
+        t_course_doc
+      WHERE
+        course_id = #{courseId}
+      AND is_shelve = 1
+  </select>
+</mapper>

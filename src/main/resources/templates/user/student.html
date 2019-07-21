@@ -1,0 +1,111 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+
+<body>
+<!-- 一级菜单 -->
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+    <section class="wapmbx fl"><a href="#">用户管理</a><em></em><strong>学员管理</strong></section>
+    <!-- 二级菜单 -->
+    <section th:replace="common/common_menu  :: menu"></section>
+    <section class="conFl">
+        <div class="StuCon QuBaCon">
+            <div class="clearfix StuTle">
+                <div class="fl tleChe"><label></label><i class='input_style checkbox_bg'><input type="checkbox" name="selectAll" id="selectAll" value=""></i><label for="selectAll">全选</label></div>
+                <div class="fl search">
+                    <input type="search" class="ipnSearch" placeholder="请输入您要查找的学员姓名或安利卡号" id="name">
+                    <input type="button" value="搜 索" class="ipnBtn">
+                </div>
+                <div class="fr">
+                    <a href="javascript:deleteTeacher();" class="btnA">删 除</a>
+                </div>
+            </div>
+            <div class="tableWrap">
+                <div class="tableBox">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tbody>
+                        <tr id="user">
+                            <th>姓名</th>
+                            <th>安利卡号</th>
+                            <th>性别</th>
+                            <th>手机号码</th>
+                            <th>地址</th>
+                            <th>操作</th>
+                        </tr>
+                        <!-- 渲染数据 -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="page-box" id="testPager"></div>
+                <div class="padTB20" hidden><div class="m-style">搜索无结果！</div></div>
+            </div>
+        </div>
+
+    </section>
+</article>
+<!-- 编辑学员信息 str -->
+
+<div class="codeLayer addTestQu" data-sum="25">
+    <div class="toptit">编辑学员信息<b class="close"></b></div>
+    <div class="layCon layCon05">
+        <div class="clearfix">
+            <div class="boxDl">
+                <div class="dt">学员姓名</div>
+                <div class="dd"><span class="swt_span name"></span></div>
+            </div>
+            <div class="boxDl">
+                <div class="dt">性别</div>
+                <div class="dd"><span class="swt_span sex"></span></div>
+            </div>
+            <div class="boxDl">
+                <div class="dt">安利卡号</div>
+                <div class="dd"><span class="swt_span adaNumber">222222</span></div>
+            </div>
+            <div class="boxDl">
+                <div class="dt">手机号码</div>
+                <div class="dd"><input type="text" id="phone" placeholder="" class="sTexta siW10" maxlength="11"></div>
+            </div>
+            <div class="boxDl">
+                <div class="dt">所在区域</div>
+                <div class="dd">
+                    <select class="sInput fl w150 province" style="width: 149px;">
+                        <option id="province" value="">请选择</option>
+                    </select>
+                    <select class="sInput fl w150 city" style="width: 149px;">
+                        <option id="city" value="">请选择</option>
+                    </select>
+                    <select class="sInput fl w150 region" style="width: 149px;">
+                        <option id="region" value="">请选择</option>
+                    </select>
+                </div>
+            </div>
+            <div class="boxDl">
+                <div class="dt">详细地址</div>
+                <div class="dd"><input type="text" id="address" placeholder=""  class="sTexta siW10" maxlength="120"></div>
+            </div>
+
+        </div>
+        <div class="btnBox">
+            <a href="#" class="btnA but_none" data-sum="25">取 消</a>
+            <a href="#" class="btnB addDefine" data-sum="25">保 存</a>
+        </div>
+    </div>
+</div>
+<div class="codeLayerbj" ></div>
+<script th:src="@{/assets/js/util.js}"></script>
+<script th:src="@{/assets/js/custom/user/student.js}"></script>
+<script th:src="@{/assets/js/custom/common/handlebars.js}"></script>
+<!-- 学员删除提示框 -->
+<script id="student-remove-show" type="text/x-handlebars-template">
+    <div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">
+        {{#each this.nodels}}
+        【{{name}}】删除失败！已在课程中的学员不能删除！<br>
+        {{/each}}
+        {{#each this.dels}}
+        【{{name}}】删除成功！<br>
+        {{/each}}
+    </div>
+</script>
+</body>
+</html>

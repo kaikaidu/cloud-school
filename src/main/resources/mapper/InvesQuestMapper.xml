@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.InvesQuestMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.InvesQuest">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="question" jdbcType="VARCHAR" property="question" />
+    <result column="sequence" jdbcType="SMALLINT" property="sequence" />
+    <result column="temp_id" jdbcType="INTEGER" property="tempId" />
+    <result column="is_required" jdbcType="INTEGER" property="isRequired" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, type, question, sequence, temp_id,is_required
+  </sql>
+
+  <select id="selectInvesQuestByInvesId" resultMap="BaseResultMap" parameterType="Integer">
+    select
+    <include refid="Base_Column_List"/>
+    from t_inves_quest where temp_id = #{tempId}
+  </select>
+
+  <!-- 后台新增 -->
+
+  <insert id="insert" parameterType="com.amway.acti.model.InvesQuest" useGeneratedKeys="true" keyProperty="id">
+    insert into t_inves_quest (
+    type, question, sequence, temp_id,is_required
+    )
+    values (
+    #{type},
+    #{question},
+    #{sequence},
+    #{tempId},
+    #{isRequired}
+    )
+  </insert>
+
+  <insert id="batchInsert">
+    insert into t_inves_quest (
+    type, question, sequence, temp_id, is_required
+    )
+    values
+    <foreach collection="invesQuests" item="invesQuest" separator=",">
+      (
+      #{invesQuest.type},
+      #{invesQuest.question},
+      #{invesQuest.sequence},
+      #{invesQuest.tempId},
+      #{invesQuest.isRequired}
+      )
+    </foreach>
+  </insert>
+
+
+  <select id="selectById" parameterType="int" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_inves_quest WHERE id = #{id}
+  </select>
+
+  <select id="selectByTempId" parameterType="int" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_inves_quest WHERE temp_id = #{tempId}
+  </select>
+
+  <update id="update" parameterType="com.amway.acti.model.InvesQuest">
+    update t_inves_quest
+    set
+    type = #{type},
+    question = #{question},
+    sequence = #{sequence},
+    temp_id = #{tempId},
+    is_required = #{isRequired}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <delete id="deleteById" parameterType="int">
+    DELETE FROM t_inves_quest WHERE id = #{id}
+  </delete>
+
+  <delete id="deleteBytTempId" parameterType="int">
+    DELETE FROM t_inves_quest WHERE temp_id = #{tempId}
+  </delete>
+
+  <select id="selectIdsByTempId" parameterType="int" resultType="int">
+    SELECT id FROM t_inves_quest WHERE temp_id = #{tempId}
+  </select>
+
+  <select id="selectInfoByTempId" parameterType="int" resultType="java.util.HashMap">
+    SELECT
+     * ,
+     case
+        WHEN (is_required = 0) then '选答'
+        when (is_required = 1) then '必答'
+        else '未定义'
+    end is_required_show
+     FROM t_inves_quest WHERE temp_id = #{tempId}
+  </select>
+
+  <select id="selectRequiredIdsByPaperId" parameterType="int" resultType="int">
+    SELECT id FROM t_inves_quest WHERE temp_id = (
+        SELECT temp_id FROM t_inves_paper WHERE id = #{paperId}
+    ) AND is_required = 1
+  </select>
+
+</mapper>

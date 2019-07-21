@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+</head>
+
+<body>
+<header th:replace="common/common_header :: header"></header>
+
+<!--jeDate-->
+<link type="text/css" rel="stylesheet" th:src="@{/assets/js/jeDate/jeDate-test.css}">
+<link type="text/css" rel="stylesheet" th:src="@{/assets/js/jeDate/skin/jedate.css}">
+<script type="text/javascript" th:src="@{/assets/js/jeDate/jquery.jedate.js}"></script>
+<script type="text/javascript" th:src="@{/assets/js/jeDate/jedateTest.js}"></script>
+
+<script th:src="@{/assets/js/custom/course/courseManage.js}"></script>
+<script th:src="@{/assets/js/custom/course/coursePreview.js}"></script>
+<script th:src="@{/assets/js/custom/common/handlebars.js}"></script>
+<script th:src="@{/assets/js/pagination/jquery.pagination.js}"></script>
+<script type="text/javascript" th:src="@{/assets/js/custom/common/date.js}"></script>
+<style>
+	:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+		color: #222222; opacity:1;
+	}
+
+	::-moz-placeholder { /* Mozilla Firefox 19+ */
+		color: #222222;opacity:1;
+	}
+
+	input:-ms-input-placeholder{
+		color: #222222;opacity:1;
+	}
+
+	input::-webkit-input-placeholder{
+		color: #222222;opacity:1;
+	}
+</style>
+<article class="widthWp mainWrap">
+	<section class="conFl conWid">
+		<div class="StuCon">
+			
+			<div class="clearfix StuTle">
+				<div class="fl tleChe"><label></label><i class='input_style checkbox_bg'><input type="checkbox" name="selectAll" id="selectAll" value=""></i><label for="selectAll">全选</label></div>
+				<div class="fl search"><input type="search" class="ipnSearch" placeholder="请输入您要查找课程名称的关键字" id="selectTitle"><input type="button" value="搜 索" class="ipnBtn" id="searchBtn"></div>
+				<div class="fr">
+				<a href="#" class="btnA" id="shelfBatchBtn">发 布</a>
+				<a href="#" class="btnA" id="offShelfBatchBtn">未发布</a>
+				<a href="#" class="btnA" id="deleteBatchBtn">删 除</a>
+				<a href="#" class="btnB">创建课程</a>
+				</div>
+				</div>
+			</div>
+			<div class="tableWrap">
+				<div class="tableBox">
+			  	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				  <tbody id="courseList">
+					<tr>
+					  <th width="170px">课程名称</th>
+					  <th>
+					  <!--<div class="jeinpbox jeinpbox12"><input type="text" class="jeinput" id="multi01" placeholder="创建时间" name="selectType"></div>-->
+						  <select class="stySelS" id="ctorder" name="selectType">
+							  <option selected th:value="null">创建时间</option>
+							  <option th:value="2">最新发布</option>
+							  <option th:value="1">最早发布</option>
+						  </select>
+					  </th>
+					  <th>
+					  	<div class="jeinpbox jeinpbox12"><input type="text" class="jeinput" id="multi02" placeholder="开始时间" name="selectType"></div>
+					  </th>
+					  <th>
+					  	<div class="jeinpbox jeinpbox12"><input type="text" class="jeinput" id="multi03" placeholder="结束时间" name="selectType"></div>
+					  </th>
+					  <th width="100px">
+						  <select class="stySelS" id="selectLabel" name="selectType" style="width: 90px">
+							  <option selected th:value="null">标签</option>
+							  <!--<option th:value="null">全部</option>-->
+							  <option th:each="label:${labels}" th:value="${label.id}" th:text="${label.name}"></option>
+						  </select>
+					  </th>
+					  <th>
+					  	<select class="stySelS" id="selectShelve" name="selectType">
+							<option selected th:value="null">课程状态</option>
+							<option th:value="1">已发布</option>
+							<option th:value="0">未发布</option>
+						</select>
+					  </th>
+					  <th>操作</th>
+					  <th width="55px">创建人</th>
+					</tr>
+				  </tbody>
+				</table>
+				</div>
+				<div class="page-box" id="courseListPage"></div>
+			</div>
+	</section>
+</article>
+
+<!---预览-->
+<div class="codeLayer addTestQu " data-sum="30" >
+	<div class="toptit">预览<b class="close"></b></div>
+	<div class="layCon layCon01" style="height: 450px; overflow-y: auto;">
+		<div class="PreWrap clearfix" id="coursePreview">
+
+		</div>
+		<div class="w_yl_comwap">
+			<ul class="w_yl_com_bt">
+				<li class="cur" id="signUp">签到</li>
+				<li id="certSetting">证书设置</li>
+				<li id="inves">问卷调查</li>
+				<li id="testOnline">在线测试</li>
+				<li id="draw">抽签</li>
+				<li id="score">评分</li>
+				<li id="doc">课程资料</li>
+			</ul>
+			<div class="w_yl_com00">
+				<div class="w_yl_com" style="display: block;">
+					<table width="100%" border="0" cellspacing="0" cellpadding="0" ><!--class="tableScr"-->
+						<tbody id="signUpList">
+						<tr>
+							<th>姓名</th>
+							<th>安利卡号</th>
+							<th>性别</th>
+							<th>上课状态</th>
+						</tr>
+						</tbody>
+					</table>
+					<div class="page-box" id="signUpPage"></div>
+				</div>
+				<div class="w_yl_com" >
+					<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+						<tbody id="certSettingList">
+						<tr>
+							<th>学员姓名</th>
+							<th>安利卡号</th>
+							<th>性别</th>
+							<th>报名状态</th>
+							<th>通过状态</th>
+							<th>证书状态</th>
+						</tr>
+						</tbody>
+					</table>
+					<div class="page-box" id="certSettingPage"></div>
+				</div>
+				<!-- w_yl_com  end-->
+				<div class="w_yl_com">
+					<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+						<tbody id="invesList">
+						<tr>
+							<th>问卷名称</th>
+							<th>状态</th>
+						</tr>
+						</tbody>
+					</table>
+					<div class="page-box" id="invesPage"></div>
+				</div>
+				<!-- w_yl_com  end-->
+				<div class="w_yl_com">
+					<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+						<tbody id="testOnlineList">
+						<tr>
+							<th>测试卷名称</th>
+							<th>状态</th>
+						</tr>
+						</tbody>
+					</table>
+					<div class="page-box" id="testOnlinePage"></div>
+				</div>
+				<!-- w_yl_com  end-->
+				<div class="w_yl_com" >
+					<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+						<tbody id="drawList">
+						<tr>
+							<th>班级名称</th>
+							<th>讲师</th>
+							<th>演讲序号</th>
+							<th>演讲内容</th>
+							<th>安利卡号</th>
+							<th>姓名</th>
+							<th>性别</th>
+						</tr>
+						</tbody>
+					</table>
+					<div class="page-box" id="drawPage"></div>
+				</div>
+				<!-- w_yl_com  end-->
+				<div class="w_yl_com" >
+					<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+						<tbody id="scoreList">
+						<tr>
+							<th>学员姓名</th>
+							<th>安利卡号</th>
+							<th>性别</th>
+							<th>状态</th>
+							<th>得分</th>
+						</tr>
+						</tbody>
+					</table>
+					<div class="page-box" id="scorePage"></div>
+				</div>
+				<!-- w_yl_com  end-->
+				<div class="w_yl_com" >
+					<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+						<tbody id="docList">
+						<tr>
+							<th>资料名称</th>
+							<th>创建时间</th>
+							<th>资料类型</th>
+							<th>资料来源</th>
+							<th>状态</th>
+						</tr>
+						</tbody>
+					</table>
+					<div class="page-box" id="docPage"></div>
+				</div>
+				<!-- w_yl_com  end-->
+
+			</div>
+		</div>
+		<div class="btnBox">
+			<a href="#" class="btnA but_none" data-sum="30">关 闭</a>
+		</div>
+	</div>
+</div>
+
+<div class="codeLayerbj"></div>
+
+    <script>
+        $(".btnB").on("click",function () {
+            window.location.href = "/backend/course/basic";
+        })
+
+    </script>
+	<script id="courseListTemplate" type="text/x-handlebars-template">
+		{{#each dataList}}
+		<tr>
+			<td>
+				<span class="w12 courseM-td" title="{{title}}">
+					<i class='input_style checkbox_bg'><input type="checkbox" name="ids" value="" data-id="{{courseId}}"></i>
+					{{title}}
+				</span>
+			</td>
+			<td>{{createTime}}</td>
+			<td>{{startTime}}</td>
+			<td>{{endTime}}</td>
+			<td>
+				<span class="w4 courseM-td" title="{{label}}">
+					{{label}}
+				</span>
+			</td>
+			{{#if shelve}}
+			<td><span class="ct_green">已发布</span></td>
+			{{else}}
+			<td><span class="ct_red">未发布</span></td>
+			{{/if}}
+			<td class="mar10"><a class="swt_but" data-sum="30">预览</a><a href="#" name="editBtn" >编辑</a><a href="#" name="deleteBtn">删除</a></td>
+			<td><span class="w4 courseM-td" title="{{createMan}}">{{createMan}}</span></td>
+		</tr>
+		{{/each}}
+	</script>
+
+	<script id="coursePreviewTemplate" type="text/x-handlebars-template">
+		<div id="courseId1" hidden>{{courseId}}</div>
+		<div class="clearfix boxHd bjG">
+			<div class="">报名人数：{{applyNum}}人</div>
+			<div class="">点赞人数：{{agreeNum}}人</div>
+		</div>
+		<div class="boxDl">
+			<div class="dt">课程名称：</div>
+			<div class="dd"><p class="w_p">{{title}}</p></div>
+		</div>
+		<div class="boxDl">
+			<div class="dt">课程概述：</div>
+			<div class="dd"><p class="w_p">{{description}}</p></div>
+		</div>
+		<div class="boxDl">
+			<div class="dt">上传课程配图：</div>
+			<div class="dd"><div class="fl w_p w_img"><img src="{{picture}}" alt="" class=""></div></div>
+		</div>
+		<div class="boxDl">
+			<div class="dt">上课时间开始：</div>
+			<div class="dd"><p class="w_p">{{startTime}}</p></div>
+		</div>
+		<div class="boxDl">
+			<div class="dt">上课时间结束：</div>
+			<div class="dd"><p class="w_p">{{endTime}}</p></div>
+		</div>
+		<div class="boxDl">
+			<div class="dt">课程标签：</div>
+			<div class="dd"><p class="w_p">{{label}}</p></div>
+		</div>
+		<div class="boxDl">
+			<div class="dt">课程代码：</div>
+			<div class="dd"><p class="w_p">{{code}}</p></div>
+		</div>
+		<div class="boxDl">
+			<div class="dt">讲师：</div>
+			<div class="dd"><p class="w_p">{{formatTeachers teachers}}</p></div>
+		</div>
+		<div class="boxDl">
+			<div class="dt">助教：</div>
+			<div class="dd"><p class="w_p">{{formatTeachers assists}}</p></div>
+		</div>
+		<div class="boxDl">
+			<div class="dt">上课地点：</div>
+			<div class="dd"><p class="w_p">{{address}}</p></div>
+		</div>
+		<div class="boxDl">
+			<div class="dt">学习群二维码：</div>
+			<div class="dd"><div class="fl w_p w_iewm"><img src="{{qrCode}}" alt="" class=""></div></div>
+		</div>
+		<div class="boxDl">
+			<div class="dt">是否允许分享：</div>
+			<div class="dd"><p class="w_p">
+				{{#if isShare}}是
+				{{else}}否
+				{{/if}}
+			</p></div>
+		</div>
+		<div class="boxDl">
+			<div class="dt">报名时间设置：</div>
+			<div class="dd"><p class="w_p">
+				{{#if signStartTime}}从{{signStartTime}}到{{signEndTime}}
+				{{else}}
+				{{/if}}
+			</p></div>
+		</div>
+		<div class="boxDl">
+			<div class="dt">报名人数设置：</div>
+			<div class="dd"><p class="w_p">
+				{{#if applyMaxNum}}{{applyMaxNum}}人
+				{{else}}
+				{{/if}}
+			</p></div>
+		</div>
+		<div class="boxDl">
+			<div class="dt">直播链接地址：</div>
+			<div class="dd"><p class="w_p"><a href="www.znibo.com"  target="_blank">{{liveUrl}}</a></p></div>
+		</div>
+    </script>
+
+	<script id="signUpListTemplate" type="text/x-handlebars-template">
+		{{#each this}}
+		<tr>
+			<td>{{name}}</td>
+			<td>{{adaNumber}}</td>
+			<td>{{sex}}</td>
+			<td>{{registerStatus}}</td>
+		</tr>
+		{{/each}}
+	</script>
+
+	<script id="testOnlineTemplate" type="text/x-handlebars-template">
+		{{#each list}}
+		<tr>
+			<td>{{name}}</td>
+			<td>{{tf_state state}}</td>
+		</tr>
+		{{/each}}
+	</script>
+
+	<script id="docListTemplate" type="text/x-handlebars-template">
+		{{#each list}}
+		<tr>
+			<td>{{subStr 10 name}}</td>
+			<td>{{formatDate 'yyyy-MM-dd HH:mm:ss' createTime}}</td>
+			<td>{{transformType type}}</td>
+			<td>{{addType addType}}</td>
+			<td>
+				{{#if isShelve}}上架
+				{{else}}下架
+				{{/if}}
+			</td>
+		</tr>
+		{{/each}}
+	</script>
+
+	<script id="drawListTemplate" type="text/x-handlebars-template">
+		{{#each this}}
+        <tr>
+			<td>{{className}}</td>
+			<td><span class="w4 courseM-td" title="{{teacher}}">{{teacher}}</span></td>
+			<td>{{code}}</td>
+			<td><span class="w4 courseM-td" title="{{content}}">{{content}}</span></td>
+			<td>{{adaNumber}}</td>
+			<td><span class="w4 courseM-td" title="{{student}}">{{student}}</span></td>
+			<td>{{sex}}</td>
+        </tr>
+		{{/each}}
+	</script>
+
+	<script id="invesTemplate" type="text/x-handlebars-template">
+		{{#each list}}
+		<tr>
+			<td>{{name}}</td>
+			<td>{{tf_state state}}</td>
+		</tr>
+		{{/each}}
+	</script>
+
+	<script id="scoreTemplate" type="text/x-handlebars-template">
+		{{#each this}}
+		<tr>
+			<td>{{name}}</td>
+			<td>{{adaNumber}}</td>
+			<td>{{sex}}</td>
+			<td>{{status}}</td>
+			<td>{{score}}</td>
+		</tr>
+		{{/each}}
+	</script>
+
+	<script id="certSettingTemplate" type="text/x-handlebars-template">
+		{{#each this}}
+		<tr>
+			<td>{{name}}</td>
+			<td>{{adaNumber}}</td>
+			<td>{{sexName}}</td>
+			<td>{{signStateName}}</td>
+			<td>{{viaStateName}}</td>
+			<td>{{awardStateName}}</td>
+		</tr>
+		{{/each}}
+	</script>
+
+<script id="course-no-content" type="text/x-handlebars-template">
+	<div class="padTB20 no-content"><div class="m-style">搜索无结果！</div></div>
+</script>
+</body>
+</html>

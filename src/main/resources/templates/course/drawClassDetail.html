@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+<body>
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+	<section class="wapmbx fl"><a href="javascript">课程管理</a><em></em><strong>演讲抽签</strong></section>
+	<section th:replace="common/common_menu  :: menu"></section>
+	<input type="hidden" th:value="${courseId}" id="courseId">
+	<input type="hidden" th:value="${isAssignClass}" id="isAssignClass">
+	<section class="conFl">
+		<div class="StuCon">
+			<div class="squadTable bjG padd10 mart10">
+				<div class="linH30 fontblod">班级信息：</div>
+				<div class="tableBox">
+					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					  <tbody id="showDetail">
+						<tr>
+						  <th width="20%">班级</th>
+						  <th width="24%">班级人数</th>
+						  <th width="24%">讲师</th>
+						  <th width="32%">演讲主题</th>
+						</tr>
+
+					  </tbody>
+					</table>
+				</div>
+			</div>
+			<div class="dl textCent botMarTop">
+				<a href="javascript:;" class="btnAi c_red hover-shadow drawImmediately">立即抽签</a>
+			</div>
+		</div>
+	</section>
+</article>
+   
+<!-- 分配讲师 -->
+<div class="codeLayer addTestQu SLecturer teacList" data-sum="611">
+	<div class="toptit">讲师列表<b class="close"></b></div>
+	<div class="layCon">
+		<div class="clearfix scroll402" >
+			<div class="search"><input type="search" class="ipnSearch" placeholder="请输入您要查找的讲师姓名"><input type="button" value="搜 索" class="ipnBtn"></div>
+			<div class="lectuList">
+				<ul id="teacherList">
+
+				</ul>
+			</div>
+		</div>	
+		<div class="btnBox">
+			<a href="javascript:;" class="btnA but_none" data-sum="18">取 消</a>
+			<a href="javascript:;" class="btnB but_yes saveTeac" data-sum="18">确 定</a>
+		</div>
+	</div>
+</div>
+
+<!-- 创建演讲 -->
+<div class="codeLayer addTestQu SLecturer sub" data-sum="621">
+	<div class="toptit">演讲主题列表<b class="close"></b></div>
+	<div class="layCon">
+		<div class="clearfix scroll401">
+			<div class="SpeechTx " id="SpeechTxDetail">
+
+			</div>
+		</div>	
+		<div class="btnBox">
+			<a href="javascript:;" class="btnA but_none" data-sum="18">取 消</a>
+			<a href="javascript:;" class="btnB but_yes saveSub" data-sum="18">确 定</a>
+		</div>
+	</div>
+</div>
+<div class="codeLayerbj"></div>
+
+<div class="codeLayer addTestQu SLecturer show" data-sum="621">
+	<div class="toptit">提示<b class="close"></b></div>
+	<div class="layCon">
+		<div class="clearfix scroll401">
+			<div>
+				<span>很抱歉,目前还没有班级,请先设置分班</span>
+			</div>
+		</div>
+		<div class="btnBox">
+			<a href="javascript:;" class="btnB but_yes showConfirm" data-sum="18">确 定</a>
+		</div>
+	</div>
+</div>
+
+<script id="classDetail" type="text/x-handlebars-template">
+	{{#each this}}
+	<tr>
+		<input type="hidden" value="{{id}}">
+		<td>{{name}}</td>
+		<td>{{number}}</td>
+		{{#compare isAssignTeac}}
+		<td>
+			<a href="javascript:;" class="View_le swt_but teac" data-sum="0">分配讲师</a>
+		</td>
+		{{else}}
+		<td>
+			<a href="javascript:;" class="View_le swt_but teac" data-sum="1">查看编辑讲师</a>
+		</td>
+		{{/compare}}
+		{{#compare isCreateSub}}
+		<td>
+			<a href="javascript:;" class="View_le swt_but Sub" data-sum="621">创建演讲主题</a>
+		</td>
+		{{else}}
+		<td>
+			<a href="javascript:;" class="View_le swt_but Sub" data-sum="621">查看编辑演讲主题</a>
+		</td>
+		{{/compare}}
+	</tr>
+	{{/each}}
+</script>
+
+<script id="showOrAddSub" type="text/x-handlebars-template">
+	{{#each this}}
+    <div class="linH30 proCe2 clearfix">
+		<span class="tiDt fontblod">演讲序号{{addOne @index}}：</span>
+		<span class="TiDd">
+			<input type="hidden" class="classDrawId" value="{{id}}">
+			<input type="hidden" class="order" value="{{addOne @index}}">
+			<textarea rows="2" placeholder="请输入演讲内容" class="sTexta siW10" maxlength="1000">{{content}}</textarea>
+		</span>
+	</div>
+	{{/each}}
+</script>
+
+<script id="showOrAddTeac" type="text/x-handlebars-template">
+	{{#each this}}
+		<li>
+			{{#if selected}}
+                <i class='input_style checkbox_bg_check '>
+                    <input type="checkbox" name="ids" value="{{id}}" checked>
+                </i><label>{{name}}</label>
+             {{else if assign}}
+                <i class='input_style checkbox_bg checkbox_bg_dised' >
+                    <input type="checkbox" name="ids" value="{{id}}">
+                </i><label>{{name}}</label>
+            {{else}}
+                <i class='input_style checkbox_bg'>
+                    <input type="checkbox" name="ids" value="{{id}}">
+                </i><label>{{name}}</label>
+			{{/if}}
+		</li>
+	{{/each}}
+</script>
+<script th:src="@{/assets/js/custom/course/drawClassDetail.js}"></script>
+</body>
+</html>

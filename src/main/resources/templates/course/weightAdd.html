@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+<body>
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+	<section class="wapmbx fl"><a href="/backend/course/courseManage">课程管理</a><em></em><strong>评分管理</strong></section>
+	<section th:replace="common/common_menu  :: menu"></section>
+	<input type="hidden" th:value="${courseId}" id="courseId">
+	<section class="conFl">
+		<div class="StuCon QuBaCon">
+			<div class="subNavTab">
+				<ul>
+					<li class="curr"><a th:href="@{/backend/course/weight/weighIndex(courseId=${courseId})}">新建评分</a></li>
+					<li><a th:href="@{/backend/course/weight/forwardWeightList(courseId=${courseId})}">评分结果</a></li></ul>
+			</div>
+			<div class="squadHd bjG padd10 mart10">
+				<div class="linH30 clearfix boxDl"><div class="dt">评分模板：</div><div class="dd" id="otherTemp"><a href="javascript:;" class="btnUp quSel" id="choose" data-sum="20">选 择</a></div></div>
+				<div class="linH30 clearfix boxDl"><div class="dt">评分权重设置：</div>
+					<div class="dd" id="weight">
+						<div class="ddCla"><span>学员</span><select name="stu" id="stu"  class="selectSy30"></select></div>
+						<div class="ddCla"><span>讲师</span><select name="teac" id="teac"  class="selectSy30"></select></div>
+					</div>
+				</div>
+				<div class="linH30 clearfix boxDl">
+					<div class="dt">发布状态：</div>
+					<div class="dd">
+						<select class="selectSy30" id="isRelease">
+							<option value="0">下架</option>
+							<option value="1">上架</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="dl textCent botMarTop">
+				<a href="javascript:;" class="btnAi c_red hover-shadow">保 存</a>
+			</div>
+		</div>
+	</section>
+</article>
+
+<!-- 试卷题库 -->
+<div class="codeLayer addTestQu quLibrL" data-sum="20">
+	<div class="toptit">选择评分题库<b class="close"></b></div>
+	<div class="layCon">
+		<div class="clearfix">
+			<div class="padTB20">
+				<div class="search"><input type="search" class="ipnSearch" placeholder="请输入您要查找的评分模板名称"><input type="button" value="搜 索" class="ipnBtn"></div>
+			</div>
+			<div class="tableBox tabltHdbj">
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tbody id="list">
+					<tr>
+						<th>评分模板名称</th>
+						<th>
+							<select  id="createTimeType" name="createTimeType" class="stySelS">
+								<option selected value="">创建时间</option>
+								<option value="0">最新发布</option>
+								<option value="1">最早发布</option>
+							</select></th>
+						<th>操作</th>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="page-box" id="weightAddPager"></div>
+		</div>
+		<div class="btnBox">
+			<a href="javascript:;" class="btnA but_none" data-sum="19">取 消</a>
+			<a href="javascript:;" class="btnB but_yes" data-sum="19">确 定</a>
+		</div>
+	</div>
+</div>
+<div class="codeLayerbj"></div>
+
+<!---预览-->
+<div class="codeLayer codeLayer2 " data-sum="07">
+	<div class="toptit">预览<b class="close"></b></div>
+	<div class="layCon layCon01">
+		<div class="clearfix temp_view">
+
+		</div>
+		<div class="btnBox">
+			<a href="#" class="btnA but_none" data-sum="0301">关闭</a>
+		</div>
+	</div>
+</div>
+<div class="codeLayerbj2"></div>
+
+<script id="temp" type="text/x-handlebars-template">
+	{{#each this}}
+	<tr>
+		<td><i class='input_style radio_bg'>
+			<input type="hidden" value="{{id}}" id="tempId">
+			<input type="radio" value="{{name}}" name="identity" id="name"></i>{{name}}</td>
+		<td>{{formatDate 'yyyy-MM-dd' createTime}}</td>
+		<td><a href="javascript:;" class="swt_but2" data-sum="07">预览</a></td>
+	</tr>
+	{{/each}}
+</script>
+
+<script id="temp_pre" type="text/x-handlebars-template">
+	<div class="box_wbt">{{name}}</div>
+	<ul class="QuWlyli textLeft">
+		{{#each this}}
+		<li>{{addOne @index}}.（{{rate}}%）{{question}}</li>
+		{{/each}}
+	</ul>
+</script>
+
+<script id="chooseOther" type="text/x-handlebars-template">
+	<input type="hidden" value="{{sitemTempId}}" id="sitemTempId">
+	<span class="tit">{{name}}</span>
+	<a href="javascript:;" id="other" class="btnUp quSel swt_but" data-sum="20">重新选择</a>
+</script>
+<script id="weightAdd-no-content" type="text/x-handlebars-template">
+	<div class="padTB20 no-content"><div class="m-style">搜索无结果！</div></div>
+</script>
+<script th:src="@{/assets/js/custom/course/weightAdd.js}"></script>
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+
+<body>
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+    <section class="wapmbx fl"><a href="javascript:;">课程管理</a><em></em><strong>问卷调查</strong></section>
+
+    <section th:replace="common/common_menu  :: menu"></section>
+
+    <section class="conFl">
+        <div class="StuCon QuBaCon">
+            <div class="subNavTab">
+                <ul><li class=""><a th:href="@{/backend/course/inves/online/listPage(courseId=${courseId})}">新建问卷</a></li><li class="curr"><a th:href="@{/backend/course/inves/result/listPage(courseId=${courseId})}">问卷结果</a></li></ul>
+            </div>
+            <div class="clearfix">
+                <div class="clearfix StuTle">
+                    <div class="fl search" style="margin-left: 0">
+                        <input type="search" class="ipnSearch" placeholder="请输入您要查找的学员姓名或安利卡号">
+                        <input type="button" value="搜 索" class="ipnBtn"></div>
+                    <div class="fr">
+                        <a th:href="@{/backend/course/inves/result/export(courseId=${courseId})}" class="btnB">批量导出</a>
+                    </div>
+                </div>
+            </div>
+            <div class="tableWrap">
+                <div class="tableBox">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tbody class="list">
+                        <tr>
+                            <th>学员姓名</th>
+                            <th>安利卡号</th>
+                            <th>
+                                <select name="select4" class="stySelS select-sex">
+                                    <option  selected value="2">性别</option>
+                                    <option value="0">男</option>
+                                    <option value="1">女</option>
+                                </select>
+                            </th>
+                            <th width="100px"><select name="select" class="stySelS select-paper" style="width: 100px">
+                                <option  value="0" selected>问卷名称</option>
+                                <option th:each="invesPaper, state : ${invesPapers}" th:value="${invesPaper.id}" th:text="${invesPaper.name}"></option>
+                            </select></th>
+                            <th><select name="select2" class="stySelS select-state">
+                                <option  value="2" selected>状态</option>
+                                <option value="1">已完成</option>
+                                <option value="0">未完成</option>
+                            </select></th>
+                            <th>完成日期</th>
+                            <th>操作</th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="page-box" id="resultPager"></div>
+            </div>
+        </div>
+
+    </section>
+</article>
+
+
+<!-- 问卷题库 -->
+<div class="codeLayer addTestQu w_wenjuan_end" data-sum="17">
+    <div class="toptit">查看问卷题结果<b class="close"></b></div>
+    <div class="layCon layCon01">
+        <div class="clearfix scroll40 view">
+
+        </div>
+        <div class="btnBox">
+            <a href="javascript:;" class="btnB but_none" data-sum="17">关闭</a>
+        </div>
+    </div>
+</div>
+<div class="codeLayerbj"></div>
+<script>
+    $(function () {
+        $("tbody").on("click", "input[type=checkbox]", function () {
+            return false;
+        })
+        $("tbody").on("click", "input[type=radio]", function () {
+            return false;
+        })
+        /*<![CDATA[*/
+        var courseId = [[${courseId}]];
+        /*]]>*/
+
+        // 设置tf_sex方法
+        Handlebars.registerHelper('tf_sex', function(v1) {
+            if(v1 == 0){
+                return "男";
+            }else if(v1 == 1){
+                return "女";
+            }else{
+                return "未定义";
+            }
+        });
+
+        // 设置tf_state_class方法
+        Handlebars.registerHelper('tf_state_class', function(v1) {
+            if(v1 == 0){
+                return "ct_red";
+            }else if(v1 == 1){
+                return "ct_green";
+            }else{
+                return "未定义";
+            }
+        });
+
+        // 设置tf_state方法
+        Handlebars.registerHelper('tf_state', function(v1) {
+            if(v1 == 0){
+                return "未完成";
+            }else if(v1 == 1){
+                return "已完成";
+            }else{
+                return "未定义";
+            }
+        });
+
+        // 设置tf_type方法
+        Handlebars.registerHelper('tf_type', function(v1) {
+            if(v1 == 1){
+                return "单选题";
+            }else if(v1 == 2){
+                return "多选题";
+            }else if(v1 == 3){
+                return "问答题";
+            }else{
+                return "未定义";
+            }
+        });
+
+        // 设置tf_isRequired方法
+        Handlebars.registerHelper('tf_isRequired', function(v1) {
+            if(v1 == 0){
+                return "选答";
+            }else if(v1 == 1) {
+                return "必答";
+            }else{
+                return "未定义";
+            }
+        });
+
+        Handlebars.registerHelper('if_eq', function(v1, v2, opts) {
+            if(v1 == v2)
+                return opts.fn(this);
+            else
+                return opts.inverse(this);
+        });
+
+        Handlebars.registerHelper('getTime', function (v) {
+            if(!v){
+                return '';
+            }
+            return msecToDate2(v);
+        })
+
+        $('pre code').each(function (i, block) {
+            hljs.highlightBlock(block);
+        });
+
+        // 初始查询数据
+        search();
+
+        // 绑定查询按钮事件
+        $(".ipnBtn").on("click", function () {
+            search();
+        });
+
+        // 绑定排序select事件
+        $(".stySelS").change(function () {
+            search();
+        })
+
+        // 分页查询方法
+        function search() {
+            var search = $(".ipnSearch").val();
+            var sex = $(".select-sex").find("option:selected").attr("value");
+            var paperId = $(".select-paper").find("option:selected").attr("value");
+            var state = $(".select-state").find("option:selected").attr("value");
+            initPager(courseId, search, sex, paperId, state, 8);
+        }
+
+        /**
+         * 数据查询
+         * @param pageNo
+         * @param pageSize
+         */
+        function dataQuery(courseId, search, sex, paperId, state, pageNo, pageSize) {
+            $.ajax({
+                type: 'GET',
+                dataType: 'json',
+                data:{
+                    courseId: courseId,
+                    search: search,
+                    sex: sex,
+                    paperId: paperId,
+                    state: state,
+                    pageNo: pageNo,
+                    pageSize: pageSize
+                },
+                url: '/backend/course/inves/result/list',
+                success: function (data) {
+                    if(data.message == "success"){
+                        $("tbody.list tr").eq(0).siblings().remove();
+                        $(".padTB20").remove();
+                        if(data.data.length ==0){
+                            $(".tableBox").after($("#no-content").html());
+                            $("#resultPager").hide();
+                        }else {
+                            $("#resultPager").show();
+                            var source = $("#result-list").html();
+                            var template = Handlebars.compile(source);
+                            var templateHtml = template(data.data);
+                            $("tbody.list").append(templateHtml);
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * 初始化分页插件
+         * @param pageSize
+         */
+        function initPager(courseId, search, sex, paperId, state, pageSize){
+            //调用分页
+            laypage.render({
+                elem: 'resultPager',
+                count: getTotalData(courseId, search, sex, paperId, state),
+                limit: pageSize,
+                theme: '#1962a9',
+                jump: function(obj, first){
+                    dataQuery(courseId, search, sex, paperId, state, obj.curr, pageSize);
+                }
+            });
+        }
+
+        /**
+         * 第一次查询总数
+         * @returns {number}
+         */
+        function getTotalData(courseId, search, sex, paperId, state) {
+            var count = 0;
+            $.ajax({
+                type: 'GET',
+                dataType: 'json',
+                url: '/backend/course/inves/result/count',
+                async: false,
+                data: {
+                    courseId: courseId,
+                    search: search,
+                    sex: sex,
+                    paperId: paperId,
+                    state: state
+                },
+                success: function(data){
+                    if(data.message == "success"){
+                        count = data.data;
+                    }else{
+                    }
+                },
+                error: function(){
+                }
+            });
+            return count;
+        }
+
+        //////////////////问卷结果预览////////////////////
+        $("table").on("click", ".swt_but", function () {
+            var user_id = $(this).data("user-id");
+            var paper_id = $(this).data("paper-id");
+            if(getResult(user_id, paper_id)){
+                var swt_but_name=$(this).data("sum");
+                if($(".addTestQu").length>0){
+                    $(".addTestQu").each(function(){
+                        if($(this).data("sum")==swt_but_name){
+                            $(this).fadeIn();
+                            $(".codeLayerbj").fadeIn();
+                            // $(".codeLayer,.codeLayerbj").fadeIn();
+                            var thmlH= $(window).height();
+                            var layerH = $(this).height();
+                            $(this).css("top",(thmlH-layerH)/2+"px");
+
+                        }
+
+                    })
+                }
+            }
+        });
+
+        /**
+         * 获取测试卷数据
+         * @param id
+         * @returns {boolean}
+         */
+        function getResult(user_id, paper_id) {
+            var flag = true;
+            $.ajax({
+                type: 'GET',
+                dataType: 'json',
+                url: '/backend/course/inves/result/single',
+                data: {
+                    userId: user_id,
+                    paperId: paper_id
+                },
+                async: false,
+                success:function(data){
+                    console.log(data)
+                    if(data.message == "success"){
+                        var source = $("#result-view").html();
+                        var template = Handlebars.compile(source);
+                        var templateHtml = template(data.data);
+                        $(".view").html(templateHtml);
+                    }else{
+                        flag = false;
+                    }
+                },
+                error: function(){
+                    layer.msg("预览问卷失败！", {icon: 5});
+                    flag = false;
+                }
+            })
+            return flag;
+        }
+
+    });
+</script>
+<script id="result-list" type="text/x-handlebars-template">
+    {{#each this}}
+    <tr>
+        <td>
+            <span class="w5 courseM-td" title="{{user_name}}">{{user_name}}</span>
+        </td>
+        <td>{{user_ada}}</td>
+        <td>{{user_sex_show}}</td>
+        <td>
+            <span class="w5 courseM-td" title="{{paper_name}}">{{paper_name}}</span>
+        </td>
+        <td><span class="{{tf_state_class result_state}}">{{result_state_show}}</span></td>
+        <td>{{getTime finish_time}}</td>
+        <td><span class="swt_but" data-sum="17" data-user-id="{{user_id}}" data-paper-id="{{paper_id}}">查看问卷结果</span></td>
+    </tr>
+    {{/each}}
+</script>
+<script id="result-view" type="text/x-handlebars-template">
+    <div class="box_wbt box_wbtTop">{{name}}</div>
+    {{#each quests}}
+    {{#if_eq type 1}}
+    <div class="box_w CSbox1">
+        <div class="dt" style="word-wrap: break-word">{{sequence}}.（单选题）（{{tf_isRequired isRequired}}）{{question}}</div>
+        <div class="dd">
+            <ul>
+                {{#each options}}
+                {{#if_eq isTrue 1}}
+                <li><span style="display: -moz-inline-box; display: inline-block; width: 10px">{{sequence}}</span>：<i class='input_style radio_bg radio_bg_check'><input type="radio" name="identity" value="5"></i>{{content}}</li>
+                {{else}}
+                <li><span style="display: -moz-inline-box; display: inline-block; width: 10px">{{sequence}}</span>：<i class='input_style radio_bg'><input type="radio" name="identity" value="5"></i>{{content}}</li>
+                {{/if_eq}}
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+    {{else}}
+    {{#if_eq type 2}}
+    <div class="box_w CSbox1">
+        <div class="dt" style="word-wrap: break-word">{{sequence}}.（多选题）（{{tf_isRequired isRequired}}）{{question}}</div>
+        <div class="dd">
+            <ul>
+                {{#each options}}
+                {{#if_eq isTrue 1}}
+                <li><span style="display: -moz-inline-box; display: inline-block; width: 10px">{{sequence}}</span>：<i class='input_style checkbox_bg checkbox_bg_check'><input type="checkbox" name="q" value=""></i>{{content}}</li>
+                {{else}}
+                <li><span style="display: -moz-inline-box; display: inline-block; width: 10px">{{sequence}}</span>：<i class='input_style checkbox_bg'><input type="checkbox" name="q" value=""></i>{{content}}</li>
+                {{/if_eq}}
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+    {{else}}
+    <div class="box_w CSbox1">
+        <div class="dt" style="word-wrap: break-word">{{sequence}}.（问答题）（{{tf_isRequired isRequired}}）{{question}}</div>
+        <div class="dd">
+            <ul>
+                <li>
+                    <textarea rows="3" class="inbox0418">{{answer}}</textarea>
+                </li>
+            </ul>
+        </div>
+    </div>
+    {{/if_eq}}
+    {{/if_eq}}
+    {{/each}}
+</script>
+<script id="no-content" type="text/x-handlebars-template">
+    <div class="padTB20"><div class="m-style">搜索无结果！</div></div>
+</script>
+</body>
+</html>

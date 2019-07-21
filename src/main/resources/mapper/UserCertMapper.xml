@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.UserCertMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.UserCert">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="course_id" jdbcType="INTEGER" property="courseId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="is_award" jdbcType="INTEGER" property="isAward" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="award_time" jdbcType="TIMESTAMP" property="awardTime" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="cert_id" jdbcType="INTEGER" property="certId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+      <result column="is_read" jdbcType="INTEGER" property="isRead" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, course_id, user_id, is_award, url, create_time, award_time, state, cert_id, name, is_read
+  </sql>
+
+    <select id="selectByUserId" parameterType="int" resultMap="BaseResultMap">
+        SELECT
+          <include refid="Base_Column_List"/>
+        FROM t_user_cert
+        WHERE state = 1 AND is_award = 1 AND user_id = #{user_id}
+        ORDER BY award_time DESC
+    </select>
+
+    <select id="selectById" parameterType="int" resultMap="BaseResultMap">
+        SELECT
+          <include refid="Base_Column_List"/>
+        FROM t_user_cert
+        WHERE id = #{id} AND state = 1 AND is_award = 1
+    </select>
+
+    <select id="selectByCourseIdAndUserId" resultMap="BaseResultMap">
+        SELECT
+          <include refid="Base_Column_List"/>
+        FROM t_user_cert
+        WHERE course_id = #{courseId} AND user_id = #{userId} AND state = 1 AND is_award = 1
+    </select>
+
+    <update id="updateIsRead" parameterType="int">
+        UPDATE t_user_cert SET is_read = 1 WHERE id = #{id}
+    </update>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_cert
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_user_cert
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.UserCert">
+    insert into t_user_cert (id, course_id, user_id, 
+      is_award, url, create_time, 
+      award_time, state, cert_id, 
+      name, is_read)
+    values (#{id,jdbcType=INTEGER}, #{courseId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{isAward,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{awardTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER}, #{certId,jdbcType=INTEGER}, 
+      #{name,jdbcType=VARCHAR}, #{isRead,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.UserCert">
+    insert into t_user_cert
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="courseId != null">
+        course_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="isAward != null">
+        is_award,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="awardTime != null">
+        award_time,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="certId != null">
+        cert_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+        <if test="isRead != null">
+            is_read,
+        </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="isAward != null">
+        #{isAward,jdbcType=INTEGER},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="awardTime != null">
+        #{awardTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="certId != null">
+        #{certId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+        <if test="isRead != null">
+            #{is_read,jdbcType=INTEGER},
+        </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.UserCert">
+    update t_user_cert
+    <set>
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="isAward != null">
+        is_award = #{isAward,jdbcType=INTEGER},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="awardTime != null">
+        award_time = #{awardTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="certId != null">
+        cert_id = #{certId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+        <if test="isRead != null">
+            is_read = #{isRead,jdbcType=INTEGER},
+        </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.UserCert">
+    update t_user_cert
+    set course_id = #{courseId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      is_award = #{isAward,jdbcType=INTEGER},
+      url = #{url,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      award_time = #{awardTime,jdbcType=TIMESTAMP},
+      state = #{state,jdbcType=INTEGER},
+      cert_id = #{certId,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      is_read = #{isRead,jdbcType=VARCHAR}
+
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--Begin kaikai-->
+  <select id="selectIsAwardByCourseId" parameterType="java.lang.Integer"
+          resultType="java.lang.Integer">
+    SELECT
+          COUNT (1)
+      FROM
+          t_user_cert
+      WHERE
+          course_id = #{courseId,jdbcType=INTEGER}
+      AND is_award = 1
+      AND state = 1
+  </select>
+
+  <select id="selectCountByCourseIdAndUserId" parameterType="java.lang.Integer"
+          resultType="java.lang.Integer">
+      SELECT
+          count(1)
+        FROM
+          t_user_cert
+        WHERE
+          course_id = #{courseId,jdbcType=INTEGER}
+        AND user_id = #{userId,jdbcType=INTEGER}
+        AND is_award = 1
+        AND state = 1
+  </select>
+
+  <delete id="delByCertId">
+    delete from t_user_cert where cert_id in
+    <foreach close=")" collection="certIds" item="certId" open="(" separator=",">
+      #{certId}
+    </foreach>
+  </delete>
+
+  <delete id="delByCourseIdAndUid" parameterType="java.lang.Integer">
+    delete from t_user_cert where course_id =#{courseId,jdbcType=INTEGER} and user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+  <!--end kaikai-->
+</mapper>

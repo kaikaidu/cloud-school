@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.WeightMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.Weight">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="ident" jdbcType="SMALLINT" property="ident" />
+    <result column="weight" jdbcType="NUMERIC" property="weight" />
+    <result column="state" jdbcType="SMALLINT" property="state" />
+    <result column="temp_id" jdbcType="INTEGER" property="tempId" />
+    <result column="release" jdbcType="SMALLINT" property="release" />
+    <result column="course_id" jdbcType="INTEGER" property="courseId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, ident, weight, state, temp_id, release, course_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_weight
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_weight
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.Weight">
+    insert into t_weight (id, ident, weight, 
+      state,temp_id,release,course_id)
+    values (#{id,jdbcType=INTEGER}, #{ident,jdbcType=SMALLINT}, #{weight,jdbcType=NUMERIC}, 
+      #{state,jdbcType=SMALLINT},#{tempId,jdbcType=INTEGER},#{release,jdbcType=SMALLINT},#{courseId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.Weight">
+    insert into t_weight
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="ident != null">
+        ident,
+      </if>
+      <if test="weight != null">
+        weight,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="tempId != null">
+        temp_id,
+      </if>
+      <if test="release != null">
+        release,
+      </if>
+      <if test="courseId != null">
+        course_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="ident != null">
+        #{ident,jdbcType=SMALLINT},
+      </if>
+      <if test="weight != null">
+        #{weight,jdbcType=NUMERIC},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="tempId != null">
+        #{tempId,jdbcType=INTEGER},
+      </if>
+      <if test="release != null">
+        #{release,jdbcType=SMALLINT},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.Weight">
+    update t_weight
+    <set>
+      <if test="ident != null">
+        ident = #{ident,jdbcType=SMALLINT},
+      </if>
+      <if test="weight != null">
+        weight = #{weight,jdbcType=NUMERIC},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="tempId != null">
+        temp_id = #{tempId,jdbcType=INTEGER},
+      </if>
+      <if test="release != null">
+        release = #{release,jdbcType=SMALLINT},
+      </if>
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.Weight">
+    update t_weight
+    set ident = #{ident,jdbcType=SMALLINT},
+      weight = #{weight,jdbcType=NUMERIC},
+      state = #{state,jdbcType=SMALLINT},
+      temp_id = #{tempId,jdbcType=INTEGER},
+      release = #{release,jdbcType=SMALLINT},
+      course_id =  #{courseId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- qj -->
+  <select id="queryWeightList" parameterType="com.amway.acti.model.WeightResult" resultType="com.amway.acti.model.WeightResult">
+    SELECT
+      case
+        WHEN tsm.score IS not NULL THEN
+        CONVERT(varchar(50),tsm.create_time,120)
+      end createTime,
+      tu.id,
+      tu.name name,
+      tu.ada_number adaNumber,
+      CASE tu.sex
+      WHEN 0 THEN
+      '男'
+      WHEN 1 THEN
+      '女'
+      WHEN 2 THEN
+      '夫妻'
+      ELSE
+      '未知'
+      END sex,
+      CASE
+      WHEN tsm.score IS NULL THEN
+      '未完成'
+      ELSE
+      '已完成'
+      END status,
+      tsm.score score,
+      tc.sys_id courseId,
+      (SELECT code FROM t_class_draw WHERE id = tdr.class_draw_id) code,
+      tdr.class_id classId,
+      (SELECT name FROM t_class WHERE id = tdr.class_id) className
+      FROM
+        t_user tu
+      LEFT JOIN t_course_signup tcs ON tu.adainfo_md5 = tcs.adainfo_md5
+      LEFT JOIN t_course tc ON tcs.course_id = tc.sys_id
+      LEFT JOIN t_spee_mark tsm ON tsm.course_id = tc.sys_id and tu.id = tsm.user_id
+      LEFT JOIN t_draw_result tdr ON tdr.course_id = #{courseId} AND tu.id = tdr.user_id
+    WHERE tc.sys_id = #{courseId}
+    and tu.state = 1
+    <if test="name !=null and name !='null' and name !=''">
+      AND (tu.name like '%'+#{name}+'%' OR tu.ada_number like '%'+#{name}+'%')
+    </if>
+    <if test="sex !=null and sex !='null' and sex !='' ">
+       AND tu.sex = #{sex}
+    </if>
+    <choose>
+      <when test="status !='null' and status != '' and status != null and status == 1">
+        AND tsm.score is null
+      </when>
+      <when test="status !='null' and status != '' and status != null and status == 0">
+        AND tsm.score is not null
+      </when>
+    </choose>
+    <if test="score == 0">
+      ORDER BY tsm.score DESC
+    </if>
+    <if test="score == 1">
+      ORDER BY tsm.score ASC
+    </if>
+  </select>
+
+  <select id="queryWeightListByCourseId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_weight
+    WHERE course_id = #{courseId}
+  </select>
+  <!-- end qj-->
+
+  <!-- 根据课程id删除权重 -->
+  <delete id="deleteWeightByCourseId">
+    delete from t_weight where course_id = #{courseId}
+  </delete>
+</mapper>

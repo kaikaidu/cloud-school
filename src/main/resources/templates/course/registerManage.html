@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head"></head>
+
+<body>
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+	<section class="wapmbx fl"><a href="/backend/course/courseManage">课程管理</a><em></em><strong>签到管理</strong></section>
+	<section th:replace="common/common_menu  :: menu"></section>
+	<input type="hidden" th:value="${courseId}" id="courseId">
+	<section class="conFl">
+		<div class="StuCon">
+			<!--线下课程-->
+			<div class="clearfix padTB20 padb10"><a href="javascript:;" class="btnUp linkLC swt_but" data-sum="13">签到二维码管理</a></div>
+			<div class="clearfix StuTle">
+				<div class="fl tleChe"><label></label><i class='input_style checkbox_bg'><input type="checkbox" name="selectAll" id="selectAll" value=""></i><label for="selectAll">全选</label></div>
+				<div class="fl search"><input type="search" class="ipnSearch" placeholder="请输入您要查找的学员姓名或安利卡号"><input type="button" value="搜 索" class="ipnBtn"></div>
+				<a href="javascript:;" id="registerUp" class="btnB fr">已签到</a>
+				</div>
+			</div>
+			<div class="tableWrap">
+				<div class="tableBox">
+			  	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				  <tbody>
+					<tr>
+					  <th width="25%">姓名</th>
+					  <th width="25%">安利卡号</th>
+					  <th width="25%">
+					  	<select class="stySelS" id="sex" name="select">
+						<option selected value="">性别</option>
+						<option value="0">男</option>
+						<option value="1">女</option>
+						</select>
+					  </th>
+					  <th width="25%">
+					  <select class="stySelS" id="registerStatus" name="select">
+						<option  selected>上课状态</option>
+						<option value="0">未签到</option>
+						<option value="1">已签到</option>
+						</select>
+				 	 </th>
+					</tr>
+				  </tbody>
+				</table>
+				</div>
+				<div class="page-box" id="registerPager"></div>
+			</div>
+		</div>
+	</section>
+</article>
+
+<!---二维码--->
+<div class="codeLayer addTestQu cdeup" data-sum="13">
+	<div class="toptit">签到二维码管理<b class="close"></b></div>
+	<div class="layCon">
+		<div class="picBox"><img id="QRCode" src="" width="200" height="200"></div>
+		<div class="btnBox">
+			<a href="#" class="btnA but_none" data-sum="13">取 消</a>
+			<a id="QRCodeDownload" href="" download="" class="btnB but_yes"  data-sum="13">下 载</a>
+		</div>
+	</div>
+</div>
+
+<div class="codeLayerbj"></div>
+
+<script id="registerList" type="text/x-handlebars-template">
+	{{#each this}}
+	<tr>
+		<td class="uid" hidden>{{uid}}</td>
+		<td><i class='input_style checkbox_bg'><input type="checkbox" name="ids" value=""></i>{{name}}</td>
+		<td>{{adaNumber}}</td>
+		<td>{{sex}}</td>
+		<td>
+			{{#equal registerStatus}}
+			<span class="ct_green">{{registerStatus}}</span>
+			{{else}}
+			<span class="ct_red">{{registerStatus}}</span>
+			{{/equal}}
+		</td>
+	</tr>
+	{{/each}}
+</script>
+<script id="register-no-content" type="text/x-handlebars-template">
+	<div class="padTB20 no-content"><div class="m-style">搜索无结果！</div></div>
+</script>
+<script th:src="@{/assets/js/custom/course/registerManage.js}"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+spring:
+    datasource:
+        url: jdbc:sqlserver://yunxuetangsvr.database.chinacloudapi.cn;DatabaseName=yunxuetang
+        username: appadmin
+        password: $l4E2B)Q

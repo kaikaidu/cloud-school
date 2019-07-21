@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.ScoreAnswerMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.ScoreAnswer">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="course_id" jdbcType="INTEGER" property="courseId" />
+    <result column="sitem_id" jdbcType="INTEGER" property="sitemId" />
+    <result column="stu_id" jdbcType="INTEGER" property="stuId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="score" jdbcType="NUMERIC" property="score" />
+    <result column="state" jdbcType="SMALLINT" property="state" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, course_id, sitem_id, stu_id, user_id, score, state
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_score_answer
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_score_answer
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.ScoreAnswer">
+    insert into t_score_answer (id, course_id, sitem_id, 
+      stu_id, user_id, score, 
+      state)
+    values (#{id,jdbcType=INTEGER}, #{courseId,jdbcType=INTEGER}, #{sitemId,jdbcType=INTEGER}, 
+      #{stuId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{score,jdbcType=NUMERIC}, 
+      #{state,jdbcType=SMALLINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.ScoreAnswer">
+    insert into t_score_answer
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="courseId != null">
+        course_id,
+      </if>
+      <if test="sitemId != null">
+        sitem_id,
+      </if>
+      <if test="stuId != null">
+        stu_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="score != null">
+        score,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="sitemId != null">
+        #{sitemId,jdbcType=INTEGER},
+      </if>
+      <if test="stuId != null">
+        #{stuId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=NUMERIC},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.ScoreAnswer">
+    update t_score_answer
+    <set>
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="sitemId != null">
+        sitem_id = #{sitemId,jdbcType=INTEGER},
+      </if>
+      <if test="stuId != null">
+        stu_id = #{stuId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="score != null">
+        score = #{score,jdbcType=NUMERIC},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.ScoreAnswer">
+    update t_score_answer
+    set course_id = #{courseId,jdbcType=INTEGER},
+      sitem_id = #{sitemId,jdbcType=INTEGER},
+      stu_id = #{stuId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      score = #{score,jdbcType=NUMERIC},
+      state = #{state,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--Begin dk-->
+  <select id="selectByStuIdAndSitemId" parameterType="com.amway.acti.model.ScoreAnswer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_score_answer
+    where course_id = #{courseId,jdbcType=INTEGER}
+    and sitem_id = #{sitemId,jdbcType=INTEGER}
+    and stu_id = #{stuId,jdbcType=INTEGER}
+    and user_id = #{userId,jdbcType=INTEGER}
+    and state = 1
+  </select>
+
+  <select id="selectCountByUserIdAndCourseId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select
+      count(1)
+    from t_score_answer
+    where course_id = #{courseId,jdbcType=INTEGER}
+    and user_id = #{userId,jdbcType=INTEGER}
+    and state = 1
+  </select>
+
+  <select id="selectCountByStuIdAndCourseId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select
+      count(1)
+    from t_score_answer
+    where course_id = #{courseId,jdbcType=INTEGER}
+    and stu_id = #{stuId,jdbcType=INTEGER}
+    and state = 1
+  </select>
+
+  <delete id="deleteByCourseId" >
+    DELETE
+    from t_score_answer
+    where course_id = #{courseId,jdbcType=INTEGER}
+  </delete>
+
+  <!--End dk-->
+  
+  <!-- 删除课程下所有学员的评分答案 wsc -->
+  <delete id="deleteScoreAnswerByCourseIdAndUserId">
+    delete
+    from t_score_answer
+    where
+    course_id = #{courseId} and
+    user_id in (
+    <foreach collection="list" item="s" separator=",">
+      #{s}
+    </foreach>
+    )
+  </delete>
+  
+  <select id="countScoreBySitemId" parameterType="int" resultType="int">
+    SELECT count(*) FROM t_score_answer as t1
+    LEFT JOIN t_course as t2
+    ON t1.course_id = t2.sys_id
+    LEFT JOIN t_sitem_temp as t3
+    ON t2.sitem_temp_id = t3.id
+    LEFT JOIN t_sitem as t4
+    ON t4.sitem_temp_id = t3.id AND t1.sitem_id = t4.id
+    WHERE t2.sys_id = #{courseId}
+  </select>
+</mapper>

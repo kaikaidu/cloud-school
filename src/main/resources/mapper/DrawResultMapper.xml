@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.DrawResultMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.DrawResult">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="class_id" jdbcType="INTEGER" property="classId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="state" jdbcType="SMALLINT" property="state" />
+    <result column="class_draw_id" jdbcType="INTEGER" property="classDrawId" />
+    <result column="course_id" jdbcType="INTEGER" property="courseId" />
+  </resultMap>
+
+  <resultMap id="DrawCutsMap" type="com.amway.acti.model.DrawCuts">
+    <result column="classId" jdbcType="INTEGER" property="classId" />
+    <result column="userId" jdbcType="INTEGER" property="userId" />
+    <result column="className" jdbcType="VARCHAR" property="className" />
+    <result column="lecturer" jdbcType="VARCHAR" property="lecturer" />
+    <result column="adaNumber" jdbcType="VARCHAR" property="adaNumber" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, class_id, create_time, state, class_draw_id, course_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_draw_result
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_draw_result
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.DrawResult">
+    insert into t_draw_result (id, user_id, class_id,
+      create_time, state, class_draw_id,
+      course_id)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{classId,jdbcType=INTEGER},
+      #{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=SMALLINT}, #{classDrawId,jdbcType=INTEGER},
+      #{courseId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.DrawResult">
+    insert into t_draw_result
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="classId != null">
+        class_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="classDrawId != null">
+        class_draw_id,
+      </if>
+      <if test="courseId != null">
+        course_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="classId != null">
+        #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="classDrawId != null">
+        #{classDrawId,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.DrawResult">
+    update t_draw_result
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="classId != null">
+        class_id = #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="classDrawId != null">
+        class_draw_id = #{classDrawId,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.DrawResult">
+    update t_draw_result
+    set user_id = #{userId,jdbcType=INTEGER},
+      class_id = #{classId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      state = #{state,jdbcType=SMALLINT},
+      class_draw_id = #{classDrawId,jdbcType=INTEGER},
+      course_id = #{courseId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--Begin dk-->
+  <select id="selectByClassIdAndUserId" parameterType="com.amway.acti.model.DrawResult" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_draw_result
+    where user_id = #{userId,jdbcType=INTEGER}
+    and class_id = #{classId,jdbcType=INTEGER}
+    and state = 1
+  </select>
+
+  <select id="selectByClassId" parameterType="com.amway.acti.model.DrawResult" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from t_draw_result
+      where class_id = #{classId,jdbcType=INTEGER}
+      and state = 1
+  </select>
+  <!--End dk-->
+
+  <!-- 根据课程id查询班级以及学员 -->
+  <select id="selectDrawUser" resultMap="DrawCutsMap">
+    select
+        u.id as userId,
+        c.name as className,
+        u.ada_number as adaNumber,
+        u.name as name,
+        CASE
+            when (u.sex = 0) then '男'
+            when (u.sex = 1) then '女'
+            else '夫妻'
+        end sex
+    from t_class c
+    left join t_draw_result d on c.course_id = d.course_id and c.id = d.class_id
+    left join t_user u on d.user_id = u.id
+    where c.course_id = #{courseId} and u.id is not null
+    order by c.id
+  </select>
+
+  <select id="selectDrawCount" resultType="int">
+    select
+      count(1)
+    from t_class c
+    left join t_draw_result d on c.course_id = d.course_id and c.id = d.class_id
+    left join t_user u on d.user_id = u.id
+    where c.course_id = #{courseId}
+  </select>
+
+  <delete id="deleteByClassId" parameterType="Integer">
+    delete from t_draw_result
+    where class_id = #{id}
+  </delete>
+
+  <!-- 根据班级id查询该班级下的学员 -->
+  <select id="selectDrawResByClassId" parameterType="Integer" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    FROM
+    t_draw_result
+    where class_id = #{id}
+  </select>
+
+  <select id="selectDrawResultByCourseId" resultMap="BaseResultMap">
+    SELECT
+        r.id,
+        r.user_id,
+        r.class_id,
+        r.create_time,
+        r.state,
+        r.class_draw_id
+    FROM
+        t_class c,
+        t_draw_result r
+    WHERE
+        c.id = r.class_id
+    AND c.course_id = #{ courseId }
+  </select>
+
+  <!-- 根据用户id，课程id查询用户信息及演讲内容 -->
+  <select id="selectUserDrawResult" resultMap="DrawCutsMap">
+    SELECT
+      u.id as userId,
+      d.class_id as classId,
+      u.name as name,
+      d.code as code,
+      d.content as content,
+      u.ada_number as adaNumber,
+      case
+        when (u.sex = 0) then '男'
+        when (u.sex = 1) then '女'
+        when (u.sex = 2) then '夫妻'
+      end as sex
+    from
+      t_user u ,t_draw_result d
+    where
+      u.id = d.user_id and
+      d.user_id = #{userId} and
+      d.class_id = #{classId} and
+      d.state = 1
+  </select>
+
+  <!-- 根据班级id，学员id查询抽签结果表 -->
+    <select id="selectDrawByClassIdAndUserId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        from
+        t_draw_result
+        where
+        user_id = #{userId} and
+        class_id = #{classId}
+    </select>
+
+  <select id="selectDrawResult" resultType="com.amway.acti.model.DrawResultData">
+    SELECT
+      t.id,
+      tcd.id classDrawId,
+      tc.name className,
+      tu.ada_number adaNumber,
+      tu.name student,
+      CASE tu.sex
+      WHEN 0 THEN '男'
+      WHEN 1 THEN '女'
+      WHEN 2 THEN '夫妻'
+      ELSE '未知' END sex,
+      t.class_id classId,
+      tcd.code
+  FROM
+      t_draw_result t
+      LEFT JOIN t_class tc ON t.class_id = tc.id AND tc.state = 1
+      LEFT JOIN t_user tu on t.user_id = tu.id AND tu.state = 1
+      LEFT JOIN t_class_draw tcd ON t.class_draw_id = tcd.id
+  WHERE 1=1
+      AND t.course_id = #{courseId}
+      AND t.state = 1
+      order by tc.name
+  </select>
+
+  <select id="selectDrawResultByCoursePreview" resultType="com.amway.acti.model.DrawResultData">
+    SELECT
+    t.id,
+    tcd.id classDrawId,
+    tc.name className,
+    tu.ada_number adaNumber,
+    tu.name student,
+    CASE tu.sex
+    WHEN 0 THEN '男'
+    WHEN 1 THEN '女'
+    WHEN 2 THEN '夫妻'
+    ELSE '未知' END sex,
+    t.class_id classId,
+    tcd.code
+    FROM
+    t_draw_result t
+    LEFT JOIN t_class tc ON t.class_id = tc.id AND tc.state = 1
+    LEFT JOIN t_user tu on t.user_id = tu.id AND tu.state = 1
+    INNER JOIN t_class_draw tcd ON t.class_draw_id = tcd.id
+    WHERE 1=1
+    AND t.course_id = #{courseId}
+    AND t.state = 1
+    ORDER BY className,tcd.code
+  </select>
+
+  <select id="selectDrawResultCount" resultType="com.amway.acti.model.DrawResultData">
+    SELECT
+    t.id,
+    tcd.id classDrawId,
+    tc.name className,
+    tu.ada_number adaNumber,
+    tu.name student,
+    CASE tu.sex
+    WHEN 0 THEN '男'
+    WHEN 1 THEN '女'
+    WHEN 2 THEN '夫妻'
+    ELSE '未知' END sex,
+    t.class_id classId,
+    tcd.code
+    FROM
+    t_draw_result t
+    LEFT JOIN t_class tc ON t.class_id = tc.id AND tc.state = 1
+    LEFT JOIN t_user tu on t.user_id = tu.id AND tu.state = 1
+    LEFT JOIN t_class_draw tcd ON t.class_draw_id = tcd.id
+    WHERE 1=1
+    AND t.course_id = #{courseId}
+    AND t.state = 1
+    ORDER BY className,tcd.code
+  </select>
+
+  <select id="selectDrawResultCountByCoursePreview" resultType="java.lang.Integer">
+      SELECT
+    count(1)
+    FROM
+    t_draw_result t
+    LEFT JOIN t_class tc ON t.class_id = tc.id AND tc.state = 1
+    LEFT JOIN t_user tu on t.user_id = tu.id AND tu.state = 1
+    INNER JOIN t_class_draw tcd ON t.class_draw_id = tcd.id
+    WHERE 1=1
+    AND t.course_id = #{courseId}
+    AND t.state = 1
+  </select>
+
+  <!-- 根据班级id删除 -->
+  <delete id="deleteByClassIdList">
+    DELETE
+    from
+    t_draw_result where class_id in (
+      <foreach collection="list" item="s" separator=",">
+        #{s}
+      </foreach>
+    )
+  </delete>
+
+  <!-- 批量新增班级关联的学员 -->
+  <insert id="insertList">
+    insert into t_draw_result (user_id, class_id, create_time,state,course_id
+    ) VALUES
+    <foreach collection="list" item="s" separator=",">
+      (#{s.userId},#{s.classId},#{s.createTime},#{s.state},#{s.courseId})
+    </foreach>
+  </insert>
+
+  <!-- 根据课程id，学员id查询班级和用户基本信息 -->
+  <select id="selectClassUserInfo" resultMap="DrawCutsMap">
+    SELECT
+      u.id as userId,
+      d.class_id as classId,
+      u.name as name,
+      u.ada_number as adaNumber,
+      c.name as className,
+      case
+        when (u.sex = 0) then '男'
+        when (u.sex = 1) then '女'
+        when (u.sex = 2) then '夫妻'
+      end as sex
+    from
+      t_user u ,t_draw_result d ,t_class c
+    where
+      u.id = d.user_id and
+      d.class_id = c.id and
+      d.user_id = #{userId} and
+      d.course_id = #{courseId} and
+      d.state = 1
+  </select>
+
+  <!-- 根据课程id，学员id，修改班级id -->
+  <update id="updateClassIdForCourseIdAndUserId">
+    update t_draw_result set class_id = #{classId},class_draw_id=null where course_id = #{courseId} and user_id = #{userId}
+  </update>
+
+  <select id="selectDrawTeacher" resultType="string">
+    SELECT
+        DISTINCT tu.name
+    FROM
+        t_user tu
+    LEFT JOIN t_course_teacher tct ON tu.id = tct.user_id
+    AND tu.state = 1
+    WHERE tct.class_id = #{classId}
+  </select>
+
+  <!-- 根据用户id，班级id 删除已分班中的学员 -->
+  <delete id="deleteUserByClassId">
+    delete from t_draw_result where class_id = #{classId} and user_id = #{userId}
+  </delete>
+
+  <!-- 修改t_draw_result表code -->
+  <update id="updateDrawResultByCourseId">
+    update t_draw_result set class_draw_id = null where course_id = #{courseId}
+  </update>
+
+  <!-- 查询用户是否显示抽签按钮 -->
+  <select id="selectBallotByUserIdAndCourseId" resultType="int">
+    select count(1) from t_draw_result where user_id = #{userId} and course_id = #{courseId} and class_draw_id is not null
+  </select>
+
+  <!-- 查询用户是否显示评分按钮 -->
+  <select id="selectSitemByUserId" resultType="int">
+    select count(1) from t_draw_result r,t_weight w
+      where r.course_id = w.course_id
+        and r.user_id = #{userId}
+        and r.course_id = #{courseId}
+        and w.state=1
+        and w.release=1
+        and r.state=1
+        and r.class_draw_id is not null
+  </select>
+
+  <!--Begin dk-->
+  <delete id="deleteByUserIdAndCourseId">
+    delete from t_draw_result
+    where  user_id = #{userId}
+        and course_id = #{courseId}
+  </delete>
+
+  <delete id="deleteByCourseId">
+    delete from t_draw_result
+    where course_id = #{courseId}
+  </delete>
+
+  <select id="selectByCourseIdAndUserId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_draw_result
+    where user_id = #{userId}
+    and course_id = #{courseId}
+    and state = 1
+  </select>
+  <!--End dk-->
+
+  <select id="selectStuInfosByClassId" parameterType="int" resultType="java.util.HashMap">
+    select t2.id as userId, t2.name, '学员' as ident
+      FROM t_draw_result as t1
+      LEFT JOIN t_user as t2
+      ON t1.user_id = t2.id
+      WHERE t1.class_id = #{classId}
+      ORDER BY t1.user_id
+  </select>
+
+  <select id="selectTeaInfosByClassId" parameterType="int" resultType="java.util.HashMap">
+    select t2.id as userId, t2.name, '讲师' as ident
+      FROM t_course_teacher as t1
+      LEFT JOIN t_user as t2
+      ON t1.user_id = t2.id
+      WHERE class_id = #{classId}
+      ORDER BY t1.user_id
+  </select>
+
+  <select id="selectStuBaseInfosByClassId" parameterType="int" resultType="java.util.HashMap">
+      select t2.name, t2.ada_number as ada, t1.user_id AS userId,
+      case
+          WHEN (t2.sex = 0) then '男'
+          when (t2.sex = 1) then '女'
+          else '未定义'
+      end user_sex_show,
+			t4.code,
+      t3.score
+      from t_draw_result as t1
+      LEFT JOIN t_user as t2
+      ON t1.user_id = t2.id
+      LEFT JOIN t_spee_mark as t3
+      ON t1.class_id = t3.class_id AND t3.user_id = t1.user_id
+			LEFT JOIN t_class_draw as t4
+			ON t1.class_draw_id = t4.id
+      WHERE t1.class_id = #{classId}
+      ORDER BY t4.code
+  </select>
+
+  <select id="selectStuScoreInfos" resultType="java.util.HashMap">
+    SELECT *,
+    (SELECT score FROM t_score_result WHERE course_id = #{courseId} AND stu_id = #{userId} AND
+    user_id = t1.user_id) as score
+     FROM t_draw_result as t1
+    WHERE t1.class_id = #{classId}
+    ORDER BY t1.user_id
+  </select>
+
+  <select id="selectTeaScoreInfos" resultType="java.util.HashMap">
+    select *,
+    (SELECT score FROM t_score_result WHERE course_id = #{courseId} AND stu_id = #{userId} AND
+    user_id = t1.user_id) as score
+    FROM t_course_teacher as t1
+    WHERE t1.class_id = #{classId}
+  </select>
+</mapper>

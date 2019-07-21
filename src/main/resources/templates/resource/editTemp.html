@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+
+<body>
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+	<section class="wapmbx fl"><a href="/backend/resource/label">课程资源</a><em></em><a href="#">评分题库</a><em></em><strong>新增评分模板</strong></section>
+	<section th:replace="common/common_menu  :: menu"></section>
+	<section class="conFl">
+		<div class="StuCon QuBaCon">
+			<div class="qubaCon bjG padd10 mart10 clearfix">
+				<div class="qubaBox qubaBox02  pf_com" id="list">
+					<div class="quItem quItem02 quItemTHD clearfix">
+						<div class="dt">评分模板名称</div>
+						<div class="dm"><input type="text"  id="tempName" th:value="${sitemTemp.name}" class="sInput siW10" maxlength="27"></div>
+						<input hidden id="sitemTempId" th:value="${sitemTemp.id}" />
+						<input hidden id="sitemTempType" th:value="${sitemTemp.type}" />
+					</div>
+				</div>
+				<div class="addQuItem swt_but_self" data-sum="09"><strong>+</strong> 添加评分题</div>
+			</div>	
+			<div class="dl textCent botMarTop">
+				<a href="javascript:;" id="cancelTemp" class="btnAi c_gray  hover-shadow">取 消</a>
+				<a href="javascript:;" id="saveTemp" class="btnAi c_red hover-shadow">保 存</a>
+			</div>
+		</div>
+	</section>
+</article>
+
+<!--添加评分题-->
+<div class="codeLayer addTestQu addTestQu_font" data-sum="09">
+	<input type="hidden" id="isEdit">
+	<input type="hidden" id="div-index">
+	<div class="toptit">添加评分题<b class="close"></b></div>
+	<div class="layCon layCon02">
+		<div class="clearfix">
+			<div class="boxDl">
+				<div class="dt">评分标准</div>
+				<div class="dd">					
+					<span>60分-表现标准</span>
+					<span>80分-表现优秀</span>
+					<span>100分表现卓越</span>
+				</div>
+			</div>
+			<div class="boxDl">
+				<div class="dt">评分题目</div>
+				<div class="dd"><textarea rows="2" id="qiTie" placeholder="请输入评分题目内容" class="sTexta siW10" maxlength="36"></textarea></div>
+			</div>
+			<div class="boxDl">
+				<div class="dt">评分占比</div>
+				<div class="dd">
+					<select name="mySelect" id="mySelect" class="sInput fl w130">
+					</select>
+				</div>
+			</div>
+		</div>	
+		<div class="btnBox">
+			<a href="javascript:;" class="btnA but_none" data-sum="09">取 消</a>
+			<a href="javascript:;" class="btnB addDefine" data-sum="09">保 存</a>
+		</div>
+	</div>
+</div>
+<div class="codeLayerbj"></div>
+<script id="sitemList" type="text/x-handlebars-template">
+	{{#each this}}
+	<div class="quItem quItem02 clearfix">
+
+		<div class="dt">评分题目<span class="selectTxt"></span><span class="span-ratio">（{{rate}}%）</span></div>
+		<div class="dm">
+			<input type="text" value="{{question}}" class="sInput siW10 sitemInput question" maxlength="36">
+			<input type="hidden" value="{{id}}" class="sitemId">
+			<input type="hidden" value="{{rate}}" class="ratio">
+		</div>
+		<div class="dd"><a href="javascript:;" class="editLink swt_but" data-sum="09">编辑</a><a href="javascript:;" class="deleteLink deleteLink02">删除</a></div>
+	</div>
+	{{/each}}
+</script>
+
+<script type="text/text/x-handlebars-template" id="div_template">
+	<div class="quItem quItem02 clearfix">
+		<div class="dt">评分题目<span class="selectTxt"></span><span class="span-ratio">（{{ratio}}%）</span></div>
+		<div class="dm">
+			<input type="text" value="{{question}}" class="sInput siW10 sitemInput question" maxlength="36">
+			<input type="hidden" value="{{ratio}}" class="ratio">
+		</div>
+		<div class="dd">
+			<a href="javascript:;" class="editLink swt_but" data-sum="09">编辑</a>
+			<a href="javascript:;" class="deleteLink deleteLink02">删除</a>
+		</div>
+	</div>
+</script>
+<script th:src="@{/assets/js/custom/resource/editTemp.js}"></script>
+</body>
+</html>

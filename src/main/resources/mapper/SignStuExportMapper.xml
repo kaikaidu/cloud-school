@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.SignStuExportMapper">
+    <resultMap id="BaseResultMap" type="com.amway.acti.model.SignStuExport">
+        <result column="createTime" jdbcType="VARCHAR" property="createTime" />
+        <result column="courseId" jdbcType="INTEGER" property="courseId" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="adaNumber" jdbcType="VARCHAR" property="adaNumber" />
+        <result column="sex" jdbcType="VARCHAR" property="sex" />
+        <result column="signType" jdbcType="VARCHAR" property="signType" />
+        <result column="viaState" jdbcType="VARCHAR" property="viaState" />
+    </resultMap>
+
+    <!-- 自定义报表报名学员 add wsc -->
+    <select id="selectSignStuExports" resultMap="BaseResultMap">
+        select
+            CONVERT(varchar(50),s.singup_time,120) createTime,
+            c.sys_id courseId,
+            u.name,
+            u.ada_number adaNumber,
+            case
+              when (u.sex = 0) then '男' else '女'
+            end sex,
+            case
+                when (c.is_verify = 0) then '报名成功'
+                when (c.is_verify = 1 and a.appr_result = 0) then '审核失败'
+                when (c.is_verify = 1 and a.appr_result = 1) then '报名成功'
+                when (c.is_verify = 1 and a.appr_result = 2) then '审核中'
+            END signType,
+            case
+              when (s.via_state = 0) then '未通过' else '已通过'
+            end viaState
+        from
+          t_course c
+        left join t_course_signup s on c.sys_id = s.course_id
+        left join t_user u on u.adainfo_md5 = s.adainfo_md5
+        left join t_course_approval a on a.course_id = c.sys_id and a.user_id = u.id
+        where u.state = 1
+        <if test="list != null">
+            and c.sys_id in (
+            <foreach collection="list" item="s" separator=",">
+                #{s.id}
+            </foreach>
+            )
+        </if>
+        order by c.sys_id
+    </select>
+</mapper>

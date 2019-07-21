@@ -1,0 +1,128 @@
+
+spring:
+    profiles:
+      active: @profileActive@
+    datasource:
+#         使用druid数据源
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        filters: stat
+        maxActive: 1000
+        initialSize: 1
+        maxWait: 60000
+        minIdle: 1
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: select 'x'
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        poolPreparedStatements: true
+        maxOpenPreparedStatements: 20
+
+    redis:
+        database: 0
+        host: 127.0.0.1
+        port: 6379
+        password:
+        timeout: 3600
+        defaultExpiration: 0
+        pool:
+          max-active: 8
+          max-wait: -1
+          max-idle: 8
+          min-idle: 0
+
+    mvc:
+        favicon:
+          enabled: false
+    http:
+        multipart:
+          maxFileSize: 30Mb
+          maxRequestSize: 50Mb
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.amway.acti.model
+
+#pagehelper分页插件
+pagehelper:
+    helperDialect: sqlserver
+    reasonable: true
+    supportMethodsArguments: true
+    params: count=countSql
+
+cloudschool.jwt:
+  tokenExpirationTime: 99999999 # Number of minutes
+  refreshTokenExpTime: 99999999 # Minutes
+  tokenIssuer: cloud_amwayedu
+  tokenSigningKey: xm8EV6Hy5RMFK4EEACIDAwQus
+
+stu.login:
+    isProd: true
+    appid: wxc12246aef3eebf3f
+    secret: 8128b85d17a1a3dc07fbf7ff65902b54
+    getSessionKeyUrl: https://api.weixin.qq.com/sns/jscode2session
+    componentQaAppid: actiadmin
+    componentQaSecret: qx71f5bsuds
+    qaGetTokenUrl: http://weixin-qa.amwaynet.com.cn/swechatframework/wechatframework-interface/Auth/getToken.do
+    qaGetAdaInfoUrl: http://weixin-qa.amwaynet.com.cn/swechatframework/wechatframework-interface/wechatUser/bindUserinfoByUnionid.do
+    componentProdAppid: actiadmin
+    componentProdSecret: by51l40c4oc
+    prodGetTokenUrl: https://weixin.amwaynet.com.cn/swechatframework/wechatframework-interface/Auth/getToken.do
+    prodGetAdaInfoUrl: https://weixin.amwaynet.com.cn/swechatframework/wechatframework-interface/wechatUser/bindUserinfoByUnionid.do
+
+osb.aboInfo:
+  qaosbappid: ebiz
+  qaosbappkey: ebizkey
+  qaservice: ebiz.Distributor.ShopService
+  qaoperation: queryShopInfo
+  qaversion: 1.0
+  qamode: restful
+  qaurl: https://esb-qa.amwaynet.com.cn/SBWebApp/service.json
+  prodosbappid: cloudclass
+  prodosbappkey: cloud@-class
+  prodservice: ebiz.Distributor.ShopService
+  prodoperation: queryShopInfo
+  prodversion: 1.0
+  prodmode: restful
+  produrl: https://esb.amwaynet.com.cn/SBWebApp/service.json
+
+custom:
+  liveCourse:
+    preUrl: http://www.baidu.com
+  sendMessage:
+    getAccessTokenUrl: https://api.weixin.qq.com/cgi-bin/token
+    sendTemplateMessageUrl: https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send
+    templateId: TzVX_aFVoPCu6j7p46ApllF3x6twhM9kctdIrYCIyOU
+
+#微软云上传
+azure:
+  config:
+    accountName: AccountName=yunxuetangqa;
+    accountKey: AccountKey=FcbDgcj4KrTIVuXuYv6xi5taCssRYA/pbNXzc+0khgKC+Cin0QfvWp3IcJhxzCpRPjuA1OYO/0Bdv2NrlwPmUg==
+    defaultEndpointsProtocol: DefaultEndpointsProtocol=https;AccountName=yunxuetangqa;AccountKey=FcbDgcj4KrTIVuXuYv6xi5taCssRYA/pbNXzc+0khgKC+Cin0QfvWp3IcJhxzCpRPjuA1OYO/0Bdv2NrlwPmUg==;EndpointSuffix=core.chinacloudapi.cn;
+    containers:
+      docContainerName: doc
+      imgContainerName: img
+      certContainerName: cert
+
+localFolder:
+  url: D:/home/LogFiles/cstmp
+
+upload:
+  file:
+    type: doc,xls,ppt,pdf,docx,xlsx,pptx,mp4,mp3,DOC,XLS,PPT,PDF,DOCX,XLSX,PPTX,MP4,MP3
+
+
+logging:
+  level:
+    root: info
+
+#缓存开关
+redisSwitch:
+  flag: true
+
+druid:
+  name: druid
+  pwd: QQ@1234cn

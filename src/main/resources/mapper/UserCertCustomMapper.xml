@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.UserCertCustomMapper">
+    <resultMap id="BaseResultMap" type="com.amway.acti.model.UserCert">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="course_id" jdbcType="INTEGER" property="courseId" />
+        <result column="user_id" jdbcType="INTEGER" property="userId" />
+        <result column="is_award" jdbcType="INTEGER" property="isAward" />
+        <result column="url" jdbcType="VARCHAR" property="url" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="award_time" jdbcType="TIMESTAMP" property="awardTime" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+        <result column="cert_id" jdbcType="INTEGER" property="certId" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, course_id, user_id, is_award, url, create_time, award_time, state, cert_id, name
+    </sql>
+
+    <!-- 根据课程id查询已颁发证书的学员数量  -->
+    <select id="selectUserCertByCourseId" resultType="int">
+      select
+        count(1)
+      from
+        t_user_cert
+      where
+        course_id = #{courseId} and
+        is_award = 1 and state = 1
+    </select>
+
+    <!-- 查询学员证书列表 -->
+    <select id="selectUserCert" resultType="com.amway.acti.model.UserCertCustom">
+        SELECT
+            u.id,
+            u.name,
+            u.ada_number as adaNumber,
+            u.sex,
+            cou.is_verify as isVerify,
+            a.appr_result as apprResult,
+            s.via_state as viaState,
+            t.is_award as isAward,
+            cou.end_time as endTime,
+            t.url
+        FROM
+            t_course_signup s
+        INNER JOIN t_user u ON s.adainfo_md5 = u.adainfo_md5
+        LEFT JOIN t_user_cert t ON t.course_id = s.course_id and t.user_id = u.id
+        LEFT JOIN t_course cou ON cou.sys_id = s.course_id
+        LEFT JOIN t_course_approval a ON a.course_id = cou.sys_id and a.user_id = u.id
+        WHERE
+             cou.sys_id = #{certParamDto.courseId} and (cou.is_verify = 0 or (cou.is_verify = 1 and a.appr_result = 1)) and u.state = 1
+        <if test="certParamDto.value != null">
+            and (u.name like CONCAT('%',#{certParamDto.value},'%') or u.ada_number like CONCAT('%',#{certParamDto.value},'%'))
+        </if>
+        <if test="certParamDto.sex != null">
+            and u.sex = #{certParamDto.sex}
+        </if>
+        <if test="certParamDto.viaState != null">
+            and s.via_state = #{certParamDto.viaState}
+        </if>
+        <if test="certParamDto.awardState != null">
+            and t.is_award = #{certParamDto.awardState}
+        </if>
+        <if test="userIds != null">
+            and u.id in (
+            <foreach collection="userIds" item="s" separator=",">
+              #{s}
+            </foreach>
+            )
+        </if>
+    </select>
+
+    <!-- 查询学员证书列表 -->
+    <select id="selectUserCertCount" resultType="java.lang.Integer">
+        SELECT
+          count(1)
+        FROM
+        t_course_signup s
+        INNER JOIN t_user u ON s.adainfo_md5 = u.adainfo_md5
+        LEFT JOIN t_user_cert t ON t.course_id = s.course_id and t.user_id = u.id
+        LEFT JOIN t_course cou ON cou.sys_id = s.course_id
+        LEFT JOIN t_course_approval a ON a.course_id = cou.sys_id and a.user_id = u.id
+        WHERE
+        cou.sys_id = #{courseId} and (cou.is_verify = 0 or (cou.is_verify = 1 and a.appr_result = 1))
+    </select>
+
+    <!-- 修改学员证书 -->
+    <update id="updateUserCertByList" parameterType="com.amway.acti.model.UserCert">
+        <foreach collection="list" item="s" index="index" open="" close="" separator=";">
+            update t_user_cert
+            <set>
+                <if test="s.isAward != null">
+                    is_award = #{s.isAward,jdbcType=INTEGER},
+                </if>
+                url = #{s.url,jdbcType=VARCHAR},
+                award_time = #{s.awardTime,jdbcType=TIMESTAMP}
+            </set>
+            where
+              course_id = #{s.courseId,jdbcType=INTEGER} and
+              user_id = #{s.userId,jdbcType=INTEGER}
+        </foreach>
+    </update>
+
+    <!-- 根据课程id查询 -->
+    <select id="findUserCertByCourseId" resultMap="BaseResultMap">
+      select
+        <include refid="Base_Column_List"/>
+      from
+        t_user_cert
+      where
+        course_id = #{courseId} and
+        is_award = 1 and
+        state = 1
+    </select>
+
+    <!-- 根据课程id，用户id查询学员证书信息 -->
+    <select id="selectUserCertByCourseIdAndUserId" resultMap="BaseResultMap">
+        select
+          <include refid="Base_Column_List"/>
+        from
+          t_user_cert
+        where
+          user_id = #{userId} and
+          course_id = #{courseId} and
+          state = 1
+    </select>
+
+    <!-- 批量新增学员证书 -->
+    <insert id="insertList" parameterType="com.amway.acti.model.UserCert">
+        insert into t_user_cert ( course_id, user_id,
+        is_award, create_time, state,cert_id,name
+        ) values
+        <foreach collection="list" index="i" item="s" separator=",">
+            (#{s.courseId,jdbcType=INTEGER}, #{s.userId,jdbcType=INTEGER},#{s.isAward,jdbcType=INTEGER},
+            #{s.createTime,jdbcType=TIMESTAMP}, #{s.state,jdbcType=INTEGER}, #{s.certId,jdbcType=INTEGER},
+            #{s.name,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <!-- 根据证书id删除关联的学员 -->
+    <delete id="deleteUserCertByCertId">
+        delete from t_user_cert where cert_id = #{certId}
+    </delete>
+
+    <!-- 修改学员证书 -->
+    <update id="updateUserCertByBean" parameterType="com.amway.acti.model.UserCert">
+        update t_user_cert
+        <set>
+            <if test="isAward != null">
+                is_award = #{isAward,jdbcType=INTEGER},
+            </if>
+            <if test="url != null">
+                url = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="awardTime != null">
+                award_time = #{awardTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="name != null">
+                [name] = #{name,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where
+        course_id = #{courseId,jdbcType=INTEGER} and
+        user_id = #{userId,jdbcType=INTEGER}
+    </update>
+
+    <!-- 根据课程id修改学员证书的证书id和证书名称 -->
+    <update id="updateUserCertByCourseId">
+      update t_user_cert set cert_id = #{certId} , name = #{name} where course_id = #{courseId} and cert_id is null
+    </update>
+
+    <!-- 修改学员证书，清空颁发状态和url地址 -->
+    <update id="upUserCertByCourseId">
+        update t_user_cert set is_award = 0 , url = null where course_id = #{courseId}
+    </update>
+
+    <!-- 根据课程id修改学员证书的证书id和证书名称 -->
+    <update id="updateUserCertByCourseIdForName">
+        update t_user_cert set name = #{name} where course_id = #{courseId} and cert_id is not null
+    </update>
+</mapper>

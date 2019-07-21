@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+
+<body>
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+	<section class="wapmbx fl"><a href="#">演讲抽签</a><em></em><strong>演讲抽签</strong></section>
+	<section th:replace="common/common_menu  :: menu"></section>
+    <input type="hidden" th:value="${courseId}" id="courseId">
+	<section class="conFl">
+		<div class="StuCon">
+			<div class="squadTable bjG padd10 mart10">
+				<div class="linH30 fontblod">抽签结果：</div>
+				<div class="tableBox">
+					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					  <tbody>
+						<tr>
+						  <th width="9%">班级</th>
+						  <th width="17%">安利卡号</th>
+						  <th width="12%">姓名</th>
+						  <th width="15%">性别</th>
+						  <th width="14%">演讲号码</th>
+						  <th width="14%">演讲主题</th>
+						  <th width="19%">讲师</th>
+						</tr>
+					  </tbody>
+					</table>
+				</div>
+				<div class="page-box" id="drawResultPager"></div>
+			</div>
+			<div class="dl textCent botMarTop">
+				<a href="javascript:;" class="btnAi c_bule hover-shadow">重新编辑</a>
+                <a href="javascript:;" th:if="${isActivation == false}" class="btnAi c_red hover-shadow" value="1">激活抽签结果</a>
+                <a href="javascript:;" th:if="${isActivation == true}" class="btnAi c_red hover-shadow" value="0">取消激活</a>
+			</div>
+		</div>
+	</section>
+</article>
+<!---演讲主题-->
+<div class="codeLayer addTestQu sub" data-sum="631">
+	<div class="toptit">演讲主题<b class="close"></b></div>
+	<div class="layCon layCon01">
+		<div class="clearfix" id="showSubDetail">
+
+		</div>	
+		<div class="btnBox">
+			<a href="javascript:;" class="btnB addDefine" data-sum="03">确 定</a>
+		</div>
+	</div>
+</div>
+</div>
+<div class="codeLayerbj"></div>
+
+
+<script id="drawResult" type="text/x-handlebars-template">
+	{{#each this}}
+	<tr>
+        <input type="hidden" value="{{classDrawId}}"/>
+        {{#if_eq index number}}
+		<td rowspan="{{number}}">{{className}}</td>
+        {{/if_eq}}
+		<td>{{adaNumber}}</td>
+		<td><span class="w8 courseM-td" title="{{student}}">{{student}}</span></td>
+		<td>{{sex}}</td>
+		<td>{{code}}</td>
+		<td><a href="javascript:;" class="View_le swt_but" id="showSub" data-sum="631">查看演讲主题</a></td>
+        {{#if_eq index number}}
+		<td rowspan="{{number}}">{{teacher}}</td>
+        {{/if_eq}}
+	</tr>
+	{{/each}}
+</script>
+
+<script id="subDetail" type="text/x-handlebars-template">
+
+    <div class="boxDl">
+        <div class="dt">演讲序号</div>
+        <div class="dd lin40">{{code}}</div>
+    </div>
+    <div class="boxDl">
+        <div class="dt">演讲主题</div>
+        <div class="dd linto5">{{content}}</div>
+    </div>
+
+</script>
+
+<script th:src="@{/assets/js/custom/course/drawResult.js}"></script>
+</body>
+</html>

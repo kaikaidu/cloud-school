@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.UserCustomMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.UserCustom">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="union_id" jdbcType="VARCHAR" property="unionId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="sex" jdbcType="SMALLINT" property="sex" />
+    <result column="ident" jdbcType="SMALLINT" property="ident" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="adainfo_md5" jdbcType="VARCHAR" property="adainfoMd5" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="prov_code" jdbcType="VARCHAR" property="provCode" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="ada_number" jdbcType="VARCHAR" property="adaNumber" />
+    <result column="state" jdbcType="SMALLINT" property="state" />
+    <result column="grouping" jdbcType="VARCHAR" property="grouping" />
+    <result column="is_legalperson" jdbcType="SMALLINT" property="isLegalperson" />
+    <result column="vocational_level" jdbcType="VARCHAR" property="vocationalLevel" />
+    <result column="shop" jdbcType="VARCHAR" property="shop" />
+    <result column="id_number" jdbcType="VARCHAR" property="idNumber" />
+    <result column="Identity_type" jdbcType="VARCHAR" property="identityType" />
+    <result column="zip_code" jdbcType="VARCHAR" property="zipCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="sso_name" jdbcType="VARCHAR" property="ssoName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="region_code" jdbcType="VARCHAR" property="regionCode" />
+    <!-- 添加的 -->
+    <result column="via_state" jdbcType="INTEGER" property="viaState" />
+    <result column="start_time" jdbcType="DATE" property="startTime" />
+    <result column="end_time" jdbcType="DATE" property="endTime" />
+    <result column="signState" jdbcType="INTEGER" property="signState" />
+    <result column="is_verify" jdbcType="INTEGER" property="isVerify" />
+    <result column="isDistribution" jdbcType="INTEGER" property="isDistribution" />
+    <result column="class_id" jdbcType="INTEGER" property="classId" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="region" jdbcType="VARCHAR" property="region" />
+    <result column="isAssociatedClass" jdbcType="VARCHAR" property="isAssociatedClass" />
+  </resultMap>
+
+  <!-- 根据名称，卡号查询学员wsc -->
+  <select id="selectUserByName" resultMap="BaseResultMap" parameterType="String">
+    SELECT
+    u.id, u.open_id, u.union_id, u.name, u.password, u.email, u.sex, u.ident, u.phone, u.adainfo_md5, u.address,
+    u.prov_code, u.city_code, u.ada_number, u.state, u.grouping, u.is_legalperson, u.vocational_level,
+    u.shop, u.id_number, u.Identity_type, u.zip_code, u.create_time, u.sso_name, u.remark, u.region_code,
+    p.name as province,c.name as city,r.name as region
+    from
+    t_user u
+    left join t_addr p on u.prov_code = p.code
+    left join t_addr c on u.city_code = c.code
+    left join t_addr r on u.region_code = r.code
+    where
+    u.ident = 1 and u.state = 1
+    <if test="name != null and name != ''">
+      and (u.name like CONCAT('%',#{name},'%') or u.ada_number like CONCAT('%',#{name},'%'))
+    </if>
+    order by u.create_time desc
+  </select>
+
+  <!-- 查询已报名成功的学员,带是否已关联班级 不需要审核 -->
+  <select id="selectSignupByCourseId" resultMap="BaseResultMap">
+    SELECT
+      u.id, u.open_id, u.union_id, u.[name], u.password, u.email, u.sex, u.ident, u.phone, u.adainfo_md5, u.address,
+      u.prov_code, u.city_code, u.ada_number, u.state, u.grouping, u.is_legalperson, u.vocational_level,
+      u.shop, u.id_number, u.Identity_type, u.zip_code,t.class_id,
+      case
+        when (t.id is not null) then '1' else '0'
+      end as isAssociatedClass
+    FROM
+    t_course_signup s
+    LEFT JOIN t_user u ON u.adainfo_md5 = s.adainfo_md5 and u.state = 1
+    LEFT JOIN t_draw_result t ON t.course_id = s.course_id
+    AND t.user_id = u.id
+    WHERE
+    s.course_id = #{courseId} and
+    u.name like CONCAT('%',#{name},'%')
+  </select>
+
+  <!-- 查询已报名成功的学员,带是否已关联班级 需要审核 -->
+  <select id="selectApprByCourseId" resultMap="BaseResultMap">
+    SELECT
+        u.id,
+        u.open_id,
+        u.union_id,
+        u.[name],
+        u.password,
+        u.email,
+        u.sex,
+        u.ident,
+        u.phone,
+        u.adainfo_md5,
+        u.address,
+        u.prov_code,
+        u.city_code,
+        u.ada_number,
+        u.state,
+        u.grouping,
+        u.is_legalperson,
+        u.vocational_level,
+        u.shop,
+        u.id_number,
+        u.Identity_type,
+        u.zip_code,
+        case
+          when (r.id is not null) then '1' else '0'
+        end as isAssociatedClass,
+        r.class_id
+    FROM
+        t_course_approval a
+    left join t_user u on u.id = a.user_id
+    left join t_draw_result r on r.course_id = a.course_id and r.user_id = u.id
+    where
+      a.course_id = #{courseId} AND
+      a.appr_result = 1 AND
+      u.state = 1 and
+      u.name like CONCAT('%',#{name},'%')
+  </select>
+</mapper>

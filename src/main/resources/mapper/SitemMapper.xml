@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.SitemMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.Sitem">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="question" jdbcType="VARCHAR" property="question" />
+    <result column="options" jdbcType="VARCHAR" property="options" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="state" jdbcType="SMALLINT" property="state" />
+    <result column="sitem_temp_id" jdbcType="INTEGER" property="sitemTempId" />
+    <result column="order" jdbcType="INTEGER" property="order" />
+    <result column="ratio" jdbcType="NUMERIC" property="rate" />
+
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, question, options, create_time, state,[order],sitem_temp_id,ratio
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_sitem
+    where id = #{id,jdbcType=INTEGER}
+    AND state = 1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_sitem
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.Sitem">
+    insert into t_sitem (id, title, question, 
+      options, create_time, state
+      )
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{question,jdbcType=VARCHAR}, 
+      #{options,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=SMALLINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.Sitem">
+    insert into t_sitem
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="question != null">
+        question,
+      </if>
+      <if test="options != null">
+        options,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="order != null">
+        [order],
+      </if>
+      <if test="sitemTempId != null">
+        sitem_temp_id,
+      </if>
+      <if test="rate != null">
+        ratio,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="question != null">
+        #{question,jdbcType=VARCHAR},
+      </if>
+      <if test="options != null">
+        #{options,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="order != null">
+        #{order},
+      </if>
+      <if test="sitemTempId != null">
+        #{sitemTempId},
+      </if>
+      <if test="rate != null">
+        #{rate},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.Sitem">
+    update t_sitem
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="question != null">
+        question = #{question,jdbcType=VARCHAR},
+      </if>
+      <if test="options != null">
+        options = #{options,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="rate != null">
+        ratio = #{rate,jdbcType=NUMERIC},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.Sitem">
+    update t_sitem
+    set title = #{title,jdbcType=VARCHAR},
+      question = #{question,jdbcType=VARCHAR},
+      options = #{options,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      state = #{state,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--dk Begin-->
+  <select id="selectBySitemTempId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_sitem
+    where sitem_temp_id = #{sitemTempId,jdbcType=INTEGER}
+    AND state = 1
+    order by [order] ASC
+  </select>
+  <!--dk End-->
+  <!-- qj -->
+  <insert id="addSitem" parameterType="java.util.List">
+    insert into t_sitem (
+        title,
+        question,
+        options,
+        create_time,
+        state,
+        sitem_temp_id,
+        [order],
+        ratio
+      )
+    values
+    <foreach collection="sitemList" item="item" index= "index" separator =",">
+      (#{item.title,jdbcType=VARCHAR}, #{item.question,jdbcType=VARCHAR},
+      #{item.options,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.state,jdbcType=SMALLINT},
+      #{item.sitemTempId,jdbcType=INTEGER},#{item.order,jdbcType=INTEGER},#{item.rate,jdbcType=NUMERIC}
+      )
+    </foreach>
+  </insert>
+
+  <select id="findListByQuestion">
+    SELECT
+      <include refid="Base_Column_List" />
+    FROM  t_sitem
+    WHERE 1=1
+    <if test="question != null">
+      AND question like '%'+#{question}+'%'
+    </if>
+  </select>
+
+  <update id="batchUpdataSitemState" parameterType="com.amway.acti.model.Sitem">
+    update t_sitem
+    <set>
+        state = #{state,jdbcType=SMALLINT},
+    </set>
+    where sitem_temp_id = #{sitemTempId,jdbcType=INTEGER}
+  </update>
+</mapper>

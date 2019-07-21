@@ -1,0 +1,6 @@
+spring:
+    datasource:
+        name: test
+        url: jdbc:sqlserver://127.0.0.1;DatabaseName=cstest
+        username: sa
+        password: A@1234cn

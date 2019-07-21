@@ -1,0 +1,1191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.User">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="union_id" jdbcType="VARCHAR" property="unionId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="sex" jdbcType="SMALLINT" property="sex" />
+    <result column="ident" jdbcType="SMALLINT" property="ident" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="adainfo_md5" jdbcType="VARCHAR" property="adainfoMd5" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="prov_code" jdbcType="VARCHAR" property="provCode" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="ada_number" jdbcType="VARCHAR" property="adaNumber" />
+    <result column="state" jdbcType="SMALLINT" property="state" />
+    <result column="grouping" jdbcType="VARCHAR" property="grouping" />
+    <result column="is_legalperson" jdbcType="SMALLINT" property="isLegalperson" />
+    <result column="vocational_level" jdbcType="VARCHAR" property="vocationalLevel" />
+    <result column="shop" jdbcType="VARCHAR" property="shop" />
+    <result column="id_number" jdbcType="VARCHAR" property="idNumber" />
+    <result column="Identity_type" jdbcType="VARCHAR" property="identityType" />
+    <result column="zip_code" jdbcType="VARCHAR" property="zipCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="sso_name" jdbcType="VARCHAR" property="ssoName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="region_code" jdbcType="VARCHAR" property="regionCode" />
+    <!-- 添加的 -->
+    <result column="via_state" jdbcType="INTEGER" property="viaState" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="signState" jdbcType="INTEGER" property="signState" />
+    <result column="is_verify" jdbcType="INTEGER" property="isVerify" />
+    <result column="isDistribution" jdbcType="INTEGER" property="isDistribution" />
+    <result column="class_id" jdbcType="INTEGER" property="classId" />
+    <result column="sso_adanumber" jdbcType="VARCHAR" property="ssoAdanumber" />
+  </resultMap>
+
+  <resultMap id="RealityUserMap" type="com.amway.acti.model.RealityUser">
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="ada_number" jdbcType="VARCHAR" property="adaNumber" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="apprResult" jdbcType="VARCHAR" property="apprResult" />
+    <result column="viaState" jdbcType="VARCHAR" property="viaState" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, open_id, union_id, name, password, email, sex, ident, phone, adainfo_md5, address, 
+    prov_code, city_code, ada_number, state, grouping, is_legalperson, vocational_level, 
+    shop, id_number, Identity_type, zip_code, create_time, sso_name, remark, region_code,sso_adanumber
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user
+    where id = #{id,jdbcType=INTEGER}
+      and state = 1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.User">
+    insert into t_user (id, open_id, union_id, 
+      name, password, email, 
+      sex, ident, phone, 
+      adainfo_md5, address, prov_code, 
+      city_code, ada_number, state, 
+      grouping, is_legalperson, vocational_level, 
+      shop, id_number, Identity_type, 
+      zip_code, create_time, sso_name, 
+      remark, region_code,sso_adanumber)
+    values (#{id,jdbcType=INTEGER}, #{openId,jdbcType=VARCHAR}, #{unionId,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{sex,jdbcType=SMALLINT}, #{ident,jdbcType=SMALLINT}, #{phone,jdbcType=VARCHAR}, 
+      #{adainfoMd5,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{provCode,jdbcType=VARCHAR}, 
+      #{cityCode,jdbcType=VARCHAR}, #{adaNumber,jdbcType=VARCHAR}, #{state,jdbcType=SMALLINT}, 
+      #{grouping,jdbcType=VARCHAR}, #{isLegalperson,jdbcType=SMALLINT}, #{vocationalLevel,jdbcType=VARCHAR}, 
+      #{shop,jdbcType=VARCHAR}, #{idNumber,jdbcType=VARCHAR}, #{identityType,jdbcType=VARCHAR}, 
+      #{zipCode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{ssoName,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{regionCode,jdbcType=VARCHAR},#{ssoAdanumber,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.User" useGeneratedKeys="true" keyProperty="id">
+    insert into t_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="openId != null">
+        open_id,
+      </if>
+      <if test="unionId != null">
+        union_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="ident != null">
+        ident,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="adainfoMd5 != null">
+        adainfo_md5,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="provCode != null">
+        prov_code,
+      </if>
+      <if test="cityCode != null">
+        city_code,
+      </if>
+      <if test="adaNumber != null">
+        ada_number,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="grouping != null">
+        grouping,
+      </if>
+      <if test="isLegalperson != null">
+        is_legalperson,
+      </if>
+      <if test="vocationalLevel != null">
+        vocational_level,
+      </if>
+      <if test="shop != null">
+        shop,
+      </if>
+      <if test="idNumber != null">
+        id_number,
+      </if>
+      <if test="identityType != null">
+        Identity_type,
+      </if>
+      <if test="zipCode != null">
+        zip_code,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="ssoName != null">
+        sso_name,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="regionCode != null">
+        region_code,
+      </if>
+      <if test="ssoAdanumber != null">
+        sso_adanumber,
+      </if>
+      <if test="areaCode != null">
+        area_code,
+      </if>
+      <if test="age != null">
+        age,
+      </if>
+      <if test="shopProvince != null">
+        shop_province,
+      </if>
+      <if test="shopCity != null">
+        shop_city,
+      </if>
+      <if test="shopProvinceCode != null">
+        shop_province_code,
+      </if>
+      <if test="shopCityCode != null">
+        shop_city_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="openId != null">
+        #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="unionId != null">
+        #{unionId,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=SMALLINT},
+      </if>
+      <if test="ident != null">
+        #{ident,jdbcType=SMALLINT},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="adainfoMd5 != null">
+        #{adainfoMd5,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="provCode != null">
+        #{provCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="adaNumber != null">
+        #{adaNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="grouping != null">
+        #{grouping,jdbcType=VARCHAR},
+      </if>
+      <if test="isLegalperson != null">
+        #{isLegalperson,jdbcType=SMALLINT},
+      </if>
+      <if test="vocationalLevel != null">
+        #{vocationalLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="shop != null">
+        #{shop,jdbcType=VARCHAR},
+      </if>
+      <if test="idNumber != null">
+        #{idNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="identityType != null">
+        #{identityType,jdbcType=VARCHAR},
+      </if>
+      <if test="zipCode != null">
+        #{zipCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ssoName != null">
+        #{ssoName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="regionCode != null">
+        #{regionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="ssoAdanumber != null">
+        #{ssoAdanumber,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        #{age,jdbcType=SMALLINT},
+      </if>
+      <if test="shopProvince != null">
+        #{shopProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="shopCity != null">
+        #{shopCity,jdbcType=VARCHAR},
+      </if>
+      <if test="shopProvinceCode != null">
+        #{shopProvinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="shopCityCode != null">
+        #{shopCityCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.User">
+    update t_user
+    <set>
+      <if test="openId != null">
+        open_id = #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="unionId != null">
+        union_id = #{unionId,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=SMALLINT},
+      </if>
+      <if test="ident != null">
+        ident = #{ident,jdbcType=SMALLINT},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="adainfoMd5 != null">
+        adainfo_md5 = #{adainfoMd5,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="provCode != null">
+        prov_code = #{provCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="adaNumber != null">
+        ada_number = #{adaNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="grouping != null">
+        grouping = #{grouping,jdbcType=VARCHAR},
+      </if>
+      <if test="isLegalperson != null">
+        is_legalperson = #{isLegalperson,jdbcType=SMALLINT},
+      </if>
+      <if test="vocationalLevel != null">
+        vocational_level = #{vocationalLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="shop != null">
+        shop = #{shop,jdbcType=VARCHAR},
+      </if>
+      <if test="idNumber != null">
+        id_number = #{idNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="identityType != null">
+        Identity_type = #{identityType,jdbcType=VARCHAR},
+      </if>
+      <if test="zipCode != null">
+        zip_code = #{zipCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ssoName != null">
+        sso_name = #{ssoName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="regionCode != null">
+        region_code = #{regionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        area_code =#{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        age = #{age,jdbcType=SMALLINT},
+      </if>
+      <if test="shopProvince != null">
+        shop_province = #{shopProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="shopCity != null">
+        shop_city = #{shopCity,jdbcType=VARCHAR},
+      </if>
+      <if test="shopProvinceCode != null">
+        shop_province_code = #{shopProvinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="shopCityCode != null">
+        shop_city_code = #{shopCityCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.User">
+    update t_user
+    set open_id = #{openId,jdbcType=VARCHAR},
+      union_id = #{unionId,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=SMALLINT},
+      ident = #{ident,jdbcType=SMALLINT},
+      phone = #{phone,jdbcType=VARCHAR},
+      adainfo_md5 = #{adainfoMd5,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      prov_code = #{provCode,jdbcType=VARCHAR},
+      city_code = #{cityCode,jdbcType=VARCHAR},
+      ada_number = #{adaNumber,jdbcType=VARCHAR},
+      state = #{state,jdbcType=SMALLINT},
+      grouping = #{grouping,jdbcType=VARCHAR},
+      is_legalperson = #{isLegalperson,jdbcType=SMALLINT},
+      vocational_level = #{vocationalLevel,jdbcType=VARCHAR},
+      shop = #{shop,jdbcType=VARCHAR},
+      id_number = #{idNumber,jdbcType=VARCHAR},
+      Identity_type = #{identityType,jdbcType=VARCHAR},
+      zip_code = #{zipCode,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      sso_name = #{ssoName,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      region_code = #{regionCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByOpenIdAndUnionId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_user where open_id = #{openId} and union_id = #{unionId}
+  </select>
+
+  <select id="selectByEmailAndPassword" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_user where email = #{email} and password = #{password} and state = 1
+  </select>
+
+  <select id="selectAllTeachers" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_user where ident = 2 and state = 1 order by name
+  </select>
+
+  <select id="selectAllAssists" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_user where ident = 3 and state = 1 order by name
+  </select>
+
+  <select id="countTeacherByList" resultType="java.lang.Integer">
+    select count(0) from t_user where ident = 2 and id IN
+    <foreach close=")" collection="teacherIds" item="teacherId" open="(" separator=",">
+      #{teacherId}
+    </foreach>
+  </select>
+
+  <!--Begin dk-->
+  <select id="selectByAdaEncode" resultMap="BaseResultMap" parameterType="String">
+    select
+    <include refid="Base_Column_List" />
+    from t_user where  adainfo_md5 = #{adaInfoEncode}
+    and state = 1
+  </select>
+
+
+  <!--End dk-->
+
+  <select id="selectUserAndSignupByCourseId" parameterType="com.amway.acti.model.CourseUser" resultMap="BaseResultMap">
+    SELECT
+      u.id, u.open_id, u.union_id, u.[name], u.password, u.email, u.sex, u.ident, u.phone, u.adainfo_md5, u.address,
+      u.prov_code, u.city_code, u.ada_number, u.state, u.grouping, u.is_legalperson, u.vocational_level,
+      u.shop, u.id_number, u.Identity_type, u.zip_code ,s.via_state ,t.start_time,
+      t.end_time,t.is_verify
+      from
+      t_user u ,t_course_signup s ,t_course t
+      where
+      u.adainfo_md5 = s.adainfo_md5 AND
+      s.course_id = t.sys_id AND
+      s.course_id = #{courseId} and u.state = 1
+    <if test="name != null and name != ''">
+      and (u.name like CONCAT('%',#{name},'%') or u.ada_number like CONCAT('%',#{name},'%'))
+    </if>
+    <if test="sex != null and sex != ''">
+      and u.sex = #{sex}
+    </if>
+    <if test="signState != null and signState != ''">
+      <if test="signState == 1 or signState == 3"><!-- 报名中，当前时间小于课程开始时间 -->
+        and #{currentTime} <![CDATA[ < ]]> t.start_time or
+        (#{currentTime} &gt;= t.start_time and #{currentTime} <![CDATA[ < ]]> t.end_time)
+      </if>
+      <if test="signState == 4"><!-- 已完成，当前时间大于课程结束时间 -->
+        and #{currentTime} &gt; t.end_time
+      </if>
+    </if>
+    <if test="viaState != null and viaState != ''">
+      and s.via_state = #{viaState}
+    </if>
+    order by s.via_state desc,u.ada_number asc
+  </select>
+
+  <select id="selectUserSignCount" parameterType="com.amway.acti.model.CourseUser" resultType="int">
+    SELECT
+        COUNT(1)
+      from
+      t_user u ,t_course_signup s ,t_course t
+      where
+      u.adainfo_md5 = s.adainfo_md5 AND
+      s.course_id = t.sys_id AND
+      s.course_id = #{courseId} and u.state = 1
+    <if test="name != null and name != ''">
+      and (u.name like CONCAT('%',#{name},'%') or u.ada_number like CONCAT('%',#{name},'%'))
+    </if>
+    <if test="sex != null and sex != ''">
+      and u.sex = #{sex}
+    </if>
+    <if test="signState != null and signState != ''">
+      <if test="signState == 1 or signState == 3"><!-- 报名中，当前时间小于课程开始时间 -->
+        and #{currentTime} <![CDATA[ < ]]> t.start_time or
+        (#{currentTime} &gt;= t.start_time and #{currentTime} <![CDATA[ < ]]> t.end_time)
+      </if>
+      <if test="signState == 4"><!-- 已完成，当前时间大于课程结束时间 -->
+        and #{currentTime} &gt; t.end_time
+      </if>
+    </if>
+    <if test="viaState != null and viaState != ''">
+      and s.via_state = #{viaState}
+    </if>
+  </select>
+
+  <update id="updateSignState">
+    UPDATE
+      t_course_signup
+    set
+      t_course_signup.via_state=#{state}
+    FROM
+      t_user u
+    WHERE
+      t_course_signup.adainfo_md5=u.adainfo_md5 AND
+      u.id=#{id}
+  </update>
+
+  <!-- 导出线下学员 -->
+  <select id="selectExportUser" resultMap="RealityUserMap">
+    SELECT DISTINCT
+      u.[name],
+      case
+        when (u.sex = 0) then '男'
+        when (u.sex = 1) then '女'
+        else '夫妻'
+      end sex,
+      u.ada_number,
+      case
+        when (s.via_state = 0) then '未通过'
+        when (s.via_state = 1) then '通过'
+        end viaState,
+      case
+        when ((#{currentTime} <![CDATA[ < ]]> t.start_time) or
+            (#{currentTime} > t.start_time and #{currentTime} <![CDATA[ < ]]> t.end_time)) then '报名成功'
+        when (#{currentTime} &gt; t.end_time) then '已完成'
+      end apprResult,
+      s.via_state<!-- 因加了DISTINCT关键字，排序的字段必须出现 -->
+    from
+      t_user u ,t_course_signup s ,t_course t
+    where
+      u.adainfo_md5 = s.adainfo_md5 AND
+      s.course_id = t.sys_id AND
+      s.course_id = #{courseId} and u.state = 1
+      <if test="name != null and name != '' and name != 'null'">
+        and (u.name like CONCAT('%',#{name},'%') or u.ada_number like CONCAT('%',#{name},'%'))
+      </if>
+      <if test="sex != null and sex != '' and sex != 'null'">
+        and u.sex = #{sex}
+      </if>
+      <if test="viaState != null and viaState != '' and viaState != 'null'">
+        and s.via_state = #{viaState}
+      </if>
+      <if test="list != null">
+        and u.id in (
+        <foreach collection="list" item="s" separator=",">
+          #{s,jdbcType=VARCHAR}
+        </foreach>
+        )
+      </if>
+    order by s.via_state desc
+  </select>
+
+  <!-- 需要审核，查询报名审批表 -->
+  <select id="selectApprovalByCourseId" parameterType="com.amway.acti.model.CourseUser" resultMap="BaseResultMap">
+    select
+    u.id, u.open_id, u.union_id, u.[name], u.password, u.email, u.sex, u.ident, u.phone, u.adainfo_md5, u.address,
+    u.prov_code, u.city_code, u.ada_number, u.state, u.grouping, u.is_legalperson, u.vocational_level,
+    u.shop, u.id_number, u.Identity_type, u.zip_code ,s.via_state ,t.start_time,
+    t.end_time ,a.appr_result as signState ,t.is_verify
+    from
+    t_course_approval a ,t_course_signup s,t_user u,t_course t
+    where
+      a.course_id = s.course_id AND
+      u.adainfo_md5 = s.adainfo_md5 and
+      a.user_id = u.id and
+      t.sys_id = a.course_id and
+      a.course_id = #{courseId} and u.state = 1
+    <if test="name != null and name != ''">
+      and (u.name like CONCAT('%',#{name},'%') or u.ada_number like CONCAT('%',#{name},'%'))
+    </if>
+    <if test="sex != null and sex != ''">
+      and u.sex = #{sex}
+    </if>
+    <if test="signState != null and signState != ''">
+      <if test="signState == 0"><!-- 审核失败 -->
+        and a.appr_result = #{signState}
+      </if>
+      <if test="signState == 1 or signState == 3"><!-- 报名成功，当前时间小于课程开始时间 -->
+        and (a.appr_result = #{signState} and #{currentTime} <![CDATA[ < ]]>t.start_time) or
+        (#{currentTime} &gt;= t.start_time and #{currentTime} <![CDATA[ < ]]> t.end_time and a.appr_result = 1)
+      </if>
+      <if test="signState == 2"><!-- 审核中 -->
+        and a.appr_result = #{signState}
+      </if>
+      <if test="signState == 4"><!-- 已完成，当前时间大于课程结束时间 -->
+        and #{currentTime} &gt; t.end_time and a.appr_result = 1
+      </if>
+    </if>
+    <if test="viaState != null and viaState != ''">
+      and s.via_state = #{viaState}
+    </if>
+    order by s.via_state desc,u.adainfo_md5 asc
+  </select>
+
+  <!-- 查询需审核的课程总数wsc -->
+  <select id="selectLiveTelecastCount" parameterType="com.amway.acti.model.CourseUser" resultType="int">
+    select
+    count(1)
+    from
+    t_course_approval a ,t_course_signup s,t_user u,t_course t
+    where
+    a.course_id = s.course_id AND
+    u.adainfo_md5 = s.adainfo_md5 and
+    a.user_id = u.id and
+    t.sys_id = a.course_id and
+    a.course_id = #{courseId} and u.state = 1
+    <if test="name != null and name != ''">
+      and (u.name like CONCAT('%',#{name},'%') or u.ada_number like CONCAT('%',#{name},'%'))
+    </if>
+    <if test="sex != null and sex != ''">
+      and u.sex = #{sex}
+    </if>
+    <if test="signState != null and signState != ''">
+      <if test="signState == 0"><!-- 审核失败 -->
+        and a.appr_result = #{signState}
+      </if>
+      <if test="signState == 1 or signState == 3"><!-- 报名成功，当前时间小于课程开始时间 -->
+        and a.appr_result = #{signState} or
+        (#{currentTime} &gt;= t.start_time and #{currentTime} <![CDATA[ < ]]> t.end_time and a.appr_result = 1)
+      </if>
+      <if test="signState == 2"><!-- 审核中 -->
+        and a.appr_result = #{signState}
+      </if>
+      <if test="signState == 4"><!-- 已完成，当前时间大于课程结束时间 -->
+        and #{currentTime} &gt; t.end_time and a.appr_result = 1
+      </if>
+    </if>
+    <if test="viaState != null and viaState != ''">
+      and s.via_state = #{viaState}
+    </if>
+  </select>
+
+  <!-- 根据班级查询讲师，把多行讲师拼接成一行 空格间隔wsc-->
+  <select id="selectLecturerByClassId" parameterType="Integer" resultType="String">
+    SELECT
+	reverse(
+		stuff(
+			reverse(
+				(
+					SELECT
+						u.name + ' '
+					FROM
+						t_user u,
+						t_course_teacher c
+					WHERE
+						u.id = c.user_id and u.state = 1
+					AND class_id = #{classId} FOR xml path ('')
+				)
+			),
+			1,
+			1,
+			''
+		)
+	)
+  </select>
+
+  <!-- 李伟新增 -->
+  <select id="selectWithApproed" resultMap="BaseResultMap">
+    SELECT t1.* FROM t_user AS t1, t_course_approval as t2
+    WHERE t1.id = t2.user_id and t2.course_id = #{courseId} and t2.appr_result = 1 and t1.id = #{userId}
+  </select>
+
+  <select id="selectWithNotApproed" resultMap="BaseResultMap">
+    SELECT t1.* FROM t_user as t1, t_course_signup as t2
+    WHERE t1.adainfo_md5 = t2.adainfo_md5 and t2.course_id = #{courseId} and t1.id = #{userId}
+  </select>
+
+  <!-- 查询需要审核的课程 -->
+  <select id="selectUserByCourseIdAndApproval" parameterType="Integer" resultMap="BaseResultMap">
+    SELECT
+      u.id, u.open_id, u.union_id, u.[name], u.password, u.email, u.sex, u.ident, u.phone, u.adainfo_md5, u.address,
+      u.prov_code, u.city_code, u.ada_number, u.state, u.grouping, u.is_legalperson, u.vocational_level,
+      u.shop, u.id_number, u.Identity_type, u.zip_code
+    FROM
+        t_course_approval a,
+        t_user u
+    WHERE
+        a.user_id = u.id
+    AND a.appr_result = 1
+    AND a.course_id = #{courseId}  and u.state = 1
+  </select>
+
+  <!-- 根据课程id查询所有学员wsc -->
+  <select id="selectUserByCourseId" parameterType="Integer" resultMap="BaseResultMap">
+    SELECT
+      u.id, u.open_id, u.union_id, u.[name], u.password, u.email, u.sex, u.ident, u.phone, u.adainfo_md5, u.address,
+      u.prov_code, u.city_code, u.ada_number, u.state, u.grouping, u.is_legalperson, u.vocational_level,
+      u.shop, u.id_number, u.Identity_type, u.zip_code
+    FROM
+        t_course_signup c,
+        t_user u
+    WHERE
+        c.adainfo_md5 = u.adainfo_md5
+    AND c.course_id = #{courseId}  and u.state = 1
+  </select>
+
+  <!-- 根据名称查询讲师wsc -->
+  <select id="selectLecturerCondition" parameterType="map" resultMap="BaseResultMap">
+    SELECT
+      u.id, u.open_id, u.union_id, u.[name], u.password, u.email, u.sex, u.ident, u.phone, u.adainfo_md5, u.address,
+      u.prov_code, u.city_code, u.ada_number, u.state, u.grouping, u.is_legalperson, u.vocational_level,
+      u.shop, u.id_number, u.Identity_type, u.zip_code,t.class_id,t.class_id as isDistribution
+    FROM
+        t_user u
+    LEFT JOIN t_course_teacher t ON u.id = t.user_id and t.class_id is not null
+    AND t.course_id = #{courseId}
+    WHERE
+        u.ident = 2 and u.state = 1
+    <if test="name != null">
+      and u.name like CONCAT('%',#{name},'%')
+    </if>
+  </select>
+
+  <!-- 获取讲师总数wsc -->
+  <select id="selectUserCount" resultType="int">
+    select
+      count(1)
+    FROM
+      t_user
+    where
+      ident = #{ident} and state = 1
+    <if test="name != null and name != ''">
+      and name like CONCAT('%',#{name},'%')
+    </if>
+  </select>
+
+  <!-- 根据身份，用户名称查询用户wsc -->
+  <select id="selectUserByNameAndIdent" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    FROM
+      t_user
+    where
+      ident = #{ident} and state = 1
+    <if test="name != null and name != ''">
+      and name like CONCAT('%',#{name},'%')
+    </if>
+
+  </select>
+
+  <select id="selectUserForAdmin" resultMap="BaseResultMap">
+    select
+     <include refid="Base_Column_List" />
+    FROM
+      t_user
+    WHERE 1=1
+    AND state = 1
+    <if test="name != null">
+      AND name like CONCAT('%',#{name},'%')
+    </if>
+    <if test="ident != null and ident !='' ">
+      AND ident = #{ident}
+    </if>
+    <if test=" ident=='' ">
+      AND (ident = 0
+        OR ident = 3)
+    </if>
+    <![CDATA[AND name <>'super_admin_du']]>
+  </select>
+
+  <!-- 获取学员总数wsc -->
+  <select id="getStudentCount" resultType="int">
+    SELECT
+      count(1)
+    from
+      t_user
+    where
+      ident = 1 and state = 1
+    <if test="name != null and name != ''">
+      and (name like CONCAT('%',#{name},'%') or ada_number like CONCAT('%',#{name},'%'))
+    </if>
+  </select>
+
+  <!-- 李伟新增 -->
+  <select id="selectUsersWithApproed" parameterType="int" resultMap="BaseResultMap">
+    SELECT * FROM t_user WHERE id in
+    (
+    SELECT user_id FROM t_course_approval WHERE course_id = #{courseId} and appr_result = 1
+    )
+  </select>
+
+  <select id="selectUsersWithNotApproed" parameterType="int" resultMap="BaseResultMap">
+    SELECT * FROM t_user WHERE adainfo_md5 in
+    (
+    SELECT adainfo_md5 FROM t_course_signup WHERE course_id = #{courseId}
+    )
+  </select>
+
+  <select id="selectByEmail" parameterType="com.amway.acti.model.User" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_user
+    where 1=1
+    AND state = 1
+    AND email = #{email}
+  </select>
+
+  <select id="selectAdminUserList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_user
+    where 1=1
+    AND state = 1
+    AND (ident = 0
+    OR ident = 3)
+  </select>
+
+  <!-- 导出直播课程wsc -->
+  <select id="selectExportLiveUser" parameterType="com.amway.acti.model.CourseUser" resultMap="RealityUserMap">
+    select DISTINCT
+      u.[name],
+      case
+        when (u.sex = 0) then '男'
+        when (u.sex = 1) then '女'
+        else '夫妻'
+      end sex,
+      u.ada_number,
+      case
+        when (s.via_state = 0) then '未通过'
+        when (s.via_state = 1) then '通过'
+      end viaState,
+      case
+        when (a.appr_result = 0) then '审核失败'
+        when (a.appr_result = 1 and ((#{currentTime} <![CDATA[ < ]]> t.start_time) or
+              (#{currentTime} > t.start_time and #{currentTime} <![CDATA[ < ]]> t.end_time))) then '报名成功'
+        when (a.appr_result = 2) then '审核中'
+        when (#{currentTime} &gt; t.end_time and a.appr_result = 1) then '已完成'
+      end apprResult,
+      s.via_state<!-- 因加了DISTINCT关键字，排序的字段必须出现 -->
+    from
+      t_course_approval a ,t_course_signup s,t_user u,t_course t
+    where
+      a.course_id = s.course_id AND
+      u.adainfo_md5 = s.adainfo_md5 and
+      a.user_id = u.id and
+      t.sys_id = a.course_id and
+      a.course_id = #{courseId} and u.state = 1
+    <if test="name != null and name != '' and name != 'null'">
+      and (u.name like CONCAT('%',#{name},'%') or u.ada_number like CONCAT('%',#{name},'%'))
+    </if>
+    <if test="sex != null and sex != '' and sex != 'null'">
+      and u.sex = #{sex}
+    </if>
+    <if test="signState != null and signState != '' and signState != 'null'">
+      <if test="signState == 0"><!-- 审核失败 -->
+        and a.appr_result = #{signState}
+      </if>
+      <if test="signState == 1 or signState == 3"><!-- 报名成功，当前时间小于课程开始时间 包含进行中的 -->
+        and (a.appr_result = #{signState} and #{currentTime} <![CDATA[ < ]]>t.start_time) or
+        (#{currentTime} &gt;= t.start_time and #{currentTime} <![CDATA[ < ]]> t.end_time and a.appr_result = 1)
+      </if>
+      <if test="signState == 2"><!-- 审核中 -->
+        and a.appr_result = #{signState}
+      </if>
+      <if test="signState == 4"><!-- 已完成，当前时间大于课程结束时间 -->
+        and #{currentTime} &gt; t.end_time and a.appr_result = 1
+      </if>
+    </if>
+    <if test="viaState != null and viaState != '' and viaState != 'null'">
+      and s.via_state = #{viaState}
+    </if>
+    <if test="list != null">
+      and u.id in (
+      <foreach collection="list" item="s" separator=",">
+        #{s,jdbcType=VARCHAR}
+      </foreach>
+      )
+    </if>
+    order by s.via_state desc
+  </select>
+
+  <!-- 根据邮箱查询用户wsc -->
+  <select id="getTeacherByEmail" parameterType="String" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from
+      t_user
+    where
+      email = #{email} and
+      state = 1
+  </select>
+
+  <!-- 校验邮箱qj -->
+  <select id="checkByEmail" parameterType="String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from
+    t_user
+    where
+    email = #{email} and
+    state = 1
+  </select>
+
+  <!-- 批量修改用户 -->
+  <update id="updateUserByList" parameterType="com.amway.acti.model.User">
+    <foreach collection="list" item="s" index="index" open="" close="" separator=";">
+      update t_user
+      <set>
+        <if test="s.name != null">
+          name = #{s.name,jdbcType=VARCHAR},
+        </if>
+        <if test="s.sex != null">
+          sex = #{s.sex,jdbcType=SMALLINT},
+        </if>
+        <if test="s.phone != null">
+          phone = #{s.phone,jdbcType=VARCHAR},
+        </if>
+        <if test="s.adainfoMd5 != null">
+          adainfo_md5 = #{s.adainfoMd5,jdbcType=VARCHAR},
+        </if>
+        <if test="s.address != null">
+          address = #{s.address,jdbcType=VARCHAR},
+        </if>
+        <if test="s.provCode != null">
+          prov_code = #{s.provCode,jdbcType=VARCHAR},
+        </if>
+        <if test="s.cityCode != null">
+          city_code = #{s.cityCode,jdbcType=VARCHAR},
+        </if>
+        <if test="s.adaNumber != null">
+          ada_number = #{s.adaNumber,jdbcType=VARCHAR},
+        </if>
+        <if test="s.state != null">
+          state = #{s.state,jdbcType=SMALLINT},
+        </if>
+        <if test="s.grouping != null">
+          grouping = #{s.grouping,jdbcType=VARCHAR},
+        </if>
+        <if test="s.isLegalperson != null">
+          is_legalperson = #{s.isLegalperson,jdbcType=SMALLINT},
+        </if>
+        <if test="s.vocationalLevel != null">
+          vocational_level = #{s.vocationalLevel,jdbcType=VARCHAR},
+        </if>
+        <if test="s.shop != null">
+          shop = #{s.shop,jdbcType=VARCHAR},
+        </if>
+        <if test="s.idNumber != null">
+          id_number = #{s.idNumber,jdbcType=VARCHAR},
+        </if>
+        <if test="s.identityType != null">
+          Identity_type = #{s.identityType,jdbcType=VARCHAR},
+        </if>
+        <if test="s.zipCode != null">
+          zip_code = #{s.zipCode,jdbcType=VARCHAR},
+        </if>
+        <if test="s.regionCode != null">
+          region_code = #{s.regionCode,jdbcType=VARCHAR},
+        </if>
+      </set>
+      where id = #{s.id,jdbcType=INTEGER}
+    </foreach>
+  </update>
+
+  <!-- 批量新增user -->
+  <insert id="insertByList" parameterType="com.amway.acti.model.User">
+    insert into t_user (name,sex, ident, phone,
+    adainfo_md5, address, prov_code,
+    city_code, ada_number, state,
+    grouping, is_legalperson, vocational_level,
+    shop, id_number, Identity_type,
+    zip_code, create_time, region_code)
+    values
+      <foreach collection="list" item="s" index="i" separator=",">
+        (#{s.name,jdbcType=VARCHAR},
+        #{s.sex,jdbcType=SMALLINT}, #{s.ident,jdbcType=SMALLINT}, #{s.phone,jdbcType=VARCHAR},
+        #{s.adainfoMd5,jdbcType=VARCHAR}, #{s.address,jdbcType=VARCHAR}, #{s.provCode,jdbcType=VARCHAR},
+        #{s.cityCode,jdbcType=VARCHAR}, #{s.adaNumber,jdbcType=VARCHAR}, #{s.state,jdbcType=SMALLINT},
+        #{s.grouping,jdbcType=VARCHAR}, #{s.isLegalperson,jdbcType=SMALLINT}, #{s.vocationalLevel,jdbcType=VARCHAR},
+        #{s.shop,jdbcType=VARCHAR}, #{s.idNumber,jdbcType=VARCHAR}, #{s.identityType,jdbcType=VARCHAR},
+        #{s.zipCode,jdbcType=VARCHAR}, #{s.createTime,jdbcType=TIMESTAMP}, #{s.regionCode,jdbcType=VARCHAR})
+      </foreach>
+  </insert>
+
+  <!-- 统计当前用户参与课程数量 -->
+  <select id="countCourses" resultType="java.lang.Integer">
+    <![CDATA[
+      select count(t.id) from t_course_teacher t
+      inner join t_course c
+      on c.sys_id = t.course_id
+       and c.start_time <= #{currentTime}
+      where t.user_id = #{userId}
+    ]]>
+  </select>
+
+  <!-- 批量查询用户信息 -->
+  <select id="selectUsersInIds" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from
+    t_user
+    <if test="list != null">
+      where id in(
+      <foreach collection="list" item="s" separator=",">
+        #{s}
+      </foreach>
+      )
+    </if>
+  </select>
+
+
+  <!-- 查询全部讲师数量qj-->
+  <select id="findTeacList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+  FROM
+      t_user
+  WHERE
+      ident = 2
+  AND state = 1
+  <if test="name != null">
+    AND name like '%${name}%'
+  </if>
+  </select>
+
+  <select id="selectTeacIdByCourseIdAndClassId" resultType="string">
+    SELECT
+    u.id
+    FROM
+    t_user u
+    LEFT JOIN t_course_teacher t ON u.id = t.user_id and t.class_id is not null
+    AND t.course_id = #{courseId}
+    WHERE
+    u.ident = 2 and u.state = 1
+    AND t.class_id = #{mClassId}
+  </select>
+
+
+  <!-- 根据用户id查询当前用户是否可以删除  -->
+  <select id="selectByUserList" resultMap="BaseResultMap">
+    SELECT
+    b.user_id as id,
+    b.name as name,
+    MAX (b.user_state) AS signState
+    FROM
+    (
+    SELECT
+    user_id,
+    name,
+    (
+    CASE
+    WHEN t.is_verify = 0
+    AND t.start_time <![CDATA[ < ]]> #{currentTime} THEN
+    1
+    WHEN t.is_verify = 1
+    AND t.appr_result = 1
+    AND t.start_time <![CDATA[ < ]]> #{currentTime} THEN
+    1
+    ELSE
+    0
+    END
+    ) AS user_state
+    FROM
+    (
+    SELECT
+    cs.course_id,
+    c.start_time,
+    c.is_verify,
+    u.id AS user_id,
+    u.name,
+    ISNULL(ca.appr_result, - 1) AS appr_result
+    FROM
+    t_course_signup cs
+    INNER JOIN t_user u ON cs.adainfo_md5 = u.adainfo_md5
+    INNER JOIN t_course c ON cs.course_id = c.sys_id --直播课程
+    LEFT JOIN t_course_approval ca ON ca.course_id = cs.course_id
+    AND ca.user_id IN (
+    <foreach collection="list" separator="," item="s">
+      #{s}
+    </foreach>
+    )
+    AND c.is_shelve = 1
+    WHERE
+    1 = 1
+    AND u.id IN (
+    <foreach collection="list" separator="," item="l">
+      #{l}
+    </foreach>
+    )
+    AND u.state = 1
+    ) T
+    ) b
+    GROUP BY b.user_id,b.name
+  </select>
+
+  <!-- 根据姓名，性别，卡号 查询报名成功的用户 -->
+  <select id="selectUserByNameAndSexAndAdaNum" resultMap="BaseResultMap">
+    select
+      s.id,
+      s.name,
+      s.ada_number,
+      s.sex
+  from (
+      SELECT
+          u.id,
+          u.name,
+          u.ada_number,
+          u.sex,
+          c.is_verify,
+          a.appr_result,
+          s.via_state,
+          t.is_award
+      FROM
+          t_course_signup s
+      INNER JOIN t_user u ON s.adainfo_md5 = u.adainfo_md5
+      LEFT JOIN t_course c ON c.sys_id = s.course_id
+      LEFT JOIN t_course_approval a ON a.course_id = c.sys_id AND a.user_id = u.id
+      LEFT JOIN t_user_cert t ON t.course_id = a.course_id AND t.user_id = a.user_id
+      WHERE
+          c.sys_id = #{courseId} and u.state = 1 and u.ident = 1 and
+          u.name = #{name} and u.sex = #{sex} and u.ada_number = #{adaNumber}) s
+  where
+    ((s.is_verify = 0 and s.appr_result is null) or (s.is_verify = 1 and s.appr_result = 1))
+  </select>
+
+  <!-- 根据课程id查询已报名成功的学员集合 -->
+  <select id="selectSignSuccUserByCourseId" resultMap="BaseResultMap">
+    select
+      s.id,
+      s.name,
+      s.ada_number,
+      s.sex
+  from (
+      SELECT
+          u.id,
+          u.name,
+          u.ada_number,
+          u.sex,
+          c.is_verify,
+          a.appr_result,
+          s.via_state,
+          t.is_award
+      FROM
+          t_course_signup s
+      INNER JOIN t_user u ON s.adainfo_md5 = u.adainfo_md5
+      LEFT JOIN t_course c ON c.sys_id = s.course_id
+      LEFT JOIN t_course_approval a ON a.course_id = c.sys_id AND a.user_id = u.id
+      LEFT JOIN t_user_cert t ON t.course_id = a.course_id AND t.user_id = a.user_id
+      WHERE
+          c.sys_id = #{courseId} and u.state = 1 and u.ident = 1) s
+  where
+    ((s.is_verify = 0 and s.appr_result is null) or (s.is_verify = 1 and s.appr_result = 1))
+  </select>
+
+  <!-- 查询审核未通过的学员 add wsc-->
+  <select id="selectUserByCourseIdAndApprResult" parameterType="Integer" resultMap="BaseResultMap">
+    SELECT
+    u.id, u.open_id, u.union_id, u.[name], u.password, u.email, u.sex, u.ident, u.phone, u.adainfo_md5, u.address,
+    u.prov_code, u.city_code, u.ada_number, u.state, u.grouping, u.is_legalperson, u.vocational_level,
+    u.shop, u.id_number, u.Identity_type, u.zip_code
+    FROM
+    t_course_approval a,
+    t_user u
+    WHERE
+    a.user_id = u.id
+    AND a.appr_result = 0
+    AND a.course_id = #{courseId}  and u.state = 1
+  </select>
+
+  <select id="selectdkkkk01" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_user where sso_adanumber = #{ada}  and state = 1
+  </select>
+</mapper>

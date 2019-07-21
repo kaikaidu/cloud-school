@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.StuStatisticsExportMapper">
+    <resultMap id="BaseResultMap" type="com.amway.acti.model.StuStatisticsExport">
+        <result column="dateTime" jdbcType="VARCHAR" property="dateTime" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="adaNumber" jdbcType="VARCHAR" property="adaNumber" />
+        <result column="sex" jdbcType="VARCHAR" property="sex" />
+        <result column="signupNum" jdbcType="INTEGER" property="signupNum" />
+        <result column="approvalNum" jdbcType="INTEGER" property="approvalNum" />
+        <result column="regNum" jdbcType="INTEGER" property="regNum" />
+        <result column="testNum" jdbcType="INTEGER" property="testNum" />
+        <result column="invesNum" jdbcType="INTEGER" property="invesNum" />
+        <result column="certNum" jdbcType="INTEGER" property="certNum" />
+    </resultMap>
+
+    <!-- 自定义报表学员统计 add wsc -->
+    <select id="selectStuStatistics" resultMap="BaseResultMap">
+        SELECT
+            #{date} dateTime,
+            a.name,
+            u.ada_number adaNumber,
+            CASE
+        WHEN (u.sex = 0) THEN
+            '男'
+        ELSE
+            '女'
+        END sex,
+         a.signupNum,
+         a.approvalNum,
+         CASE
+        WHEN (r.regNum > 0) THEN
+            r.regNum
+        ELSE
+            0
+        END regNum,
+         CASE
+        WHEN (t.testNum > 0) THEN
+            t.testNum
+        ELSE
+            0
+        END testNum,
+         CASE
+        WHEN (i.invesNum > 0) THEN
+            i.invesNum
+        ELSE
+            0
+        END invesNum,
+         CASE
+        WHEN (ce.certNum > 0) THEN
+            ce.certNum
+        ELSE
+            0
+        END certNum
+        FROM
+            (
+                SELECT
+                    b.id,
+                    b.name,
+                    SUM (num) signupNum,
+                    CASE
+                WHEN (SUM(num1) > 0) THEN
+                    SUM (num1)
+                ELSE
+                    0
+                END AS approvalNum
+                FROM
+                    (
+                        SELECT
+                            u.id,
+                            u.name,
+                            c.is_verify,
+                            a.appr_result,
+                            CASE
+                        WHEN (
+                            c.is_verify = 0
+                            OR c.is_verify = 1
+                        ) THEN
+                            1
+                        END num,
+                        CASE
+                    WHEN (
+                        c.is_verify = 0
+                        OR (
+                            c.is_verify = 1
+                            AND a.appr_result = 1
+                        )
+                    ) THEN
+                        1
+                    END num1
+                    FROM
+                        t_course_signup s
+                    INNER JOIN t_user u ON s.adainfo_md5 = u.adainfo_md5
+                    INNER JOIN t_course c ON c.sys_id = s.course_id
+                    LEFT JOIN t_course_approval a ON a.course_id = s.course_id
+                    AND a.user_id = u.id
+                    WHERE
+                        u.state = 1
+                    <if test="list != null">
+                        AND c.sys_id in (
+                        <foreach collection="list" separator="," item="s">
+                            #{s.id}
+                        </foreach>
+                        )
+                    </if>
+                    ) b
+                GROUP BY
+                    b.id,
+                    b.name
+            ) a
+        LEFT JOIN t_user u ON u.id = a.id
+        LEFT JOIN (
+            SELECT
+                user_id,
+                COUNT (1) regNum
+            FROM
+                t_course_register
+            <if test="list != null">
+                WHERE
+                course_id in (
+                <foreach collection="list" separator="," item="s">
+                    #{s.id}
+                </foreach>
+                )
+            </if>
+            GROUP BY
+                user_id
+        ) r ON a.id = r.user_id
+        LEFT JOIN (
+            SELECT
+                a.user_id,
+                COUNT (a.temp_id) invesNum
+            FROM
+                (
+                    SELECT DISTINCT
+                        es.user_id,
+                        p.temp_id
+                    FROM
+                        t_inves_result es
+                    LEFT JOIN t_inves_paper p ON p.id = es.paper_id
+                    <if test="list != null">
+                        WHERE
+                        p.course_id in (
+                        <foreach collection="list" separator="," item="s">
+                            #{s.id}
+                        </foreach>
+                        )
+                    </if>
+                ) a
+            GROUP BY
+                a.user_id
+        ) i ON i.user_id = a.id
+        LEFT JOIN (
+            SELECT
+                a.user_id,
+                COUNT (a.temp_id) testNum
+            FROM
+                (
+                    SELECT DISTINCT
+                        a.user_id,
+                        q.temp_id
+                    FROM
+                        t_test_quest q
+                    LEFT JOIN t_user_answer a ON q.id = a.quest_id
+                    INNER JOIN t_test_paper p ON p.id = a.paper_id
+                    <if test="list != null">
+                        WHERE
+                        p.course_id in (
+                        <foreach collection="list" separator="," item="s">
+                            #{s.id}
+                        </foreach>
+                        )
+                    </if>
+                ) a
+            GROUP BY
+                a.user_id
+        ) t ON t.user_id = a.id
+        LEFT JOIN (
+            SELECT
+                user_id,
+                COUNT (1) certNum
+            FROM
+                t_user_cert
+            WHERE
+                state = 1
+            <if test="list != null">
+                and
+                course_id in (
+                  <foreach collection="list" separator="," item="s">
+                      #{s.id}
+                  </foreach>
+                )
+            </if>
+            GROUP BY
+                user_id
+        ) ce ON ce.user_id = a.id
+    </select>
+</mapper>

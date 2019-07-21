@@ -1,0 +1,59 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+
+<body>
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+	<section class="wapmbx fl"><a href="#">平台管理</a><em></em><strong>管理员设置</strong></section>
+	<section th:replace="common/common_menu  :: menu"></section>
+	<section class="conFl">
+		<div class="StuCon QuBaCon">
+		<div class="clearfix StuTle">
+				<div class="fl tleChe"><label></label><i class='input_style checkbox_bg'><input type="checkbox" name="selectAll" id="selectAll" value=""></i><label for="selectAll">全选</label></div>
+				<div class="fl search"><input type="search" class="ipnSearch" placeholder="请输入您要查找的管理员信息"><input type="button" value="搜 索" class="ipnBtn"></div>
+				<div class="fr">
+				</div>
+			</div>
+			<div class="tableWrap"   >
+				<div class="tableBox">
+			  		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				  <tbody>
+					<tr>
+					  <th>姓名</th>
+					  <th>请求时间</th>
+					  <th>url</th>
+					  <th>ip</th>
+					  <th>请求方法</th>
+					  <th>操作</th>
+				    </tr>
+				  </tbody>
+				</table>
+				</div>
+				<div class="page-box" id="operationLogListPager"></div>
+			</div>
+		</div>
+			
+	</section>
+</article>
+
+<script id="operationLogList" type="text/x-handlebars-template">
+	{{#each this}}
+	<tr>
+		<td>{{userName}}</td>
+		<td>{{beforeTime}}</td>
+		<td>{{url}}</td>
+		<td>{{ip}}</td>
+		<td>{{classMethod}}</td>
+		<td class="mar10">
+			<a href="javascript:;" class="swt_but" data-sum="24">编辑</a>
+		</td>
+	</tr>
+	{{/each}}
+</script>
+<script id="operationLogList-no-content" type="text/x-handlebars-template">
+	<div class="padTB20 no-content"><div class="m-style">搜索无结果！</div></div>
+</script>
+<script th:src="@{/assets/js/custom/platform/operationLogList.js}"></script>
+</body>
+</html>

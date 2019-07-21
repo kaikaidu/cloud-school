@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+</head>
+
+<body>
+<script th:src="@{/assets/js/custom/doc/docCourse.js}" type="text/javascript"></script>
+<script type="text/javascript" th:src="@{/assets/js/custom/common/date.js}"></script>
+<header th:replace="common/common_header :: header"></header>
+<input type="hidden" id="hasDoc" th:value="${hasDoc}">
+<article class="widthWp mainWrap">
+	<section class="wapmbx fl"><a href="/backend/course/courseManage">课程管理</a><em></em><strong>资料下载</strong></section>
+	<section th:replace="common/common_menu  :: menu"></section>
+	<section class="conFl">
+
+		<div class="StuCon QuBaCon" th:if="!${hasDoc}">
+			<div class="quNodata">
+				<a href="#" class="btnB swt_but" data-sum="22">新增资料</a>
+				<p>您还没有资料，赶紧来添加吧~</p>
+			</div>
+		</div>
+
+		<div class="StuCon QuBaCon" th:if="${hasDoc}">
+			<div class="qubaTit bjG padd10 mart10 clearfix">
+				<b class="fl">资料</b>
+				<span class="fr"><a href="#" class="btnB swt_but" data-sum="22"><strong>+</strong> 新增/编辑资料</a></span>
+			</div>	
+			<section class="conFl conWid">			
+			<div class="clearfix">			
+				<div class="clearfix StuTle">
+					<div class="fl tleChe"><label></label><i class='input_style checkbox_bg'><input type="checkbox" name="selectAll" id="selectAll" value=""></i><label for="selectAll">全选</label></div>
+					<div class="fl search"><input type="search" class="ipnSearch" placeholder="请输入您要查找的资料名称" id="courseDocName"><input type="button" value="搜 索" class="ipnBtn" id="courseDocSearchBtn"></div>
+					<div class="fr">
+					<a href="#" class="btnA" name="shelve" data-value="1">上 架</a>
+					<a href="#" class="btnA" name="shelve" data-value="0">下 架</a>
+					<a href="#" class="btnA" id="deleteCourseDocBtn">删 除</a>
+					</div>
+				</div>
+			</div>
+			<div class="tableWrap">
+				<div class="tableBox">
+			  	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				  <tbody id="courseDocList">
+					<tr>
+					  <th>资料名称</th>
+						<th>
+						  	<select class="stySelS" id="courseDocOrderType">
+								<option selected th:value="null">创建时间</option>
+								<option th:value="desc">最新发布</option>
+								<option th:value="asc">最早发布</option>
+							</select>
+						</th>
+						<th>
+						  	<select class="stySelS" id="courseDocType">
+								<option selected th:value="null">资料类型</option>
+								<option th:value="1">文档</option>
+								<option th:value="2">音频</option>
+								<option th:value="3">视频</option>
+							</select>
+						</th>
+						<th>
+						  	<select class="stySelS" id="courseDocAddType">
+								<option selected th:value="null">资料来源</option>
+								<option th:value="1">上传文件</option>
+								<option th:value="2">下载地址</option>
+							</select>
+						</th>
+						<th>
+						  	<select class="stySelS" id="courseDocShelve">
+								<option  selected th:value="null">状态</option>
+								<option th:value="1">上架</option>
+								<option th:value="0">下架</option>
+							</select>
+						</th>
+					  <th>操作</th>
+				    </tr>
+				  </tbody>
+				</table>
+				</div>
+				<div class="page-box" id="courseDocPage"></div>
+			</div>
+	</section>	
+		</div>
+		
+	</section>
+</article>
+
+<!-- -测试卷题库 -->
+<div class="codeLayer addTestQu Datadownload" data-sum="22">
+	<div class="toptit">新增资料<b class="close"></b></div>
+	<div class="layCon">
+		<div class="clearfix">
+			<div class="padb20">
+				<div class="search"><input type="search" class="ipnSearch" placeholder="请输入您要查找的资料的名称" id="name"><input type="button" value="搜 索" class="ipnBtn" id="docListSearchBtn"></div>
+			</div>
+			<div class="tableBox tabltHdbj">
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tbody id="docList">
+					<tr>
+						<th>资料名称</th>
+						<th>
+							<select class="stySelS" id="orderType">
+								<option  selected th:value="null">创建时间</option>
+								<option th:value="desc">最新发布</option>
+								<option th:value="asc">最早发布</option>
+							</select>
+						</th>
+						<th>
+							<select class="stySelS" id="type">
+								<option selected th:value="null">资料类型</option>
+								<option th:value="1">文档</option>
+								<option th:value="2">音频</option>
+								<option th:value="3">视频</option>
+							</select>
+						</th>
+						<th>
+							<select class="stySelS" id="listAddType">
+								<option selected th:value="null">资料来源</option>
+								<option th:value="1">上传文件</option>
+								<option th:value="2">下载地址</option>
+							</select>
+						</th>
+						<th>操作</th>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="page-box" id="docListPage"></div>
+		</div>
+		<div class="padb20">
+			<a href="#" class="btnA but_none" data-sum="22" id="cancelAdd">取 消</a>
+			<a href="#" class="btnB but_yes" data-sum="22" id="confirmAdd">确 定</a>
+		</div>
+	</div>
+</div>
+<div class="codeLayerbj" ></div>
+
+<script id="docListTemplate" type="text/x-handlebars-template">
+	{{#each list}}
+	<tr>
+		<td title="{{name}}"><i class="input_style checkbox_bg"><input type="checkbox" name="ids" value="" data-id="{{id}}"></i>{{subStr 10 name}}</td>
+		<td>{{formatDate 'yyyy-MM-dd' createTime}}</td>
+		<td>{{transformType type}}</td>
+		<td>{{addType addType}}</td>
+		<td class="mar10"><a href="{{url}}">下载</a></td>
+	</tr>
+	{{/each}}
+</script>
+
+<script id="courseDocListTemplate" type="text/x-handlebars-template">
+	{{#each list}}
+	<tr>
+		<td title="{{name}}"><i class="input_style checkbox_bg"><input type="checkbox" name="ids" value="" data-id="{{id}}"></i>{{subStr 10 name}}</td>
+		<td>{{formatDate 'yyyy-MM-dd' createTime}}</td>
+		<td>{{transformType type}}</td>
+		<td>{{addType addType}}</td>
+		<td>
+			{{#if isShelve}}上架
+			{{else}}下架
+			{{/if}}
+		</td>
+		<td class="mar10"><a href="{{url}}">下载</a><a href="#" name="deleteBtn">删除</a></td>
+	</tr>
+	{{/each}}
+</script>
+
+<script id="course-doc-add-show" type="text/x-handlebars-template">
+	<div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">
+		{{#each this.old}}
+		【{{subStr 10 name}}】课程资料添加失败！当前课程已存在此资料！<br>
+		{{/each}}
+		{{#each this.new}}
+		【{{subStr 10 name}}】课程资料添加成功！<br>
+		{{/each}}
+	</div>
+</script>
+
+<script id="doc-course-no-content" type="text/x-handlebars-template">
+	<div class="padTB20 no-content"><div class="m-style">搜索无结果！</div></div>
+</script>
+</body>
+</html>

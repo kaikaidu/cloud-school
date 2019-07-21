@@ -1,0 +1,427 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+
+<body>
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+    <section class="wapmbx fl"><a href="/backend/course/courseManage">课程管理</a><em></em><strong>问卷调查</strong></section>
+
+    <section th:replace="common/common_menu  :: menu"></section>
+
+    <input type="hidden" th:value="${courseId}" id="courseId">
+    <section class="conFl">
+        <div class="StuCon QuBaCon" th:if="${hasInvesPaper == false}">
+            <div class="subNavTab">
+                <ul><li class="curr"><a th:href="@{/backend/course/inves/online/listPage(courseId=${courseId})}">新建问卷</a></li><li><a th:href="@{/backend/course/inves/result/listPage(courseId=${courseId})}">问卷结果</a></li></ul>
+            </div>
+            <div class="quNodata">
+                <a href="javascript:;" class="btnB addNew">新增问卷</a>
+                <p>您还没有问卷，赶紧来添加吧~</p>
+            </div>
+        </div>
+
+        <div class="StuCon QuBaCon" th:if="${hasInvesPaper == true}">
+            <div class="subNavTab subNavTab20">
+                <ul><li class="curr"><a th:href="@{/backend/course/inves/online/listPage(courseId=${courseId})}">新建问卷</a></li><li><a th:href="@{/backend/course/inves/result/listPage(courseId=${courseId})}">问卷结果</a></li></ul>
+            </div>
+
+            <div class="qubaTit bjG padd10 mart10 clearfix">
+                <b class="fl">问卷</b>
+                <span class="fr"><a href="javascript:;" class="btnB addNew"><strong>+</strong> 新增问卷</a></span>
+            </div>
+            <div class="clearfix">
+                <div class="clearfix StuTle">
+                    <div class="fl tleChe">
+                        <label></label>
+                        <i class='input_style checkbox_bg'>
+                            <input type="checkbox" name="selectAll" id="selectAll" value="">
+                        </i>
+                        <label for="selectAll">全选</label>
+                    </div>
+                    <div class="fl search">
+                        <input type="search" class="ipnSearch" placeholder="请输入您要查找问卷的名称">
+                        <input type="button" value="搜 索" class="ipnBtn">
+                    </div>
+                    <div class="fr">
+                        <a href="javascript:;" class="btnA changeState" data-state="1">上 架</a>
+                        <a href="javascript:;" class="btnA changeState" data-state="2">下 架</a>
+                    </div>
+                </div>
+            </div>
+            <div class="tableWrap">
+                <div class="tableBox">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tbody>
+                            <tr>
+                                <th width="42%">问卷名称</th>
+                                <th width="31%">
+                                    <select class="stySelS">
+                                        <option  selected value="0">状态</option>
+                                        <option value="1">上架</option>
+                                        <option value="2">下架</option>
+                                    </select>
+                                </th>
+                                <th width="27%">操作</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="page-box" id="invesOnlinePager"></div>
+            </div>
+        </div>
+
+    </section>
+</article>
+<!-- 点击预览str -->
+<div class="codeLayer addTestQu " data-sum="02" th:if="${hasInvesPaper == true}">
+    <div class="toptit">预览<b class="close"></b></div>
+    <div class="layCon layCon01">
+        <div class="clearfix paper-view scroll40">
+
+        </div>
+        <div class="btnBox">
+            <a href="javascript:;" class="btnA but_none" data-sum="0301">关闭</a>
+        </div>
+    </div>
+</div>
+<div class="codeLayerbj" th:if="${hasInvesPaper == true}"></div>
+
+<script th:src="@{/assets/js/custom/common/selectAll.js}"></script>
+<script th:inline="javascript">
+    $(function () {
+        /**
+         * 新增测试卷
+         */
+        $(".addNew").on("click", function () {
+            window.location = '/backend/course/inves/online/add?courseId='+$("#courseId").val();
+        })
+
+        /*<![CDATA[*/
+        var hasInvesPaper = [[${hasInvesPaper}]];
+        /*]]>*/
+
+        if(hasInvesPaper || hasInvesPaper == 'true'){
+            // 设置tf_type方法
+            Handlebars.registerHelper('tf_type', function(v1) {
+                if(v1 == 1){
+                    return "单选题";
+                }else if(v1 == 2){
+                    return "多选题";
+                }else if(v1 == 3){
+                    return "问答题";
+                }else{
+                    return "未定义";
+                }
+            });
+
+            // 设置tf_isRequired方法
+            Handlebars.registerHelper('tf_isRequired', function(v1) {
+                if(v1 == 0){
+                    return "选答";
+                }else if(v1 == 1) {
+                    return "必答";
+                }else{
+                    return "未定义";
+                }
+            });
+
+            // 设置tf_state方法
+            Handlebars.registerHelper('tf_state', function(v1) {
+                if(v1 == 1){
+                    return "上架";
+                }else if(v1 == 2){
+                    return "下架";
+                }else{
+                    return "未定义";
+                }
+            });
+
+            Handlebars.registerHelper('if_eq', function(v1, v2, opts) {
+                if(v1 == v2) {
+                    return opts.fn(this);
+                }
+                else
+                    return opts.inverse(this);
+            });
+
+            $('pre code').each(function (i, block) {
+                hljs.highlightBlock(block);
+            });
+            // 初始查询数据
+            search();
+
+            // 绑定查询按钮事件
+            $(".ipnBtn").on("click", function () {
+                search();
+            });
+
+            // 绑定排序select事件
+            $(".stySelS").change(function () {
+                search();
+            })
+
+            // 分页查询方法
+            function search() {
+                var search = $.trim($(".ipnSearch").val());
+                var state = $(".stySelS").find("option:selected").attr("value");
+
+                $("#selectAll").prop("checked", false).parent('i').removeClass('checkbox_bg_check');
+                initPager(search, state, 8);
+            }
+
+            /**
+             * 数据查询
+             * @param pageNo
+             * @param pageSize
+             */
+            function dataQuery(search, state, pageNo, pageSize) {
+                var courseId = $("#courseId").val();
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'json',
+                    data:{
+                        courseId: courseId,
+                        search: search,
+                        state: state,
+                        pageNo: pageNo,
+                        pageSize: pageSize
+                    },
+                    url: '/backend/course/inves/online/list',
+                    success: function (data) {
+                        if(data.message == "success"){
+                            $("#selectAll").prop("checked", false).parent('i').removeClass('checkbox_bg_check');
+                            $("tbody tr").eq(0).siblings().remove();
+                            $(".padTB20").remove();
+                            if(data.data.list.length ==0){
+                                $(".tableBox").after($("#no-content").html());
+                                $("#invesOnlinePager").hide();
+                            }else {
+                                $("#invesOnlinePager").show();
+                                var source = $("#invesOnline-list").html();
+                                var template = Handlebars.compile(source);
+                                var templateHtml = template(data.data);
+                                $("tbody").append(templateHtml);
+                            }
+                        }
+                    }
+                });
+            }
+
+            /**
+             * 初始化分页插件
+             * @param pageSize
+             */
+            function initPager(search, state, pageSize){
+                //调用分页
+                laypage.render({
+                    elem: 'invesOnlinePager',
+                    count: getTotalData(search, state),
+                    limit: pageSize,
+                    theme: '#1962a9',
+                    jump: function(obj, first){
+                        dataQuery(search, state, obj.curr, pageSize);
+                    }
+                });
+            }
+
+            /**
+             * 第一次查询总数
+             * @returns {number}
+             */
+            function getTotalData(search, state) {
+                var courseId = $("#courseId").val();
+                var count = 0;
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'json',
+                    url: '/backend/course/inves/online/count',
+                    async: false,
+                    data: {search: search, state: state, courseId: courseId},
+                    success: function(data){
+                        if(data.message == "success"){
+                            count = data.data;
+                        }else{
+                        }
+                    },
+                    error: function(){
+                    }
+                });
+                return count;
+            }
+
+            /**
+             * 上架、下架
+             */
+            $(".changeState").on("click", function () {
+                var state = $(this).data("state");
+                var content = state == 1 ? "上架" : "下架";
+                var $selected = $("tbody").find('input[type=checkbox]:checked')
+                if($selected.length != 0){
+                    var ids = '';
+                    $selected.each(function () {
+                        var id = $(this).data("id");
+                        ids = ids + id + ',';
+                    })
+                    changeState(ids, state);
+                }else{
+                    layer.msg('请选择需要'+content+'的问卷！');
+                }
+            })
+
+            /**
+             * 上下架
+             */
+            function changeState(ids, state) {
+                var content = state == 1 ? "上架" : "下架";
+                layer.confirm('确认要'+content+'吗？',function(index){
+                    $.ajax({
+                        type: 'POST',
+                        dataType: 'json',
+                        url: '/backend/course/inves/online/onsale',
+                        data:{
+                            ids: ids,
+                            state: state,
+                            courseId: $("#courseId").val()
+                        },
+                        success:function(data){
+                            if(data.message == "success"){
+                                layer.msg('已'+content+'!', {icon: 1});
+                                setTimeout("location.reload(true);", 500)
+                            }
+                        },
+                        error: function(){
+                            layer.msg(content+"失败！", {icon: 5});
+                        }
+                    });
+                });
+            }
+
+            /**
+             * 单个删除
+             */
+            $("tbody").on("click", ".delete-paper", function () {
+                var id = $(this).data("id");
+                layer.confirm('确认要删除吗？',function(index){
+                    $.ajax({
+                        type: 'POST',
+                        dataType: 'json',
+                        url: '/backend/course/inves/online/remove',
+                        data:{
+                            id: id,
+                            courseId: $("#courseId").val()
+                        },
+                        success:function(data){
+                            if(data.message == "success"){
+                                layer.msg('已删除!', {icon: 1});
+                                setTimeout("location.reload(true);", 500)
+                            }
+                        },
+                        error: function(){
+                            layer.msg("删除失败！", {icon: 5});
+                        }
+                    });
+                });
+            })
+
+            $("tbody").on("click", ".edit-paper", function () {
+                window.location = '/backend/course/inves/online/edit?courseId='+$("#courseId").val()+'&id='+$(this).data("id");
+            })
+
+
+
+            //////////////////问卷预览////////////////////
+            $("table").on("click", ".swt_but", function () {
+                var id = $(this).data("id");
+                if(getPaper(id)){
+                    var swt_but_name=$(this).data("sum");
+                    if($(".addTestQu").length>0){
+                        $(".addTestQu").each(function(){
+                            if($(this).data("sum")==swt_but_name){
+                                var thmlH= $(window).height();
+                                var layerH = $(this).height();
+                                $(this).css("top",(thmlH-layerH)/2+"px");
+                                $(this).fadeIn();
+                                $(".codeLayerbj").fadeIn();
+                                // $(".codeLayer,.codeLayerbj").fadeIn();
+                            }
+                        })
+                    }
+                }
+            });
+
+            /**
+             * 获取测试卷数据
+             * @param id
+             * @returns {boolean}
+             */
+            function getPaper(id) {
+                var flag = true;
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'json',
+                    url: '/backend/course/inves/online/single',
+                    data: {
+                        id: id
+                    },
+                    async: false,
+                    success:function(data){
+                        console.log(data)
+                        if(data.message == "success"){
+                            var source = $("#invesPaper-view").html();
+                            var template = Handlebars.compile(source);
+                            var templateHtml = template(data.data);
+                            $(".paper-view").html(templateHtml);
+                        }else{
+                            flag = false;
+                        }
+                    },
+                    error: function(){
+                        layer.msg("预览问卷失败！", {icon: 5});
+                        flag = false;
+                    }
+                })
+                return flag;
+            }
+        }
+    });
+</script>
+<script id="invesOnline-list" type="text/x-handlebars-template">
+    {{#each list}}
+    <tr>
+        <td>
+            <i class='input_style checkbox_bg'><input type="checkbox" name="ids" value="" data-id="{{id}}"></i>{{name}}</td>
+        <td>{{tf_state state}}</td>
+        <td class="mar10">
+            <a href="javascript:;" data-id="{{id}}" class="view-paper swt_but" data-sum="02">预览</a>
+            <a href="javascript:;" data-id="{{id}}" class="edit-paper">编辑</a>
+            <a href="javascript:;" data-id="{{id}}" class="delete-paper">删除</a>
+        </td>
+    </tr>
+    {{/each}}
+</script>
+
+<script id="invesPaper-view" type="text/x-handlebars-template">
+    <div class="box_wbt box_wbtTop">{{name}}</div>
+    {{#each temp.quests}}
+    <div class="box_w">
+        <div class="dt" style="word-wrap: break-word">{{sequence}}.（{{tf_type type}}）（{{tf_isRequired isRequired}}）{{question}}</div>
+        {{#if_eq type 3}}
+
+        {{else}}
+        <div class="dd">
+            <ul>
+                {{#each options}}
+                <li>{{sequence}}：{{content}}</li>
+                {{/each}}
+            </ul>
+        </div>
+        {{/if_eq}}
+    </div>
+    {{/each}}
+</script>
+<script id="no-content" type="text/x-handlebars-template">
+    <div class="padTB20"><div class="m-style">搜索无结果！</div></div>
+</script>
+</body>
+</html>

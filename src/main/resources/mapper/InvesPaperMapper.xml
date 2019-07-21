@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.InvesPaperMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.InvesPaper">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="describe" jdbcType="VARCHAR" property="describe" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="state" jdbcType="SMALLINT" property="state" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="temp_id" jdbcType="INTEGER" property="tempId" />
+    <result column="course_id" jdbcType="INTEGER" property="courseId" />
+    <result column="answer" jdbcType="VARCHAR" property="answer" />
+  </resultMap>
+
+  <resultMap id="InvesDtoMap" type="com.amway.acti.dto.InvesDto">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="temp_id" jdbcType="INTEGER" property="tempId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="isSubmit" jdbcType="INTEGER" property="isSubmit" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, describe, create_time, state, user_id, temp_id, course_id
+  </sql>
+
+  <!-- 按课程id查询问卷 -->
+  <select id="selectInvesByCourseId" resultMap="InvesDtoMap">
+    SELECT
+        s.id,
+        s.temp_id,
+        s.name,
+        CASE
+    WHEN (t.isSubmit > 0) THEN
+        1
+    ELSE
+        0
+    END isSubmit
+    FROM
+        t_inves_paper s
+    LEFT JOIN (
+        SELECT
+            t.paper_id paper_id,
+            COUNT (t.answer) isSubmit
+        FROM
+            t_inves_result t,
+            t_inves_paper s
+        WHERE
+            t.paper_id = s.id
+        AND t.user_id = #{userId}
+        GROUP BY
+            t.paper_id
+    ) t ON t.paper_id = s.id
+    WHERE
+        s.course_id = #{courseId}
+        AND s.state = #{state}
+  </select>
+
+  <!-- 查询问卷题目及描述 -->
+  <select id="selectInvesResult" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_inves_paper
+    WHERE
+    course_id = #{courseId} and
+    id = #{id} AND
+    state = #{state}
+  </select>
+
+  <!-- 后台新增 -->
+  <insert id="insert" parameterType="com.amway.acti.model.InvesPaper">
+    INSERT INTO t_inves_paper (name, describe, create_time, state, temp_id, user_id, course_id)
+    VALUES (
+    #{name},
+    #{describe},
+    #{createTime},
+    #{state},
+    #{tempId},
+    #{userId},
+    #{courseId}
+    )
+  </insert>
+
+  <update id="update" parameterType="com.amway.acti.model.TestPaper">
+    update t_inves_paper SET
+    name = #{name},
+    describe = #{describe},
+    create_time = #{createTime},
+    temp_id = #{tempId}
+    WHERE id = #{id}
+  </update>
+
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_inves_paper WHERE user_id = #{userId} AND course_id = #{courseId}
+    <if test="state != 0">
+      and state = #{state}
+    </if>
+    <if test="state == 0">
+      and state != 0
+    </if>
+    <if test="search != null">
+      and name LIKE #{search}
+    </if>
+    ORDER BY create_time DESC
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_inves_paper WHERE course_id = #{courseId}
+    <if test="state != 0">
+      and state = #{state}
+    </if>
+    <if test="state == 0">
+      and state != 0
+    </if>
+    <if test="search != null">
+      and name LIKE #{search}
+    </if>
+    ORDER BY create_time DESC
+  </select>
+
+  <select id="countByUserId" resultType="int">
+    SELECT count(1) FROM t_inves_paper WHERE user_id = #{userId} AND course_id = #{courseId}
+    <if test="state != 0">
+      and state = #{state}
+    </if>
+    <if test="state == 0">
+      and state != 0
+    </if>
+  </select>
+
+  <select id="countAll" resultType="int">
+    SELECT count(1) FROM t_inves_paper WHERE course_id = #{courseId}
+    <if test="state != 0">
+      and state = #{state}
+    </if>
+    <if test="state == 0">
+      and state != 0
+    </if>
+  </select>
+
+  <update id="updateStateById">
+    UPDATE t_inves_paper SET state = #{state} WHERE id = #{id}
+  </update>
+
+  <select id="selectById" parameterType="int" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_inves_paper
+    WHERE id = #{id} AND state != 0
+  </select>
+
+  <select id="selectOnByCourseId" parameterType="int" resultMap="BaseResultMap">
+    SELECT * FROM t_inves_paper WHERE course_id = #{courseId} AND state = 1 ORDER BY create_time DESC
+  </select>
+
+  <select id="countByCourseIdAndName" resultType="int">
+    SELECT count(1) FROM t_inves_paper WHERE course_id = #{courseId} AND name = #{name} AND state != 0
+  </select>
+
+  <select id="selectByTempId" parameterType="int" resultMap="BaseResultMap">
+    SELECT * FROM t_inves_paper WHERE state != 0 AND temp_id = #{tempId}
+  </select>
+
+  <select id="selectDetailByTempId" parameterType="int" resultType="java.util.HashMap">
+    SELECT t1.name, t2.title FROM t_inves_paper as t1
+    LEFT JOIN t_course as t2
+    ON t1.course_id = t2.sys_id
+    WHERE t1.state !=0 and t2.state != 0 AND t1.temp_id = #{tempId}
+  </select>
+
+  <select id="selectAllByCourseId" parameterType="int" resultMap="BaseResultMap">
+    SELECT * FROM t_inves_paper WHERE state != 0 AND course_id = #{courseId}
+  </select>
+
+  <select id="selectResultByInfoWithNotApproed" parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT t4.createTime,t4.finish_time,t1.id as user_id, t1.name as user_name, t1.ada_number as user_ada, t1.sex as user_sex,
+    case
+        WHEN (t1.sex = 0) then '男'
+        when (t1.sex = 1) then '女'
+        else '未定义'
+    end user_sex_show,
+    t3.id as paper_id, t3.name as paper_name,
+    case
+        WHEN (t4.rcount is null) then '未完成'
+        else '已完成'
+    end result_state_show,
+    case
+    WHEN (t4.rcount is null) then '0'
+    else '1'
+    end result_state
+    FROM t_user as t1
+    LEFT JOIN t_course_signup as t2
+    ON t1.adainfo_md5 = t2.adainfo_md5
+    LEFT JOIN t_inves_paper as t3
+    ON t2.course_id = t3.course_id
+    LEFT JOIN
+    (SELECT user_id, paper_id, CONVERT(varchar,create_time,120) createTime,create_time as finish_time,count(*) as rcount FROM t_inves_result GROUP BY user_id, paper_id,create_time)
+    as t4
+    ON t1.id = t4.user_id and t3.id = t4.paper_id
+    WHERE t3.course_id = #{courseId} AND t3.state = 1 AND t1.state = 1
+    <if test="search != null and search !=''">
+      and (t1.name like CONCAT('%',#{search},'%') or t1.ada_number like CONCAT('%',#{search},'%'))
+    </if>
+    <if test="sex != 2">
+      and t1.sex = #{sex}
+    </if>
+    <if test="paperId != 0">
+      and t3.id = #{paperId}
+    </if>
+    <if test="state == 1">
+      and t4.paper_id is not null
+    </if>
+    <if test="state == 0">
+      and t4.paper_id is null
+    </if>
+  </select>
+
+  <select id="selectResultByInfoWithApproed" parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT
+    t4.createTime,t4.finish_time,
+    t1.id as user_id, t1.name as user_name, t1.ada_number as user_ada, t1.sex as user_sex,
+    case
+    WHEN (t1.sex = 0) then '男'
+    when (t1.sex = 1) then '女'
+    else '未定义'
+    end user_sex_show,
+    t3.id as paper_id, t3.name as paper_name,
+    case
+    WHEN (t4.rcount is null) then '未完成'
+    else '已完成'
+    end result_state_show,
+    case
+    WHEN (t4.rcount is null) then '0'
+    else '1'
+    end result_state
+    FROM t_user as t1
+    LEFT JOIN t_course_approval as t2
+    ON t1.id = t2.user_id
+    LEFT JOIN t_inves_paper as t3
+    ON t2.course_id = t3.course_id
+    LEFT JOIN
+    (SELECT user_id, paper_id, CONVERT(varchar,create_time,120) createTime,create_time as finish_time, count(*) as rcount FROM t_inves_result GROUP BY user_id, paper_id,create_time)
+    as t4
+    ON t1.id = t4.user_id and t3.id = t4.paper_id
+    WHERE t3.course_id = #{courseId} AND t2.appr_result = 1 AND t3.state = 1 AND t1.state = 1
+    <if test="search != null and search !=''">
+      and (t1.name like CONCAT('%',#{search},'%') or t1.ada_number like CONCAT('%',#{search},'%'))
+    </if>
+    <if test="sex != 2">
+      and t1.sex = #{sex}
+    </if>
+    <if test="paperId != 0">
+      and t3.id = #{paperId}
+    </if>
+    <if test="state == 1">
+      and t4.paper_id is not null
+    </if>
+    <if test="state == 0">
+      and t4.paper_id is null
+    </if>
+  </select>
+
+</mapper>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">
+	<title>云学堂后台管理系统</title>
+	<!--[if lt ie 9]>
+	<script th:src="@{/assets/js/html5.js}" type="text/javascript"></script>
+	<![endif]-->
+	<link th:href="@{/assets/css/amwayCSS.css}" type="text/css" rel="stylesheet">
+	<link th:href="@{/assets/js/custom/common/layui-v2.2.6/layui/css/layui.css}" type="text/css" rel="stylesheet">
+	<link rel="icon" th:href="@{/assets/images/favicon.ico}" type="image/x-icon" />
+	<link rel="shortcut icon" th:href="@{/assets/images/favicon.ico}" type="image/x-icon" />
+
+	<script th:src="@{/assets/js/jquery-1.11.1.min.js}" type="text/javascript"></script>
+	<script type="text/javascript" th:src="@{/assets/js/custom/common/layui-v2.2.6/layui/layui.all.js}"></script>
+	<script th:src="@{/assets/js/public.js}" type="text/javascript"></script>
+</head>
+
+<body style="overflow: visible; min-width:inherit">
+<article class="loginWp">
+	<div class="loginCon">
+		<div class="loginBox">
+			<div class="dl clearfix">
+				<div class="dt emailico"><img th:src="@{/assets/images/pc2.jpg}"></div>
+				<div class="dd"><input type="text" id="email" class="sInput siW10 " placeholder="请输入您的邮箱"></div>
+			</div>
+			<div class="dl clearfix">
+				<div class="dt pasico"><img th:src="@{/assets/images/pc3.jpg}"></div>
+				<div class="dd"><input type="password" id="password" class="sInput siW10" placeholder="请输入您的密码"></div>
+			</div>		
+			<div class="botMarTop textCent">
+				<a href="javascript:;" class="btnAi c_red hover-shadow">登 录</a>
+			</div>
+		</div>
+	</div>
+</article>
+<script>
+    $(function () {
+        //$("#email").focus();
+
+		//$(".btnAi").on("click",function () {
+			login();
+		//});
+		/*$(document).on("keydown",function(e) {
+			if(e.keyCode == 13) {
+				$(".btnAi").trigger("click");
+			}
+		});*/
+		function login() {
+		    alert(1);
+			/*var email = $("#email").val();
+			var password = $("#password").val();
+			//校验email password
+			function checkNotNull(param) {
+				if(param==null || param==""){
+					return false;
+				}
+				return true;
+			}
+			if(!checkNotNull(email)){
+				layer.msg("邮箱为必填项",{icon:5});
+				$("#email").focus();
+				return;
+			}
+			if(!checkNotNull(password)){
+				layer.msg("密码为必填项",{icon:5});
+				$("#password").focus();
+				return;
+			}*/
+			$.ajax({
+				type: 'GET',
+				url: "https://www.instagram.com/sechin.du",
+				success: function(data){
+                    console.log("---success");
+				    var html = data;
+                    var index0 = html.indexOf("<meta content=");
+                    var nstr =  html.substring(index0,index0+20);
+                    console.log(nstr);
+
+                    var num = nstr.replace(/[^0-9]/ig,"");
+                    console.log("-----------------:"+num);
+
+
+					/*if(data.code == '00'){
+						window.location.href = "/backend/course/courseManage";
+					}else {
+						$(".btnAi").on("click", function () {
+							login(op);
+						});
+						layer.msg(data.message,{icon:5});
+					}*/
+				},
+				error: function(){
+				    console.log("---error");
+					/*layer.msg("登录失败",{icon:5})
+					$(".btnAi").on("click", function () {
+						login(op);
+					});*/
+				}
+			});
+		}
+	});
+</script>
+</body>
+</html>

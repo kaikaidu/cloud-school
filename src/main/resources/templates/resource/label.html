@@ -1,0 +1,92 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+
+<body>
+<!-- 一级菜单 -->
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+    <section class="wapmbx fl"><a href="/backend/resource/label">课程资源</a><em></em><strong>标签管理</strong></section>
+    <!-- 二级菜单 -->
+    <section th:replace="common/common_menu  :: menu"></section>
+    <section class="conFl">
+        <div class="StuCon QuBaCon">
+            <div class="qubaTit bjG padd10 mart10 clearfix">
+                <b class="fl">标签</b>
+                <span class="fr"><a href="javascript:void(0);" class="btnB swt_but" data-sum="01"><strong>+</strong> 新增标签</a></span>
+            </div>
+            <div class="clearfix StuTle">
+                <div class="fl tleChe"><label></label><i class='input_style checkbox_bg'><input type="checkbox" name="selectAll" id="selectAll" value=""></i><label for="selectAll">全选</label></div>
+                <div class="fl search">
+                    <input type="search" class="ipnSearch" placeholder="请输入您要查找的标签名称" id="name">
+                    <input type="button" value="搜 索" class="ipnBtn">
+                </div>
+                <div class="fr">
+                    <a href="javascript:void(0);" class="btnA" id="delete">删 除</a>
+                </div>
+            </div>
+            <div class="tableWrap">
+                <div class="tableBox ">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tbody>
+                        <tr id="label">
+                            <th width="26%">标签名称</th>
+                            <th width="13%">
+                                <select class="stySelS" id="sort">
+                                    <option th:value="1"  selected>创建时间</option>
+                                    <option th:value="1">最新发布</option>
+                                    <option th:value="2">最早发布</option>
+                                </select>
+                            </th>
+                            <th width="13%">操作</th>
+                        </tr>
+                        <!-- 渲染数据 -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="page-box" id="testPager"></div>
+                <div class="padTB20" hidden><div class="m-style">搜索无结果！</div></div>
+            </div>
+        </div>
+    </section>
+</article>
+<!--新增标签 str-->
+<div class="codeLayer addTestQu" data-sum="01" >
+    <div class="toptit"><span id="title">新增标签</span><b class="close"></b></div>
+    <div class="layCon">
+        <div class="clearfix">
+            <div class="boxDl">
+                <div class="dt">标签名称</div>
+                <div class="dd"><input type="text" name="" id="labelName" placeholder="请输入标签名称" class="sTexta sTexta_left" maxlength="10"></div>
+            </div>
+        </div>
+        <div class="btnBox">
+            <a href="#" class="btnA but_none" data-sum="01">取 消</a>
+            <a href="javascript:void(0);" class="btnB addDefine" data-sum="01">确 定</a>
+        </div>
+    </div>
+</div>
+<div class="codeLayerbj"></div>
+<script th:src="@{/assets/js/util.js}"></script>
+<script th:src="@{/assets/js/custom/resource/label.js}"></script>
+<script id="label-remove-show" type="text/x-handlebars-template">
+    <div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">
+        {{#each this}}
+        {{#if label}}
+        【{{name}}】删除失败！已有课程引用，<span style="color:yellow;cursor:pointer;" class="remove-tip" data-id="{{id}}">详情</span>！<br>
+        {{else}}
+        【{{name}}】删除成功！<br>
+        {{/if}}
+        {{/each}}
+    </div>
+</script>
+<script id="label-remove-detail-show" type="text/x-handlebars-template">
+    <div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">
+        引用如下：<br>
+        {{#each this}}
+            课程名称: 【{{name}}】；<br>
+        {{/each}}
+    </div>
+</script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+</head>
+
+<body>
+<header th:replace="common/common_header :: header"></header>
+    <!--uploadify-->
+    <script type="text/javascript" th:src="@{/assets/js/uploadify/jquery.Huploadify.js}"></script>
+    <script th:src="@{/assets/js/select/jquery.cssforms.js}" type="text/javascript"></script><!--select-->
+
+    <!---bootstrapSelect-->
+    <link th:href="@{/assets/js/bootstrapSelect/bootstrap.min.css}" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/assets/js/bootstrapSelect/bootstrap-select.js}"></script>
+    <script th:src="@{/assets/js/bootstrapSelect/bootstrap.min.js}"></script>
+    <script th:src="@{/assets/js/custom/course/courseBasic.js}"></script>
+    <script type="text/javascript">
+        $(window).on('load', function () {
+            $('.selectpicker').selectpicker({
+                'selectedText': 'cat'
+            });
+        });
+    </script>
+
+<article class="widthWp mainWrap">
+    <section class="wapmbx fl"><a href="/backend/course/courseManage" id="courseManage" th:data-id="${courseId}">课程管理</a><div id="createCourse"><em></em><a href="#">创建课程</a></div><em></em><strong>基本信息</strong></section>
+    <section th:replace="common/common_menu  :: menu"></section>
+    <section class="conFl">
+        <div class="kcfom">
+            <div class="dl clearfix div-courseName">
+                <div class="dt">课程名称</div>
+                <div class="dd"><input type="text" placeholder="最多可输入50个字。" class="sInput siW10" id="courseName" maxlength="50"></div>
+            </div>
+            <div class="dl clearfix div-courseDesc">
+                <div class="dt">课程概述</div>
+                <div class="dd noLIhe"><textarea class="sTexta siW10"  placeholder="最多可输入500个字。" rows="6" id="courseDesc" maxlength="500"></textarea></div>
+            </div>
+            <div class="dl clearfix div-courseImg">
+                <div class="dt">上传课程配图</div>
+                <div class="dd">
+                    <div class="courseUpload">
+                        <button type="button" class="layui-btn" id="courseImg" style="background-color: #1962a9">上传图片</button>
+                        <span class="promptUp">图片支持JPG，GIF，PNG格式，建议单张图片不超过5M，按照16：10的比例上传图片</span>
+                    </div>
+                    <div style="clear: both; display: none;" class="courseImg-preview">
+                        <img src style="width: 100px; height: 100px; margin: 5px 0px;" />
+                        <a href="javascript:void(0);" class="uploadbtn .disabledbtn" style="display: inline-block;">上传</a>
+                        <a href="javascript:void(0);" class="delfilebtn .disabledbtn">删除</a>
+                    </div>
+                </div>
+            </div>
+            <div class="dl clearfix div-startTime">
+                <div class="dt">上课开始时间</div>
+                <div class="dd">
+                    <div class="jeinpbox"><input type="text" class="jeinput " id="test03_1" placeholder="选择时间" readonly></div>
+                </div>
+            </div>
+            <div class="dl clearfix div-endTime">
+                <div class="dt">上课结束时间</div>
+                <div class="dd">
+                    <div class="jeinpbox"><input type="text" class="jeinput " id="test03_2" placeholder="选择时间" readonly></div>
+                </div>
+            </div>
+            <div class="dl clearfix div-courseLabel">
+                <div class="dt">课程标签</div>
+                <div class="dd" >
+                    <select name="jQuery1"  class="selectpicker" id="courseLabel">
+                        <option th:each="label:${labels}" th:value="${label.id}" th:text="${label.name}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="dl clearfix div-courseCode">
+                <div class="dt">课程代码</div>
+                <div class="dd"><input type="text" placeholder="请输入" class="sInput siW10" id="courseCode" maxlength="50"></div>
+            </div>
+            <div class="dl clearfix div-courseTeachers">
+                <div class="dt">讲师名单</div>
+                <div class="dd" id="teacherDiv">
+                    <label for="courseTeachers"></label>
+                    <select id="courseTeachers" class="selectpicker bla bla bli" multiple data-live-search="true">
+                        <option th:each="teacher:${teachers}" th:value="${teacher.id}" th:text="${teacher.name}"></option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+            <div class="dl clearfix div-courseAssists">
+                <div class="dt">助教名单</div>
+                <div class="dd" id="assistDiv">
+                    <label for="courseAssists"></label>
+                    <select id="courseAssists" class="selectpicker bla bla bli" multiple data-live-search="true">
+                        <option th:each="assist:${assists}" th:value="${assist.id}" th:text="${assist.name}"></option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+            <div class="dl clearfix div-courseAddr">
+                <div class="dt">上课地点</div>
+                <div class="dd"><input type="text" placeholder="请输入" class="sInput siW10" id="courseAddr" name="offline" ></div>
+            </div>
+            <div class="dl clearfix div-courseQrCode">
+                <div class="dt">学习群二维码</div>
+                <div class="dd">
+                    <div class="courseUpload2">
+                        <button type="button" class="layui-btn" id="courseQrCode" style="background-color: #1962a9">上传二维码</button>
+                        <span class="promptUp">图片格式：BMP、GIF、JPG、PNG、JPEG，建议单张图片大小不超过5M，请确保上传的二维码的图片比例为1:1</span>
+                    </div>
+                    <div style="clear: both; display: none;" class="courseQrCode-preview">
+                        <img src style="width: 100px; height: 100px; margin: 5px 0px;" />
+                        <a href="javascript:void(0);" class="uploadbtn .disabledbtn" style="display: inline-block;">上传</a>
+                        <a href="javascript:void(0);" class="delfilebtn .disabledbtn">删除</a>
+                    </div>
+                </div>
+            </div>
+            <div class="dl clearfix div-courseIsShare">
+                <div class="dt">是否允许分享</div>
+                <div class="dd">
+                    <select name="jQuery2" class="selectpicker" id="courseIsShare">
+                        <option value="1" selected>是</option>
+                        <option value="0">否</option>
+                    </select>
+                </div>
+            </div>
+            <div class="dl clearfix div-applyTime">
+                <div class="dt">报名时间设置</div>
+                <div class="dd">
+                    <div class="fl">
+                        <div class="textG">从</div>
+                        <div class="jeinpbox jeinpbox28"><input type="text" class="jeinput" id="test03_3" placeholder="选择时间" name="live" readonly></div>
+                    </div>
+                    <div class="fr">
+                        <div class="textG">到</div>
+                        <div class="jeinpbox jeinpbox28"><input type="text" class="jeinput" id="test03_4" placeholder="选择时间" name="live" readonly></div>
+                    </div>
+                </div>
+            </div>
+            <div class="dl clearfix div-maxApplyNum">
+                <div class="dt">报名人数限制</div>
+                <div class="dd"><input type="text" placeholder="请输入" class="sInput siW10" id="maxApplyNum" maxlength="9" name="live"></div>
+            </div>
+            <input type="hidden" id="hide_isVerify" value=""/>
+            <div class="dl clearfix div-courseIsVerify">
+                <div class="dt">是否需要审批</div>
+                <div class="dd">
+                    <select class="selectpicker" id="courseIsVerify" name="live">
+                        <option value="1" selected>是</option>
+                        <option value="0">否</option>
+                    </select>
+                </div>
+            </div>
+            <div class="dl clearfix div-courseUrl">
+                <div class="dt">课程url</div>
+                <div class="dd"><input type="text" placeholder="请输入" class="sInput siW10" id="courseUrl" name="live" maxlength="100"></div>
+            </div>
+            <div class="dl textCent botMarTop">
+                <a href="javascript:;" class="btnAi c_gray hover-shadow" id="courseCancel">取 消</a>
+                <a href="javascript:;" class="btnAi c_red hover-shadow" id="courseSave">保 存</a>
+            </div>
+        </div>
+    </section>
+</article>
+
+</body>
+</html>

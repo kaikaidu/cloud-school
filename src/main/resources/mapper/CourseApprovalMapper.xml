@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.CourseApprovalMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.CourseApproval">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="course_id" jdbcType="INTEGER" property="courseId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="appr_result" jdbcType="SMALLINT" property="apprResult" />
+    <result column="appr_optr_usr" jdbcType="VARCHAR" property="apprOptrUsr" />
+    <result column="appr_optr_ts" jdbcType="TIMESTAMP" property="apprOptrTs" />
+    <result column="appr_opinion" jdbcType="VARCHAR" property="apprOpinion" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, course_id, user_id, appr_result, appr_optr_usr, appr_optr_ts, appr_opinion
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_course_approval
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_course_approval
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.CourseApproval">
+    insert into t_course_approval (id, course_id, user_id, 
+      appr_result, appr_optr_usr, appr_optr_ts, 
+      appr_opinion)
+    values (#{id,jdbcType=INTEGER}, #{courseId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{apprResult,jdbcType=SMALLINT}, #{apprOptrUsr,jdbcType=VARCHAR}, #{apprOptrTs,jdbcType=TIMESTAMP}, 
+      #{apprOpinion,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.CourseApproval">
+    insert into t_course_approval
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="courseId != null">
+        course_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="apprResult != null">
+        appr_result,
+      </if>
+      <if test="apprOptrUsr != null">
+        appr_optr_usr,
+      </if>
+      <if test="apprOptrTs != null">
+        appr_optr_ts,
+      </if>
+      <if test="apprOpinion != null">
+        appr_opinion,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="apprResult != null">
+        #{apprResult,jdbcType=SMALLINT},
+      </if>
+      <if test="apprOptrUsr != null">
+        #{apprOptrUsr,jdbcType=VARCHAR},
+      </if>
+      <if test="apprOptrTs != null">
+        #{apprOptrTs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="apprOpinion != null">
+        #{apprOpinion,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.CourseApproval">
+    update t_course_approval
+    <set>
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="apprResult != null">
+        appr_result = #{apprResult,jdbcType=SMALLINT},
+      </if>
+      <if test="apprOptrUsr != null">
+        appr_optr_usr = #{apprOptrUsr,jdbcType=VARCHAR},
+      </if>
+      <if test="apprOptrTs != null">
+        appr_optr_ts = #{apprOptrTs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="apprOpinion != null">
+        appr_opinion = #{apprOpinion,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.CourseApproval">
+    update t_course_approval
+    set course_id = #{courseId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      appr_result = #{apprResult,jdbcType=SMALLINT},
+      appr_optr_usr = #{apprOptrUsr,jdbcType=VARCHAR},
+      appr_optr_ts = #{apprOptrTs,jdbcType=TIMESTAMP},
+      appr_opinion = #{apprOpinion,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="countApprovedNum" resultType="java.lang.Integer">
+    select count(0) from t_course_approval where course_id = #{courseId} and appr_result = 1
+  </select>
+  
+  <select id="selectApprResultByUserIdAndCourseId" resultType="java.lang.Integer">
+    select appr_result from t_course_approval where course_id = #{courseId} and user_id = #{userId}
+  </select>
+
+  <select id="updateApprResult">
+    UPDATE
+      t_course_approval
+    set
+      appr_result=#{siState}
+    where course_id = #{courseId} and user_id = #{id}
+  </select>
+
+  <select id="selectSignupCount" resultType="int" parameterType="Integer">
+    SELECT
+      count(1)
+    FROM
+        t_course_approval a,
+        t_user u
+    WHERE
+        a.user_id = u.id
+    AND a.appr_result = 1
+    AND a.course_id = #{courseId}  and u.state = 1
+  </select>
+
+  <!-- 批量新增审批 -->
+  <insert id="insertByList" parameterType="com.amway.acti.model.CourseApproval">
+    insert into t_course_approval ( course_id, user_id,
+      appr_result, appr_optr_usr, appr_optr_ts,
+      appr_opinion)
+    values
+      <foreach collection="list" item="s" index="i" separator=",">
+        (#{s.courseId,jdbcType=INTEGER}, #{s.userId,jdbcType=INTEGER},
+        #{s.apprResult,jdbcType=SMALLINT}, #{s.apprOptrUsr,jdbcType=VARCHAR}, #{s.apprOptrTs,jdbcType=TIMESTAMP},
+        #{s.apprOpinion,jdbcType=VARCHAR})
+      </foreach>
+  </insert>
+
+  <!-- 根据课程id 用户id查询审核状态表 -->
+  <select id="selectApprResultByCourseId" resultMap="BaseResultMap" >
+    SELECT
+      <include refid="Base_Column_List"/>
+    FROM
+        t_course_approval
+    WHERE
+      course_id = #{courseId}  and user_id = #{userId}
+  </select>
+
+  <!-- 查询该课程下已报名成功的学员数量 -->
+  <select id="selectAppreovalCountByCourseId" resultType="Integer">
+    select
+      count(1)
+    from
+      t_course_approval
+    where
+      course_id = #{courseId} AND
+      appr_result = 1
+  </select>
+
+  <select id="deleteApprResultByCourseId" resultType="Integer" >
+    DELETE
+    FROM
+    t_course_approval
+    WHERE
+    course_id = #{courseId}  and user_id = #{userId}
+  </select>
+
+  <!-- 根据课程id查询审核表 add wsc -->
+  <select id="selectApprovalByCourseId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from
+    t_course_approval
+    where
+    course_id = #{courseId}
+  </select>
+
+  <!-- 根据课程id删除审核表 add wsc -->
+  <delete id="deleteApprotalByCourseId">
+    delete
+    from
+    t_course_approval
+    where
+    course_id = #{courseId}
+  </delete>
+</mapper>

@@ -1,0 +1,11 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:mem="http://xmlns.oracle.com/pcbpel/adapter/db/sp/memberinfo">
+<soapenv:Header>
+   <osbappid>OSBAPPID</osbappid>
+   <osbappkey>OSBAPPKEY</osbappkey>
+</soapenv:Header>
+   <soapenv:Body>
+      <mem:InputParameters>
+         <mem:ARG_ADA>ADATEMP</mem:ARG_ADA>
+      </mem:InputParameters>
+   </soapenv:Body>
+</soapenv:Envelope>

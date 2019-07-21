@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.LabelMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.Label">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+
+  <resultMap id="LabelCustomMap" type="com.amway.acti.model.LabelCustom">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="label" jdbcType="VARCHAR" property="labelId" />
+    <result column="courses" jdbcType="INTEGER" property="courses" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, type, name, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_label
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_label
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.Label">
+    insert into t_label (id, type, name, 
+      create_time)
+    values (#{id,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.Label">
+    insert into t_label
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.Label">
+    update t_label
+    <set>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.Label">
+    update t_label
+    set type = #{type,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByType" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    from t_label
+    where type = #{type}
+  </select>
+
+  <select id="getLabelCount" resultType="int">
+    SELECT
+      count(1)
+    from
+      t_label
+    where
+      type = #{type}
+    <if test="name != null and name != ''">
+      and name like CONCAT('%',#{name},'%')
+    </if>
+  </select>
+
+  <select id="selectLabelByName" resultMap="LabelCustomMap">
+    select
+      l.id,l.name,l.create_time,count(c.sys_id) as courses
+    from
+      t_label l
+    left join t_course c on l.id = c.label
+    where
+      l.type = #{type}
+    <if test="name != null and name != ''">
+      and name like CONCAT('%',#{name},'%')
+    </if>
+    group by l.id,l.name,l.create_time
+    order by l.create_time
+    <if test="sort == null or sort == 1 or sort == ''">
+       desc
+    </if>
+    <if test="sort == 2">
+       asc
+    </if>
+  </select>
+
+  <!-- 查询跟课程关联的标签 -->
+  <select id="selectLabelById" resultMap="LabelCustomMap">
+    select DISTINCT
+      l.id,
+      l.name,
+      c.label
+    from
+      t_label l
+    left join t_course c on l.id = c.label
+    <if test="list != null">
+      where l.id in(
+      <foreach collection="list" item="s" separator=",">
+        #{s}
+      </foreach>
+      )
+    </if>
+  </select>
+
+  <!-- 根据名称查询标签，校验唯一 -->
+  <select id="selectLabelByNameAndType" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"/>
+    from
+      t_label
+    where
+      type = #{type} and
+      name = #{name}
+  </select>
+</mapper>

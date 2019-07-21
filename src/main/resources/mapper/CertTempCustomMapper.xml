@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.CertTempCustomMapper">
+    <resultMap id="CertTempResultMap" type="com.amway.acti.model.CertTemp">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="zip" jdbcType="VARCHAR" property="zip" />
+        <result column="url" jdbcType="VARCHAR" property="url" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+        <result column="html_url" jdbcType="INTEGER" property="htmlUrl" />
+    </resultMap>
+
+    <sql id="CertTemp_Column_List">
+        id, name, zip, url, create_time, state,html_url
+    </sql>
+
+    <!-- 查询证书模板列表 -->
+    <select id="findCertTempList" resultMap="CertTempResultMap">
+        select
+          <include refid="CertTemp_Column_List"/>
+        from
+          t_cert_temp
+        where 1 = 1 and state = 1
+        <if test="name != null">
+            and name like CONCAT('%',#{name},'%')
+        </if>
+        <if test="time == null">
+            order by create_time desc
+        </if>
+        <if test="time != null">
+            order by create_time ${time}
+        </if>
+    </select>
+
+
+    <!-- 根据课程id查询证书模板 -->
+    <select id="selectCertTempByCourseId" resultMap="CertTempResultMap">
+        select
+          t.id,
+          t.name,
+          t.zip,
+          t.url,
+          t.create_time,
+          t.state,
+          t.html_url
+        from
+          t_cert_temp t
+        inner join t_cert ce on ce.cert_temp_id = t.id and ce.state = 1
+        where
+          ce.course_id = #{courseId}
+    </select>
+</mapper>

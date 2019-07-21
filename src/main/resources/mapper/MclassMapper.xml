@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.MclassMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.Mclass">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="course_id" jdbcType="INTEGER" property="courseId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="state" jdbcType="SMALLINT" property="state" />
+    <result column="init_number" jdbcType="INTEGER" property="initNumber" />
+  </resultMap>
+
+  <resultMap id="ResultListMap" type="com.amway.acti.model.MclassTeacSpee">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="isAssignTeac" jdbcType="INTEGER" property="isAssignTeac" />
+    <result column="isCreateSub" jdbcType="INTEGER" property="isCreateSub" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, number, course_id, create_time, state, init_number
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_class
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_class
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.Mclass">
+    insert into t_class (id, name, number, 
+      course_id, create_time, state, 
+      init_number)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{number,jdbcType=INTEGER}, 
+      #{courseId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=SMALLINT}, 
+      #{initNumber,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.Mclass" useGeneratedKeys="true" keyProperty="id">
+    insert into t_class
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="number != null">
+        number,
+      </if>
+      <if test="courseId != null">
+        course_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="initNumber != null">
+        init_number,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null">
+        #{number,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="initNumber != null">
+        #{initNumber,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.Mclass">
+    update t_class
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null">
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="initNumber != null">
+        init_number = #{initNumber,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.Mclass">
+    update t_class
+    set name = #{name,jdbcType=VARCHAR},
+      number = #{number,jdbcType=INTEGER},
+      course_id = #{courseId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      state = #{state,jdbcType=SMALLINT},
+      init_number = #{initNumber,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+<!--  &amp;lt;select id="selectByUserId" resultType="java.lang.Integer"&amp;gt;
+    select DISTINCT course_id from t_class where user_id = #{userId}
+  &amp;lt;/select&amp;gt;-->
+
+  <!--Begin dk-->
+  <select id="selectByCourseId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_class
+    where course_id = #{courseId}
+    and state = 1
+  </select>
+  <!--End dk-->
+
+  <delete id="deleteClassByCourseId" parameterType="Integer">
+    delete from t_class where course_id = #{courseId}
+  </delete>
+
+  <!-- 根据课程id查询班级，班级人数倒序 -->
+  <select id="selectByCourseIdAndOrder" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from
+      t_class
+    where
+      course_id = #{courseId} and
+      state = 1
+    order by number desc
+  </select>
+
+  <!-- 演讲抽签列表qj-->
+  <select id="selectSpeedAndDrawList" resultMap="ResultListMap">
+    SELECT DISTINCT
+        t1.id,
+        t1.name,
+        t1.number,
+        ISNULL(t2.isAssignTeac, 0) isAssignTeac,
+        ISNULL(t3.isCreateSub, 0) isCreateSub
+    FROM
+        t_class AS t1
+    LEFT JOIN (
+        SELECT
+            class_id,
+            COUNT (*) AS isAssignTeac
+        FROM
+            t_course_teacher
+        GROUP BY
+            class_id
+    ) AS t2 ON t1.id = t2.class_id
+    LEFT JOIN t_course_teacher AS tct ON tct.class_id = t1.id
+    LEFT JOIN (
+        SELECT
+            class_id,
+            COUNT(*) AS isCreateSub
+        FROM
+            t_class_draw
+        GROUP BY
+            class_id
+    ) AS t3 on t1.id = t3.class_id
+    LEFT JOIN t_class_draw AS tcd ON tcd.class_id = t1.id
+    WHERE 1=1
+        AND t1.course_id  = #{courseId}
+        AND t1.state = 1
+  </select>
+
+  <!-- 根据班级id删除班级 -->
+  <delete id="deleteClassById" parameterType="Integer">
+    delete from t_class where id = #{classId}
+  </delete>
+
+  <!-- 批量修改 -->
+  <update id="updateMclassForList">
+    <foreach collection="list" item="s" index="index" open="" close="" separator=";">
+      update t_class
+      <set>
+        <if test="s.name != null">
+          name = #{s.name,jdbcType=VARCHAR},
+        </if>
+        <if test="s.number != null">
+          number = #{s.number,jdbcType=INTEGER},
+        </if>
+        <if test="s.courseId != null">
+          course_id = #{s.courseId,jdbcType=INTEGER},
+        </if>
+        <if test="s.createTime != null">
+          create_time = #{s.createTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="s.state != null">
+          state = #{s.state,jdbcType=SMALLINT},
+        </if>
+        <if test="s.initNumber != null">
+          init_number = #{s.initNumber,jdbcType=INTEGER},
+        </if>
+      </set>
+      where id = #{s.id,jdbcType=INTEGER}
+    </foreach>
+  </update>
+
+  <!-- 查询 add wsc -->
+  <select id="selectClassByCourseId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_class
+    where course_id = #{courseId}
+    and state = 1 and number > 0
+  </select>
+
+  <!-- 根据班级id修改班级人数 -->
+  <update id="updateMClassById">
+    update
+      t_class
+    set
+      number = number - 1
+    where
+      id = (
+        select class_id from t_draw_result where user_id = #{userId} and course_id = #{courseId}
+      )
+  </update>
+
+  <!-- 批量新增班级 -->
+  <insert id="inserList">
+    insert into t_class (name, number,course_id, create_time, state,init_number
+    ) VALUES
+    <foreach collection="list" item="s" separator=",">
+      (#{s.name},#{s.number},#{s.courseId},#{s.createTime},#{s.state},#{s.initNumber})
+    </foreach>
+  </insert>
+</mapper>

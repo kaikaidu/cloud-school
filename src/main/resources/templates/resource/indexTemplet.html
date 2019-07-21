@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+
+<body>
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+	<section class="wapmbx fl"><a href="/backend/resource/label">课程资源</a><em></em><strong>评分题库</strong></section>
+	<section th:replace="common/common_menu  :: menu"></section>
+	<section class="conFl">
+		<div class="QuBaCon">
+			<div class="quNodata">
+				<a href="javascript:;" class="btnB">新增评分模板</a>
+				<p>您还没有评分模板，赶紧来添加吧~</p>
+			</div>			
+		</div>
+	</section>
+</article>
+<script>
+	$(".btnB").on("click",function () {
+		window.location = "/backend/resource/sitemTemp/addTemplet";
+    })
+</script>
+</body>
+</html>

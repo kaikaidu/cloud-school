@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+<body>
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+	<section class="wapmbx fl"><a href="/backend/course/courseManage">课程管理</a><em></em><strong>评分管理</strong></section>
+	<section th:replace="common/common_menu  :: menu"></section>
+	<input type="hidden" th:value="${courseId}" id="courseId">
+	<section class="conFl">		
+		<div class="StuCon QuBaCon">
+			<div class="subNavTab">
+				<ul>
+				  <li class=""><a th:href="@{/backend/course/weight/weighIndex(courseId=${courseId})}">新建评分</a></li>
+				  <li class="curr"><a th:href="@{/backend/course/weight/forwardWeightList(courseId=${courseId})}">评分结果</a></li></ul>
+			</div>
+			<div class="StuOp clearfix">
+				<div class="fl search"><input type="search" class="ipnSearch" placeholder="请输入您要查找的学员姓名或安利卡号"><input type="button" value="搜 索" class="ipnBtn"></div>
+				<div class="fr btnfr btnfL"><a href="javascript:;" id="export" class="btnA">批量导出</a></div>
+			</div>
+			<div class="tableBox tabltHdbj">
+			  	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				  <tbody>
+					<tr>
+					  <th width="10%">学员姓名</th>
+					  <th width="18%">安利卡号</th>
+					  <th width="8%"><select id="sex" name="select" class="stySelS">
+					    <option selected value="">性别</option>
+					    <option value="0">男</option>
+					    <option value="1">女</option>
+				      </select></th>
+						<th width="9%">班级</th>
+						<th width="12%">演讲号码</th>
+					  <th width="8%"><select id="status" name="select" class="stySelS">
+					    <option selected value="">状态</option>
+					    <option value="0">已完成</option>
+					    <option value="1">未完成</option>
+				      </select></th>
+					  <th width="7%"><select id="score" name="select" class="stySelS">
+					    <option selected value="">得分</option>
+					    <option value="0">降序排列</option>
+					    <option value="1">升序排列</option>
+				      </select></th>
+					  <th width="16%">操作</th>
+				    </tr>
+				  </tbody>
+				</table>
+				</div>
+				<div class="page-box" id="list"></div>
+		</div>
+	</section>
+</article>
+
+<!-- 查看评分详情 -->
+<div class="codeLayer addTestQu RaDetails" data-sum="21">
+	<div class="toptit">查看评分详情<b class="close"></b></div>
+	<div class="layCon">
+		<div class="clearfix">
+			<div class="tableBox tabltHdbj">
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tbody id="scoredetailTbody">
+					<tr>
+						<th>姓名</th>
+						<th>身份</th>
+						<th>得分</th>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="page-box" id="detail"></div>
+		<div class="btnBox">
+			<a href="javascript:;" class="btnB but_none" data-sum="21">关 闭</a>
+		</div>
+	</div>
+</div>
+
+<div class="codeLayerbj"></div>
+<script id="scoreDetail" type="text/x-handlebars-template">
+	{{#each this}}
+	<tr>
+	<tr>
+		<td>{{name}}</td>
+		{{#compare ident}}
+		<td>讲师</td>
+		{{else}}
+		<td>学员</td>
+		{{/compare}}
+		<td>{{score}}</td>
+	</tr>
+	</tr>
+	{{/each}}
+</script>
+
+<script id="weightList" type="text/x-handlebars-template">
+	{{#each this}}
+	<tr>
+		<td>
+			<span class="w12 courseM-td" title="{{name}}">{{name}}</span>
+		</td>
+		<td id="adaNumber">{{adaNumber}}</td>
+		<td>{{sex}}</td>
+		{{#if_eq index number}}
+		<td rowspan="{{number}}">{{className}}</td>
+		{{/if_eq}}
+		<td>{{code}}</td>
+		<td>{{status}}</td>
+		<td>{{score}}</td>
+		<td><a href="javascript:;" class="Ralink swt_but" data-sum="21">查看评分详情</a></td>
+	</tr>
+	{{/each}}
+</script>
+<script id="weight-no-content" type="text/x-handlebars-template">
+	<div class="padTB20 no-content"><div class="m-style">搜索无结果！</div></div>
+</script>
+<script th:src="@{/assets/js/custom/course/weightList.js}"></script>
+</body>
+</html>

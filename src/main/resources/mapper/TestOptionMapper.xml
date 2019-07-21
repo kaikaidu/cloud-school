@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.TestOptionMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.TestOption">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="sequence" jdbcType="VARCHAR" property="sequence" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="quest_id" jdbcType="INTEGER" property="questId" />
+    <result column="is_true" jdbcType="INTEGER" property="isTrue" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sequence, content, quest_id, is_true
+  </sql>
+
+  <!-- 后台新增 -->
+  
+  <insert id="batchInsert">
+      insert into t_test_option (
+    sequence, content, quest_id, is_true
+      )
+      values
+      <foreach collection="testOptions" item="testOption" separator=",">
+        (
+        #{testOption.sequence},
+        #{testOption.content},
+        #{testOption.questId},
+        #{testOption.isTrue}
+        )
+      </foreach>
+  </insert>
+
+  <select id="selectByQuestId" parameterType="int" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_test_option WHERE quest_id = #{questId}
+  </select>
+  
+  <delete id="deleteBytQuestId" parameterType="int">
+    DELETE FROM t_test_option WHERE quest_id = #{questId}
+  </delete>
+
+  <delete id="deleteByTempId" parameterType="int">
+    DELETE FROM t_test_option WHERE quest_id IN (
+    SELECT id FROM t_test_quest WHERE temp_id = #{tempId}
+    )
+  </delete>
+
+  <update id="update" parameterType="com.amway.acti.model.TestOption">
+    UPDATE t_test_option
+    SET
+    sequence = #{sequence},
+    content = #{content},
+    is_true = #{isTrue}
+    WHERE id = #{id}
+  </update>
+
+  <insert id="insert" parameterType="com.amway.acti.model.TestOption">
+    insert into t_test_option (
+    sequence, content, quest_id, is_true
+    )
+    values
+    (
+    #{sequence},
+    #{content},
+    #{questId},
+    #{isTrue}
+    )
+  </insert>
+
+  <select id="selectIdsByQuestId" parameterType="int" resultType="int">
+    SELECT id FROM t_test_option WHERE quest_id = #{questId}
+  </select>
+
+  <delete id="deleteById" parameterType="int">
+    DELETE FROM t_test_option WHERE id = #{id}
+  </delete>
+
+</mapper>

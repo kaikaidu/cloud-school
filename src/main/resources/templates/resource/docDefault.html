@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+</head>
+<body>
+<header th:replace="common/common_header :: header"></header>
+<script th:src="@{/assets/js/custom/doc/doc.js}" type="text/javascript"></script>
+<script type="text/javascript" th:src="@{/assets/js/uploadify/jquery.Huploadify.js}"></script>
+
+<article class="widthWp mainWrap">
+	<section class="wapmbx fl"><a href="/backend/resource/label">课程资源</a><em></em><strong>资料下载库</strong></section>
+	<section th:replace="common/common_menu  :: menu"></section>
+	<section class="conFl">
+		<div class="QuBaCon" th:if="!${hasData}">
+			<div class="quNodata">
+				<a href="#" class="btnB addTestQu05_but swt_but" data-sum="10" name="addDocBtn">新增资料下载</a>
+				<p>您还没有资料下载，赶紧来添加吧~</p>
+			</div>			
+		</div>
+
+		<div class="StuCon QuBaCon" th:if="${hasData}">
+			<div class="qubaTit bjG padd10 mart10 clearfix">
+				<b class="fl">资料</b>
+				<span class="fr"><a href="#" class="btnB addTestQu05_but swt_but" data-sum="10" name="addDocBtn"><strong>+</strong> 新增资料下载</a></span>
+			</div>
+			<div class="clearfix StuTle">
+				<div class="fl tleChe"><label></label><i class='input_style checkbox_bg'><input type="checkbox" name="selectAll" id="selectAll" value=""></i><label for="selectAll">全选</label></div>
+				<div class="fl search"><input type="search" class="ipnSearch" placeholder="请输入您要查找的资料名称" id="name"><input type="button" class="ipnBtn" value="搜 索" id="searchBtn"></div>
+				<div class="fr">
+					<a href="#" class="btnA" id="deleteDocs">删 除</a>
+				</div>
+			</div>
+			<div class="tableWrap">
+				<div class="tableBox">
+					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+						<tbody>
+						<tr>
+							<th>资料名称</th>
+							<th>
+								<select class="stySelS" id="orderType">
+									<option selected th:value="null">创建时间</option>
+									<option th:value="desc">最新发布</option>
+									<option th:value="asc">最早发布</option>
+								</select>
+							</th>
+							<th>
+								<select class="stySelS" id="type">
+									<option selected th:value="null">资料类型</option>
+									<option th:value="1">文档</option>
+									<option th:value="2">音频</option>
+									<option th:value="3">视频</option>
+								</select>
+							</th>
+							<th>
+								<select class="stySelS" id="listAddType">
+									<option  selected th:value="null">添加方式</option>
+									<option th:value="1">上传文件</option>
+									<option th:value="2">下载地址</option>
+								</select>
+							</th>
+							<th>操作</th>
+						</tr>
+
+						</tbody>
+					</table>
+				</div>
+				<div class="page-box" id="docDefaultPager"></div>
+			</div>
+		</div>
+	</section>
+</article>
+
+<!-- 新增下载资料 str -->
+<div class="codeLayer addTestQu" data-sum="10">
+	<div class="toptit"><div id="addTitle"></div><b class="close"></b></div>
+	<div class="layCon layCon05">
+		<div class="clearfix">
+			<div class="boxDl">
+				<div class="dt">资料名称</div>
+				<div class="dd"><input type="text" id="qiTie06" placeholder="请输入资料名称" class="sTexta siW10" maxlength="13"></div>
+			</div>
+			<div class="boxDl">
+				<div class="dt">资料类型</div>
+				<div class="dd">
+					<select name="" id="docType" class="sInput fl w200">
+						<option value="1" selected>文档</option>
+						<option value="2">音频</option>
+						<option value="3">视频</option>
+					</select>
+				</div>
+			</div>
+			<div class="boxDl">
+				<div class="dt">添加资料方式</div>
+				<div class="dd">
+					<select name="" id="addType" class="sInput fl w200">
+						<option value="1" selected>上传文件</option>
+						<option value="2">下载地址</option>
+					</select>
+				</div>
+			</div>
+			<div class="boxDl" id="uploadFile">
+				<div class="dt">添加资料</div>
+				<div class="dd btn_file_dd">
+					<div class="courseUpload"></div>
+					<div class="w_font">文件大小不能超过10M</div>
+				</div>
+			</div>
+
+			<!-- end -->
+			<div class="boxDl" id="fileLink" hidden>
+				<div class="dt">添加资料</div>
+				<div class="dd"><input type="text" id="qiTie0602" placeholder="请输入资料下载地址链接" value="https://" class="sTexta siW10"></div>
+			</div>
+		</div>
+		<div class="btnBox">
+			<a href="#" class="btnA but_none" data-sum="10" id="cancelDoc">取 消</a>
+			<a href="#" class="btnB addDefine" data-sum="10" id="saveDoc">保 存</a>
+		</div>
+	</div>
+</div>
+<div class="codeLayerbj" ></div>
+<script>
+// function F_Open_dialog() 
+// 	{ 
+// 	document.getElementById("btn_file").click(); 
+// 	}
+</script>
+
+<script id="docListTemplate" type="text/x-handlebars-template">
+	{{#each list}}
+	<tr>
+		<td><span class="w15 courseM-td" title="{{name}}"><i class="input_style checkbox_bg"><input type="checkbox" name="ids" value="" data-id="{{id}}"></i>{{name}}</span></td>
+		<td>{{formatDate 'yyyy-MM-dd' createTime}}</td>
+		<td>{{transformType type}}</td>
+		<td>{{addType addType}}</td>
+		<td class="mar10"><a href="{{url}}">下载</a><a href="#" data-sum="11" name="editDoc">编辑</a><a href="#" name="deleteDoc">删除</a></td>
+	</tr>
+	{{/each}}
+</script>
+
+<script id="doc-remove-show" type="text/x-handlebars-template">
+	<div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">
+		{{#each this.exits}}
+		【{{subStr 10 name}}】删除失败！已有课程引用，<span style="color:yellow;cursor:pointer;" class="remove-tip" data-id="{{id}}">详情</span>！<br>
+		{{/each}}
+		{{#each this.dels}}
+		【{{subStr 10 name}}】删除成功！<br>
+		{{/each}}
+	</div>
+</script>
+<script id="doc-remove-detail-show" type="text/x-handlebars-template">
+	<div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">
+		引用如下：<br>
+		{{#each this}}
+		课程名称: 【{{subStr 10 title}}】；<br>
+		{{/each}}
+	</div>
+</script>
+<script id="doc-no-content" type="text/x-handlebars-template">
+	<div class="padTB20 no-content"><div class="m-style">搜索无结果！</div></div>
+</script>
+</body>
+</html>

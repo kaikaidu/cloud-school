@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.TestQuestMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.TestQuest">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="question" jdbcType="VARCHAR" property="question" />
+    <result column="sequence" jdbcType="INTEGER" property="sequence" />
+    <result column="temp_id" jdbcType="INTEGER" property="tempId" />
+    <result column="score" jdbcType="NUMERIC" property="score" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, type, question, sequence, temp_id, score
+  </sql>
+
+  <!-- 后台新增 -->
+  <select id="selectById" parameterType="int" resultMap="BaseResultMap">
+    SELECT * FROM t_test_quest WHERE id = #{id}
+  </select>
+
+  <insert id="insert" parameterType="com.amway.acti.model.TestQuest" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO t_test_quest(type, question, sequence, temp_id, score)
+    VALUES (
+    #{type},
+    #{question},
+    #{sequence},
+    #{tempId},
+    #{score}
+    )
+  </insert>
+
+  <select id="selectByTempId" parameterType="int" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_test_quest WHERE temp_id = #{tempId}
+  </select>
+  
+  <delete id="deleteBytTempId" parameterType="int">
+    DELETE FROM t_test_quest WHERE temp_id = #{tempId}
+  </delete>
+
+  <update id="update" parameterType="com.amway.acti.model.TestQuest">
+    UPDATE t_test_quest
+    SET
+    type = #{type},
+    question = #{question},
+    sequence = #{sequence},
+    score = #{score}
+    WHERE id = #{id}
+  </update>
+
+  <select id="selectIdsByTempId" parameterType="int" resultType="int">
+    SELECT id FROM t_test_quest WHERE temp_id = #{tempId}
+  </select>
+
+  <delete id="deleteById" parameterType="int">
+    DELETE FROM t_test_quest WHERE id = #{id}
+  </delete>
+
+  <select id="selectQuestInfo" parameterType="int" resultType="java.util.HashMap">
+    SELECT id, sequence, question, (SELECT trueAns = (STUFF((SELECT sequence+'' FROM t_test_option WHERE is_true = 1 AND quest_id = tt.id FOR xml path('')),
+										1, 0, ''))) as trueAnswer FROM(
+            SELECT id, sequence, question FROM t_test_quest WHERE temp_id = #{tempId}
+            ) as tt
+  </select>
+
+</mapper>

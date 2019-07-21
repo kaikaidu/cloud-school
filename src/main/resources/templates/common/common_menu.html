@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section class="menuFl fl" th:fragment="menu">
+    <ul id="menu-list-ul">
+        <!--<li th:each="menu, state : ${menuChildList}" th:if="${state.index == 0}" class="current" >
+            <a href="javascript:;" th:utext="|<b class='${menu.icon}'></b>${menu.name}|" th:data-url="${menu.url}"></a>
+        </li>
+        <li th:each="menu, state : ${menuChildList}" th:unless="${state.index == 0}" class="">
+            <a href="javascript:;" th:utext="|<b class='${menu.icon}'></b>${menu.name}|" th:data-url="${menu.url}"></a>
+        </li>-->
+        <li th:each="menu : ${menuChildList}" th:class="${menu.code==curChildMenu}?'current':''">
+            <a href="javascript:;" th:utext="|<b class='${menu.icon}'></b>${menu.name}|" th:data-url="${menu.url}"></a>
+        </li>
+    </ul>
+    <input th:value="${courseId}" id="courseId" hidden/>
+    <script>
+        $(function () {
+            $("#menu-list-ul li").on("click", function () {
+                var courseId = $("#courseId").val();
+                $(this).addClass("current").siblings().removeClass("current");
+                if(courseId==null||courseId==""){
+                    window.location = $(this).find("a").data("url");
+                }else{
+                    window.location = $(this).find("a").data("url")+"?courseId="+courseId;
+                }
+            })
+        });
+    </script>
+
+</section>
+
+
+</body>
+</html>

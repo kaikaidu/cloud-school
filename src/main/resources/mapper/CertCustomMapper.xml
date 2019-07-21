@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.CertCustomMapper">
+    <resultMap id="BaseResultMap" type="com.amway.acti.model.Cert">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="course_id" jdbcType="INTEGER" property="courseId" />
+        <result column="cert_temp_id" jdbcType="INTEGER" property="certTempId" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="url" jdbcType="VARCHAR" property="url" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, course_id, cert_temp_id, name, url, create_time, state
+    </sql>
+
+    <!-- 根据课程id查询课程关联证书 -->
+    <select id="selectCertByCourseId" resultMap="BaseResultMap">
+        select
+          <include refid="Base_Column_List"/>
+        from
+          t_cert
+        where course_id = #{courseId} and state = 1
+    </select>
+
+</mapper>

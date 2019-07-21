@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.CertMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.Cert">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="course_id" jdbcType="INTEGER" property="courseId" />
+    <result column="cert_temp_id" jdbcType="INTEGER" property="certTempId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, course_id, cert_temp_id, name, url, create_time, state
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_cert
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_cert
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.Cert">
+    insert into t_cert (id, course_id, cert_temp_id, 
+      name, url, create_time, 
+      state)
+    values (#{id,jdbcType=INTEGER}, #{courseId,jdbcType=INTEGER}, #{certTempId,jdbcType=INTEGER}, 
+      #{name,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{state,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.Cert" useGeneratedKeys="true" keyProperty="id">
+    insert into t_cert
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="courseId != null">
+        course_id,
+      </if>
+      <if test="certTempId != null">
+        cert_temp_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="certTempId != null">
+        #{certTempId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.Cert">
+    update t_cert
+    <set>
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="certTempId != null">
+        cert_temp_id = #{certTempId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.Cert">
+    update t_cert
+    set course_id = #{courseId,jdbcType=INTEGER},
+      cert_temp_id = #{certTempId,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      state = #{state,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--Begin kaikai-->
+  <select id="selectCourseIdByTempId" parameterType="java.lang.Integer"
+          resultType="java.lang.Integer">
+      SELECT
+          course_id
+      FROM
+          t_cert
+      WHERE
+          cert_temp_id =#{certTempId,
+          jdbcType = INTEGER }
+    </select>
+
+  <!--Begin kaikai-->
+  <select id="selectIdByTempId" parameterType="java.lang.Integer"
+          resultType="java.lang.Integer">
+    SELECT
+    id
+    FROM
+    t_cert
+    WHERE
+    cert_temp_id =#{certTempId,
+          jdbcType = INTEGER }
+  </select>
+
+  <update id="updateStateByCertTempId" parameterType="java.lang.Integer">
+    update t_cert
+    set state = 0
+    where cert_temp_id = #{certTempId,jdbcType=INTEGER}
+  </update>
+  <!--end kaikai-->
+</mapper>

@@ -1,0 +1,24 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+
+<body>
+<!-- 一级菜单 -->
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+    <section class="wapmbx fl"><a href="#">课程管理</a><em></em><a href="#">创建课程</a><em></em><strong>分班设置</strong></section>
+    <!-- 二级菜单 -->
+    <section th:replace="common/common_menu  :: menu"></section>
+    <section class="conFl">
+        <div class="StuCon">
+            <div class="fb_teg">请选择一种分班方式</div>
+            <div class="dl textCent botMarTop">
+                <a href="#" class="btnAi c_bule hover-shadow" id="automatic">自动分班</a>
+                <a href="#" class="btnAi c_red hover-shadow" id="manual">手动分班</a>
+            </div>
+        </div>
+    </section>
+</article>
+<script th:src="@{/assets/js/custom/course/classSetting-choose.js}"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.RegisterManageMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.Register">
+    <result column="uId" jdbcType="INTEGER" property="UId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="ada_number" jdbcType="VARCHAR" property="adaNumber" />
+    <result column="registerStatus" jdbcType="VARCHAR" property="registerStatus" />
+  </resultMap>
+
+    <select id="findRegisterList" parameterType="com.amway.acti.model.Register" resultMap="BaseResultMap">
+        SELECT
+        tu.id uId,
+        tu.name,
+        tu.ada_number,
+        CASE ISNULL(tcr.id, 0)
+        WHEN 0 THEN
+        '未签到'
+        ELSE
+        '已签到'
+        END registerStatus,
+        CASE ISNULL(tu.sex, 10)
+        WHEN 0 THEN
+        '男'
+        WHEN 1 THEN
+        '女'
+        WHEN 2 THEN
+        '夫妻'
+        ELSE
+        '未知'
+        END sex
+        FROM
+        t_user tu
+        LEFT JOIN t_course_signup tcs ON tu.adainfo_md5 = tcs.adainfo_md5
+        LEFT JOIN t_course_register tcr ON tcr.user_id = tu.id AND tcr.course_id = #{courseId}
+        WHERE 1=1
+        AND tcs.course_id = #{courseId}
+        <if test="name != null and name != '' ">
+            AND (tu.name like '%'+#{name}+'%' OR tu.ada_number LIKE '%'+#{name}+'%')
+        </if>
+        <if test="sex != null and sex != '' ">
+            AND sex = #{sex}
+        </if>
+         ORDER BY tcs.singup_time desc
+    </select>
+</mapper>

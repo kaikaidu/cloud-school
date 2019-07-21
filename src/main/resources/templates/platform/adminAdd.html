@@ -1,0 +1,58 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+
+<body>
+<header th:replace="common/common_header :: header"></header>
+<script th:src="@{/assets/js/custom/platform/adminAdd.js}"></script>
+<article class="widthWp mainWrap">
+	<section class="wapmbx fl"><a href="#">平台管理</a><em></em><strong>管理员设置</strong></section>
+	<section th:replace="common/common_menu  :: menu"></section>
+	<section class="conFl">
+		<div class="QuBaCon">
+			<div class="quNodata">
+				<a href="javascript:;" id="add" class="btnB addTestQu05_but swt_but" data-sum="23">新增管理员</a>
+				<p>还没有管理员信息，赶紧来添加吧~</p>
+			</div>			
+		</div>
+	</section>
+</article>
+
+<!-- 新增管理员 str -->
+<div class="codeLayer addTestQu" data-sum="23" >
+	<div class="toptit">新增管理员<b class="close"></b></div>
+	<div class="layCon layCon05">
+		<div class="clearfix">
+			<div class="boxDl">
+				<div class="dt">管理员级别</div>
+				<div class="dd">					
+					<select name="" id="mySelect" class="sInput fl w200">
+						<option  selected value="">选择管理员级别</option>
+						<option value="0">管理员</option>
+						<option value="3">助教</option>
+					</select>
+				</div>
+			</div>
+			<div class="boxDl">
+				<div class="dt">管理员姓名</div>
+				<div class="dd"><input type="text" id="name" placeholder="请输入管理员姓名" class="sTexta siW10" maxlength="15"></div>
+			</div>
+			<div class="boxDl">
+				<div class="dt">电子邮箱</div>
+				<div class="dd"><input type="email"  id="email" placeholder="请输入电子邮箱" class="sTexta siW10" maxlength="50"></div>
+			</div>
+			<div class="boxDl">
+				<div class="dt">密码</div>
+				<div class="dd"><input type="text" id="password" placeholder="请输入密码" class="sTexta siW10" maxlength="20"></div>
+			</div>
+		
+		</div>	
+		<div class="btnBox">
+			<a href="javascript:;" class="btnA but_none" data-sum="23">取 消</a>
+			<a href="javascript:;" class="btnB addDefine" data-sum="23">保 存</a>
+		</div>
+	</div>
+</div>
+<div class="codeLayerbj" ></div>
+</body>
+</html>

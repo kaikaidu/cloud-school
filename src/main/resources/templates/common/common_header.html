@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header class="head" th:fragment="header">
+    <article class="headerTop">
+        <section class="widthWp">
+            <div class="fl"><span class="logo"></span>安利云学堂后台管理系统</div>
+            <div class="fr"><span th:text="${session.BACKENDUSER.name}"></span><a href="javascript:;" class="quit">退出</a></div>
+        </section>
+    </article>
+    <article class="headerBot">
+        <nav class="widthWp">
+            <ul>
+                <li th:each="menu : ${menuFirstList}" th:class="${menu.code==curFirstMenu}?'curr':''">
+                    <a href="javascript:"
+                       th:text="${menu.name}"
+                       th:data-id="${menu.code}"
+                       th:data-url="${menu.url}"
+                        onclick="gotoUrl(this)">
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </article>
+    <script>
+        var courseId = $("#courseId").val();
+        function gotoUrl(that) {
+            var url=$(that).data("url");
+            var code=$(that).data("id");
+            if(courseId==null||courseId==""){
+                window.location = url+"?code="+code;
+            }else{
+                window.location = url+"?code="+code+"&courseId="+courseId;
+            }
+        }
+        $(function () {
+            $(".quit").on("click", function () {
+                window.location.replace("/backend/logout");
+                event.returnValue=false;
+            })
+        });
+    </script>
+</header>
+</body>
+</html>

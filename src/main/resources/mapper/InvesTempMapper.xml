@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.InvesTempMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.InvesTemp">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="state" jdbcType="SMALLINT" property="state" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, create_time, state, user_id
+  </sql>
+  
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM t_inves_temp WHERE user_id = #{userId} and state = 1
+    <if test="search != null">
+      and name LIKE #{search}
+    </if>
+    ORDER BY create_time
+    <if test="isDesc == true">
+      DESC
+    </if>
+
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_inves_temp WHERE state = 1
+    <if test="search != null">
+      and name LIKE #{search}
+    </if>
+    ORDER BY create_time
+    <if test="isDesc == true">
+      DESC
+    </if>
+  </select>
+
+  <select id="countByUserId" parameterType="int" resultType="int">
+    SELECT count(1) FROM t_inves_temp WHERE user_id = #{userId} AND state = 1
+  </select>
+
+  <select id="countAll" resultType="int">
+    SELECT count(1) FROM t_inves_temp WHERE state = 1
+  </select>
+  
+  <update id="updateStateById">
+    UPDATE t_inves_temp SET state = 0 WHERE id = #{id}
+  </update>
+
+  <insert id="insert" parameterType="com.amway.acti.model.TestTemp"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO t_inves_temp (name, create_time, state, user_id)
+    VALUES (
+    #{name},#{createTime},#{state},#{userId}
+    )
+  </insert>
+
+  <select id="selectById" parameterType="int" resultMap="BaseResultMap">
+    SELECT * FROM t_inves_temp WHERE id = #{id} AND state = 1
+  </select>
+
+  <update id="update" parameterType="com.amway.acti.model.TestTemp">
+    UPDATE t_inves_temp SET
+    name = #{name},
+    create_time = #{createTime}
+    WHERE id = #{id}
+  </update>
+
+  <select id="countByUserIdAndName" resultType="int">
+    SELECT count(1) FROM t_inves_temp WHERE user_id = #{userId} AND name = #{name}
+  </select>
+
+  <select id="countByName" parameterType="String" resultType="int">
+    SELECT count(1) FROM t_inves_temp WHERE state = 1 AND name = #{name}
+  </select>
+
+</mapper>

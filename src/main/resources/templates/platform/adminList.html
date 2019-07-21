@@ -1,0 +1,114 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+
+<body>
+<header th:replace="common/common_header :: header"></header>
+<script th:src="@{/assets/js/custom/platform/adminList.js}"></script>
+<article class="widthWp mainWrap">
+	<section class="wapmbx fl"><a href="#">平台管理</a><em></em><strong>管理员设置</strong></section>
+	<section th:replace="common/common_menu  :: menu"></section>
+	<section class="conFl">
+		<div class="StuCon QuBaCon">
+		<div class="clearfix StuTle">
+				<div class="fl tleChe"><label></label><i class='input_style checkbox_bg'><input type="checkbox" name="selectAll" id="selectAll" value=""></i><label for="selectAll">全选</label></div>
+				<div class="fl search"><input type="search" class="ipnSearch" placeholder="请输入您要查找的管理员信息"><input type="button" value="搜 索" class="ipnBtn"></div>
+				<div class="fr">
+				<a href="javascript:;" id="del" class="btnA">删 除</a>
+				<a href="javascript:;" id="add" class="btnA">新增管理员</a>
+				</div>
+			</div>
+			<div class="tableWrap"   >
+				<div class="tableBox">
+			  		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				  <tbody>
+					<tr>
+					  <th>姓名</th>
+					  <th>邮箱</th>
+					  <th>密码</th>
+						<th>
+						  	<select name="select" class="stySelS">
+							<option selected value="">管理员级别</option>
+							<option value="0">管理员</option>
+							<option value="3">助教</option>
+							</select>
+						</th>
+					  <th>操作</th>
+				    </tr>
+				  </tbody>
+				</table>
+				</div>
+				<div class="page-box" id="adminListPager"></div>
+			</div>
+		</div>
+			
+	</section>
+</article>
+
+<!-- 编辑/保存管理员 str -->
+<div id="editAdmin" >
+	<div class="codeLayer addTestQu" data-sum="24" >
+		<div class="toptit"><div id="toptitVal"></div><b class="close"></b></div>
+		<div class="layCon layCon05">
+			<div class="clearfix">
+				<div class="boxDl">
+					<div class="dt">管理员级别</div>
+					<div class="dd">
+						<select id="mySelect" class="sInput fl w200">
+							<option selected value="">选择管理员级别</option>
+							<option value="0">管理员</option>
+							<option value="3">助教</option>
+						</select>
+					</div>
+				</div>
+				<div class="boxDl">
+					<div class="dt">管理员姓名</div>
+					<div class="dd">
+						<input type="hidden" id="uid" class="sTexta siW10">
+						<input type="text" id="name" placeholder="请输入管理员姓名" class="sTexta siW10" maxlength="15">
+					</div>
+				</div>
+				<div class="boxDl">
+					<div class="dt">电子邮箱</div>
+					<div class="dd"><input type="email" name="user_email"  id="email" placeholder="请输入电子邮箱" class="sTexta siW10" maxlength="50"></div>
+				</div>
+				<div class="boxDl">
+					<div class="dt">密码</div>
+					<div class="dd"><input type="text" id="password" placeholder="请输入密码" class="sTexta siW10" maxlength="20"></div>
+				</div>
+			</div>
+			<div class="btnBox">
+				<a href="javascript:;" class="btnA but_none" data-sum="24">取 消</a>
+				<a href="javascript:;" class="btnB addDefine" data-sum="24">保 存</a>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="codeLayerbj" ></div>
+
+
+<script id="adminList" type="text/x-handlebars-template">
+	{{#each this}}
+	<tr>
+		<td><i class="input_style checkbox_bg"><input type="checkbox" name="id" value="{{id}}"></i>{{name}}</td>
+		<td class="email">{{email}}</td>
+		<td>{{password}}</td>
+		{{#compare ident}}
+			<td>管理员</td>
+		{{else}}
+			<td>助教</td>
+		{{/compare}}
+		<td class="mar10">
+			<a href="javascript:;" class="swt_but" data-sum="24">编辑</a>
+			{{#if deblock}}
+			<a href="javascript:;" class="deblocking" data-sum="24">解锁</a>
+			{{/if}}
+		</td>
+	</tr>
+	{{/each}}
+</script>
+<script id="adminList-no-content" type="text/x-handlebars-template">
+	<div class="padTB20 no-content"><div class="m-style">搜索无结果！</div></div>
+</script>
+</body>
+</html>

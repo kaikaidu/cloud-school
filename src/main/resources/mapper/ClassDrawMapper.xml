@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.ClassDrawMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.ClassDraw">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="class_id" jdbcType="INTEGER" property="classId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="course_id" jdbcType="INTEGER" property="courseId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, code, content, class_id, create_time, update_time, course_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_class_draw
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_class_draw
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.ClassDraw">
+    insert into t_class_draw (id, code, content, 
+      class_id, create_time, update_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
+      #{classId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.ClassDraw">
+    insert into t_class_draw
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="classId != null">
+        class_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="courseId != null">
+        course_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="classId != null">
+        #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="courseId != null">
+        #{courseId},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByClassIdSelective" parameterType="com.amway.acti.model.ClassDraw">
+    update t_class_draw
+    <set>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- qj-->
+  <select id="selectClassDrawListByClassId" resultMap="BaseResultMap">
+    select * from t_class_draw WHERE class_id = #{mClassId};
+  </select>
+
+  <!-- qj-->
+  <select id="selectClassDrawListByCourseId" resultType="string">
+    SELECT
+        DISTINCT class_id
+    FROM
+        t_class_draw
+	 WHERE course_id = #{courseId};
+  </select>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.ClassDraw">
+    update t_class_draw
+    <set>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="classId != null">
+        class_id = #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.ClassDraw">
+    update t_class_draw
+    set code = #{code,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      class_id = #{classId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- 批量删除演讲内容 -->
+  <delete id="deleteClassDrawByList">
+    delete from t_class_draw where class_id in (
+    <foreach collection="list" item="s" separator=",">
+      #{s}
+    </foreach>
+    )
+  </delete>
+
+  <!-- 删除演讲内容 -->
+  <delete id="deleteClassDrawByClassId">
+    delete from t_class_draw where class_id = #{classId}
+  </delete>
+
+  <!-- 删除演讲内容 -->
+  <delete id="deleteClassDrawByCourseId">
+    delete from t_class_draw where course_id = #{courseId}
+  </delete>
+</mapper>

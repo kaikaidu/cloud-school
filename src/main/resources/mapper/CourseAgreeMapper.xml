@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.CourseAgreeMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.CourseAgree">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="course_id" jdbcType="INTEGER" property="courseId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="agree_time" jdbcType="TIMESTAMP" property="agreeTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, course_id, user_id, agree_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_course_agree
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_course_agree
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.CourseAgree">
+    insert into t_course_agree (course_id, user_id,
+      agree_time)
+    values (#{courseId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
+      #{agreeTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.CourseAgree">
+    insert into t_course_agree
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="courseId != null">
+        course_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="agreeTime != null">
+        agree_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="agreeTime != null">
+        #{agreeTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.CourseAgree">
+    update t_course_agree
+    <set>
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="agreeTime != null">
+        agree_time = #{agreeTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.CourseAgree">
+    update t_course_agree
+    set course_id = #{courseId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      agree_time = #{agreeTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="countByCourseId" resultType="java.lang.Integer">
+    select count(0) from t_course_agree where course_id = #{courseId}
+  </select>
+  
+  <select id="selectIsAgreed" resultType="boolean">
+    <![CDATA[select count(0) from t_course_agree where course_id = #{courseId} and user_id = #{userId}]]>
+  </select>
+
+  <select id="selectByCourseAndUser" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from t_course_agree where course_id = #{courseId} and user_id = #{userId}
+  </select>
+</mapper>

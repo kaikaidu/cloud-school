@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.DocMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.Doc">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="state" jdbcType="SMALLINT" property="state" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="add_type" jdbcType="SMALLINT" property="addType" />
+    <result column="is_shelve" jdbcType="SMALLINT" property="isShelve" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, url, type, create_time, state, name, add_type, is_shelve
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_doc
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_doc
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.Doc">
+    insert into t_doc (id, url, type, 
+      create_time, state, name, 
+      add_type, is_shelve)
+    values (#{id,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, #{type,jdbcType=SMALLINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=SMALLINT}, #{name,jdbcType=VARCHAR}, 
+      #{addType,jdbcType=SMALLINT}, #{isShelve,jdbcType=SMALLINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.Doc">
+    insert into t_doc
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="addType != null">
+        add_type,
+      </if>
+      <if test="isShelve != null">
+        is_shelve,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="addType != null">
+        #{addType,jdbcType=SMALLINT},
+      </if>
+      <if test="isShelve != null">
+        #{isShelve,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.Doc">
+    update t_doc
+    <set>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=SMALLINT},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="addType != null">
+        add_type = #{addType,jdbcType=SMALLINT},
+      </if>
+      <if test="isShelve != null">
+        is_shelve = #{isShelve,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.Doc">
+    update t_doc
+    set url = #{url,jdbcType=VARCHAR},
+      type = #{type,jdbcType=SMALLINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      state = #{state,jdbcType=SMALLINT},
+      name = #{name,jdbcType=VARCHAR},
+      add_type = #{addType,jdbcType=SMALLINT},
+      is_shelve = #{isShelve,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByCourseId" parameterType="int" resultMap="BaseResultMap">
+    SELECT
+      td.id, td.name, td.url, td.type, td.create_time, td.state
+      FROM t_doc td
+      LEFT JOIN t_course_doc tcd
+      ON td.id = tcd.doc_id
+      WHERE tcd.course_id = #{courseId}
+      AND td.state = 1 AND tcd.is_shelve = 1
+  </select>
+
+  <select id="countDoc" resultType="java.lang.Integer">
+    SELECT
+    count(0)
+    FROM t_doc where state = 1
+  </select>
+
+  <select id="countByCondition" resultType="java.lang.Integer">
+    SELECT
+    count(0)
+    FROM t_doc where state = 1
+    <if test="name != null and name != ''">
+      and name like '%${name}%'
+    </if>
+    <if test="type != null">
+      and type = #{type}
+    </if>
+    <if test="addType != null">
+      and add_type = #{addType}
+    </if>
+  </select>
+
+  <select id="selectByCondition" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_doc where state = 1
+    <if test="name != null and name != ''">
+      and name like '%${name}%'
+    </if>
+    <if test="type != null">
+      and type = #{type}
+    </if>
+    <if test="addType != null">
+      and add_type = #{addType}
+    </if>
+    <choose>
+      <when test="orderType != null and orderType != ''">
+        order by create_time ${orderType}
+      </when>
+      <otherwise>
+        order by create_time desc
+      </otherwise>
+    </choose>
+  </select>
+  
+  <update id="deleteDocs">
+    update t_doc set state = 0 where id IN
+    <foreach collection="exitsDocs" separator="," open="(" close=")" item="doc">
+      #{doc.id}
+    </foreach>
+  </update>
+
+  <select id="countCourseDocByCondition" resultType="java.lang.Integer">
+    SELECT
+    count(0)
+    FROM t_doc as d INNER JOIN t_course_doc as cd on d.id = cd.doc_id where cd.course_id = #{courseId}
+    <if test="name != null and name != ''">
+      and d.name like '%${name}%'
+    </if>
+    <if test="type != null">
+      and d.type = #{type}
+    </if>
+    <if test="addType != null">
+      and d.add_type = #{addType}
+    </if>
+    <if test="shelve != null">
+      and d.is_shelve = #{shelve}
+    </if>
+  </select>
+
+  <select id="selectCourseDocByCondition" resultMap="BaseResultMap">
+    SELECT
+    d.id,d.url,d.type,d.create_time,d.state,d.name,d.add_type,cd.is_shelve
+    FROM t_doc as d INNER JOIN t_course_doc as cd on d.id = cd.doc_id where cd.course_id = #{courseId}
+    <if test="name != null and name != ''">
+      and d.name like '%${name}%'
+    </if>
+    <if test="type != null">
+      and d.type = #{type}
+    </if>
+    <if test="addType != null">
+      and d.add_type = #{addType}
+    </if>
+    <if test="shelve != null">
+      and cd.is_shelve = #{shelve}
+    </if>
+    <choose>
+      <when test="orderType != null and orderType != ''">
+        order by d.create_time ${orderType}
+      </when>
+      <otherwise>
+        order by d.create_time desc
+      </otherwise>
+    </choose>
+  </select>
+
+  <select id="countByParam" resultType="java.lang.Integer">
+    select count(0) from t_doc where state =1
+      and ( name = #{name} or url = #{url} )
+    <if test="id != null">
+      and id != #{id}
+    </if>
+  </select>
+
+  <select id="selectCourseInconnect" resultMap="BaseResultMap">
+    select a.id,a.name from t_doc a where a.id in
+    <foreach collection="docIds" separator="," open="(" close=")" item="docId">
+      #{docId}
+    </foreach>
+    AND NOT EXISTS (
+      SELECT
+      b.id
+      FROM
+      t_course_doc b
+      WHERE
+      b.doc_id = a.id
+    )
+  </select>
+
+  <select id="selectInIds" resultMap="BaseResultMap">
+    SELECT
+     id,name
+    FROM t_doc
+    where id in
+    <foreach collection="docIds" separator="," open="(" close=")" item="docId">
+      #{docId}
+    </foreach>
+  </select>
+</mapper>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+
+<body>
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+	<section class="wapmbx fl"><a href="/backend/resource/label">课程资源</a><em></em><a href="#">评分题库</a></section>
+	<section th:replace="common/common_menu  :: menu"></section>
+	<section class="conFl">
+		<div class="StuCon QuBaCon">
+			<div class="qubaTit bjG padd10 mart10 clearfix">
+				<b class="fl">评分模板</b>
+				<span class="fr"><a href="javascript:;" id="addTemp" class="btnB"><strong>+</strong> 新增评分模板</a></span>
+			</div>
+			<div class="clearfix StuTle">
+				<div class="fl tleChe"><label></label><i class='input_style checkbox_bg'><input type="checkbox" name="selectAll" id="selectAll" value=""></i><label for="selectAll">全选</label></div>
+				<div class="fl search"><input type="search" class="ipnSearch" placeholder="请输入您要查找评分模板的名称"><input type="button" value="搜 索" class="ipnBtn"></div>
+				<div class="fr">
+					<a href="javascript:;" class="btnA" id="del">删 除</a>
+				</div>
+			</div>
+			<div class="tableWrap">
+				<div class="tableBox">
+					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+						<tbody>
+						<tr>
+							<th width="26%">评分模板名称</th>
+							<th width="13%">
+								<select name="createTimeType" class="stySelS" id="createTimeType">
+									<option selected value="">创建时间</option>
+									<option value="0">最新发布</option>
+									<option value="1">最早发布</option>
+								</select>
+							</th>
+							<th width="13%">操作</th>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="page-box" id="scoreTemplateListPager"></div>
+			</div>
+		</div>
+
+	</section>
+</article>
+
+<!-- 预览-->
+<div class="codeLayer addTestQu " data-sum="07">
+	<div class="toptit">预览<b class="close"></b></div>
+	<div class="layCon layCon01">
+		<div class="clearfix temp-view">
+
+		</div>
+		<div class="btnBox">
+			<a href="javascript:;" class="btnA but_none" data-sum="0301">关闭</a>
+		</div>
+	</div>
+</div>
+
+<div class="codeLayerbj"></div>
+
+<script id="registerList" type="text/x-handlebars-template">
+	{{#each this}}
+	<tr>
+		<td class="sitemId" hidden>{{id}}</td>
+		<td><i class='input_style checkbox_bg'><input type="checkbox" name="ids" value=""></i>{{name}}</td>
+		<td>{{formatDate 'yyyy-MM-dd' createTime}}</td>
+		<td class="mar10">
+			<a href="javascript:;" class="swt_but" data-sum="07">预览</a>
+			{{#if apply}}
+				<a href="javascript:;" class="edit">编辑</a>
+			{{else}}
+				<a href="javascript:;" style="color: #c9c9c9; cursor: not-allowed">编辑</a>
+			{{/if}}
+			<a href="javascript:;" id="copy">克隆</a>
+			<a href="javascript:;" id="sitemDel">删除</a>
+		</td>
+	</tr>
+	{{/each}}
+</script>
+
+<script id="temp-view" type="text/x-handlebars-template">
+	<div class="box_wbt">{{name}}</div>
+	<ul class="QuWlyli textLeft">
+		{{#each this}}
+		<li>{{addOne @index}}.（{{rate}}%）{{question}}</li>
+		{{/each}}
+	</ul>
+</script>
+
+<script id="testTemp-remove-show" type="text/x-handlebars-template">
+	<div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">
+		{{#each this}}
+		{{#if isUsed}}
+		【{{name}}】删除失败！已被一套或多套试卷引用，<span style="color:yellow;cursor:pointer;" class="remove-tip" data-id="{{id}}">详情</span>！<br>
+		{{else}}
+		【{{name}}】删除成功！<br>
+		{{/if}}
+		{{/each}}
+	</div>
+</script>
+
+<script id="testTemp-remove-detail-show" type="text/x-handlebars-template">
+	<div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">
+		引用如下：<br>
+		{{#each this}}
+		【{{title}}】；<br>
+		{{/each}}
+	</div>
+</script>
+<script id="scoreTemp-no-content" type="text/x-handlebars-template">
+	<div class="padTB20 no-content"><div class="m-style">搜索无结果！</div></div>
+</script>
+<script th:src="@{/assets/js/custom/resource/scoreTempletList.js}"></script>
+</body>
+</html>

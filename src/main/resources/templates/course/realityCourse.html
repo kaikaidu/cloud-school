@@ -1,0 +1,164 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+
+<body>
+<!-- 一级菜单 -->
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+    <section class="wapmbx fl">
+        <a href="/backend/course/courseManage">课程管理</a><em></em><a href="#">报名状态</a><em></em><strong id="labelName"></strong>
+    </section>
+    <!-- 二级菜单 -->
+    <section th:replace="common/common_menu  :: menu"></section>
+    <section class="conFl">
+            <!--线下课程-->
+            <div class="StuCon">
+                <div class="StuUpload bodernone">
+                    <div class="fl mafr">学员名单: </div>
+                    <form id="uoload_form" method="post" enctype="multipart/form-data">
+                        <input type="hidden" id="hide_courseId" name="courseId"/>
+                        <input type="hidden" id="hide_state" value="0" name="state"/>
+                        <input type="hidden" id="hide_dataLength" name="dataLength"/>
+                        <div class="courseUpload">
+                            <input name="file" type="file" style="display: none;" id="file" multiple="multiple"/>
+                            <a id="file_upload_button" href="javascript:void(0)" class="uploadify-button">选择文件</a>
+                            <a href="javascript:void(0);" class="btnA Dis" id="btnB">确定上传</a>
+                            <a href="https://yunxuetangpd.blob.core.chinacloudapi.cn/doc/报名状态导入.xlsx" class="btnA">下载模板</a>
+
+                            <span class="promptUp">支持.xsl，xlsx格式的文件。
+                                <span class="ct_red">重新上传将会覆盖现有表格。</span>
+                            </span>
+                            <div id="file_upload_1-queue" class="uploadify-queue"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="StuOp clearfix" hidden>
+                <div class="fl search">
+                    <input type="search" class="ipnSearch" placeholder="请输入您要查找的学员姓名或安利卡号">
+                    <input type="button" value="搜 索" class="ipnBtn">
+                </div>
+                <div class="fr btnfr btnfL">
+                    <span id="successCount" style="color: red;margin-right:20px;"></span>
+                    <a href="javascript:push();" class="btnA" id="push">推送信息</a>
+                    <a href="javascript:batchDel();" class="btnA" id="batchDel">批量删除</a>
+                    <a href="javascript:exportUser();" class="btnA">批量导出</a>
+                </div>
+            </div>
+            <div class="clearfix StuTle" hidden>
+                <div class="fl tleChe">
+                    <i class='input_style checkbox_bg'>
+                        <input type="checkbox" name="selectAll" id="selectAll" value="">
+                    </i>
+                    <label for="selectAll">全选</label>
+                </div>
+                <div class="fr">
+                    <select class="stySel">
+                        <option value=""  selected>修改通过状态</option>
+                        <option value="0">未通过</option>
+                        <option value="1">已通过</option>
+                    </select>
+                    <a href="javascript:updateSignState()" class="btnB">确定操作</a>
+                </div>
+            </div>
+            <div class="tableWrap" hidden>
+                <div class="tableBox">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tbody>
+                        <tr id="user">
+                            <th>姓名</th>
+                            <th>安利卡号</th>
+                            <th>
+                                <select class="stySelS" id="sex">
+                                    <option selected  value="">性别</option>
+                                    <option value="0">男</option>
+                                    <option value="1">女</option>
+                                </select>
+                            </th>
+                            <th>
+                                报名状态
+                            </th>
+                            <th>
+                                <select class="stySelS" id="viaState">
+                                    <option selected value="">通过状态</option>
+                                    <option value="1">已通过</option>
+                                    <option value="0">未通过</option>
+                                </select>
+                            </th>
+                        </tr>
+                        <!-- 渲染数据 -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="page-box" id="testPager"></div>
+                <div class="padTB20" hidden><div class="m-style">搜索无结果！</div></div>
+            </div>
+        </div>
+    </section>
+</article>
+<div class="codeLayerbj"></div>
+
+<!---1 上传文件中-->
+<div class="codeLayer addTestQu" hidden data-sum="" id="upload_ing">
+    <div class="toptit">上传文件</div>
+    <div class="layCon fileUpload">
+        <div class="file"></div>
+        <div class="probarBox">
+            <div class="probar" id="probar">
+                <span style="width: 0%"></span>
+            </div>
+            <div class="perc" id="perc">0%</div>
+        </div>
+        <div class="status">上传文件中...</div>
+    </div>
+</div>
+
+<!---2 上传文成功-->
+<div class="codeLayer addTestQu " data-sum="" hidden id="upload_success">
+    <div class="toptit">上传文件<b class="close"></b></div>
+    <div class="layCon fileUpload">
+        <div class="file"></div>
+        <div class="probarBox">
+            <div class="probar">
+                <span style="width:100%"></span>
+            </div>
+            <div class="perc">100%</div>
+        </div>
+        <div class="status">上传成功！</div>
+    </div>
+</div>
+
+<!---3 上传文失败-->
+<div class="codeLayer addTestQu " data-sum="" hidden id="upload_erroe">
+    <div class="toptit">上传文件<b class="close"></b></div>
+    <div class="layCon fileUpload">
+        <div class="file"></div>
+        <div class="probarBox">
+            <div class="probar">
+                <span class="failure" style="width:50%"></span>
+            </div>
+            <div class="perc">50%</div>
+        </div>
+        <div class="status">上传失败！</div>
+        <div class="btnBox">
+            <a href="javascript:close();" class="btnA but_none" data-sum="30">取 消</a><a href="javascript:determineUpload();" class="btnA but_none" data-sum="30">重新上传</a>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/assets/js/select/jquery.cssforms.js}" type="text/javascript"></script><!--select-->
+<script th:src="@{/assets/js/custom/course/jquery.Huploadify.js}"></script>
+<script th:src="@{/assets/js/jquery.form.js}"></script>
+<script th:src="@{/assets/js/custom/course/realityCourse.js}"></script>
+<script th:src="@{/assets/js/custom/common/push.js}"></script>
+<script id="reality-remove-show" type="text/x-handlebars-template">
+    <div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">
+        {{#each this}}
+        {{this}}<br>
+        {{/each}}
+    </div>
+</script>
+</body>
+</html>

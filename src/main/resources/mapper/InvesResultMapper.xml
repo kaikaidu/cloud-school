@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amway.acti.dao.InvesResultMapper">
+  <resultMap id="BaseResultMap" type="com.amway.acti.model.InvesResult">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="paper_id" jdbcType="INTEGER" property="paperId" />
+    <result column="quest_id" jdbcType="INTEGER" property="questId" />
+    <result column="answer" jdbcType="VARCHAR" property="answer" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, paper_id, quest_id, answer
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_inves_result
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_inves_result
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.amway.acti.model.InvesResult">
+    insert into t_inves_result (id, user_id, paper_id,
+      quest_id, answer)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{paperId,jdbcType=INTEGER}, 
+      #{questId,jdbcType=INTEGER}, #{answer,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.amway.acti.model.InvesResult">
+    insert into t_inves_result
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="paperId != null">
+        paper_id,
+      </if>
+      <if test="questId != null">
+        quest_id,
+      </if>
+      <if test="answer != null">
+        answer,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="paperId != null">
+        #{paperId,jdbcType=INTEGER},
+      </if>
+      <if test="questId != null">
+        #{questId,jdbcType=INTEGER},
+      </if>
+      <if test="answer != null">
+        #{answer,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.amway.acti.model.InvesResult">
+    update t_inves_result
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="paperId != null">
+        paper_id = #{paperId,jdbcType=INTEGER},
+      </if>
+      <if test="questId != null">
+        quest_id = #{questId,jdbcType=INTEGER},
+      </if>
+      <if test="answer != null">
+        answer = #{answer,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.amway.acti.model.InvesResult">
+    update t_inves_result
+    set user_id = #{userId,jdbcType=INTEGER},
+      paper_id = #{paperId,jdbcType=INTEGER},
+      quest_id = #{questId,jdbcType=INTEGER},
+      answer = #{answer,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByUserIdAndPaperId" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/> FROM t_inves_result WHERE user_id = #{userId} AND paper_id = #{paperId}
+  </select>
+
+  <select id="selectByUserIdAndPaperIdAndQuestId" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/> FROM t_inves_result WHERE user_id = #{userId} AND paper_id = #{paperId} AND quest_id = #{questId}
+  </select>
+
+  <select id="countUserAnswerByPaperId" parameterType="int" resultType="int">
+    SELECT count(*) FROM t_inves_result as t1
+    LEFT JOIN t_inves_paper as t2
+    ON t1.paper_id = t2.id
+    WHERE t2.state != 0 AND t2.id = #{paperId}
+  </select>
+
+  <!-- 批量新增问卷答案 -->
+  <insert id="insertList">
+    insert into t_inves_result ( user_id,
+    paper_id, quest_id, answer,create_time)
+    values
+    <foreach collection="list" item="s" index="i" separator=",">
+      (#{userId,jdbcType=INTEGER},#{invesId,jdbcType=INTEGER},
+      #{s.questId,jdbcType=INTEGER}, #{s.answer,jdbcType=VARCHAR},#{date,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
+
+  <!--Begin kaikai-->
+  <select id="selectCountByCourseIdAndUserId" parameterType="int" resultType="int">
+    SELECT
+      COUNT (1)
+        FROM
+      t_inves_result
+        WHERE
+         user_id =#{userId}
+         AND
+      paper_id IN (
+      SELECT
+      id
+        FROM
+      t_inves_paper
+        WHERE
+      course_id = #{courseId}
+      and (state = 1 or state = 2))
+  </select>
+  <!--End kaikai-->
+
+  <select id="selectAllAnswerByQuest" resultType="java.util.HashMap">
+    SELECT t1.*, t2.answer FROM t_inves_quest as t1
+      LEFT JOIN (
+      SELECT * FROM t_inves_result WHERE paper_id = #{paperId} and user_id = #{userId}
+      ) as t2
+      ON t1.id = t2.quest_id
+      WHERE t1.temp_id = #{tempId}
+  </select>
+</mapper>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+
+<body>
+ <!--一级菜单-->
+<header th:replace="common/common_header :: header"></header>
+<article class="widthWp mainWrap">
+    <section class="wapmbx fl"><a href="/backend/platform/reportForms">平台管理</a><em></em><strong>报表自定义</strong></section>
+    <!-- 二级菜单 -->
+    <section th:replace="common/common_menu  :: menu"></section>
+    <section class="conFl">
+        <div class="StuCon QuBaCon">
+            <div class="clearfix StuTle">
+                <div class="fl tleChe">
+                    <label></label>
+                    <i class='input_style checkbox_bg'>
+                        <input type="checkbox" name="selectAll" id="selectAll" value="">
+                    </i>
+                    <label for="selectAll">全选</label>
+                </div>
+                <div class="fl search">
+                    <input type="search" class="ipnSearch" placeholder="请输入您要查找的课程" id="name">
+                    <input type="button" value="搜 索" class="ipnBtn">
+                </div>
+                <div class="fr">
+                    <a href="javascript:void(0);" class="btnA">导出课程数据</a>
+                </div>
+            </div>
+            <div class="tableWrap">
+                <div class="tableBox">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tbody>
+                        <tr id="course">
+                            <th>课程名称</th>
+                            <th>
+                                <select class="stySelS" id="sort">
+                                    <option value="1" selected >创建时间</option>
+                                    <option value="1">最新发布</option>
+                                    <option value="2">最早发布</option>
+                                </select>
+                            </th>
+                            <th>
+                                <select class="stySelS" id="label">
+                                    <option value="" selected class="label">标签</option>
+                                </select>
+                            </th>
+                        </tr>
+                        <!-- 渲染数据 -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="page-box" id="testPager"></div>
+                <div class="padTB20" hidden><div class="m-style">搜索无结果！</div></div>
+            </div>
+        </div>
+    </section>
+</article>
+ <div class="codeLayerbj" ></div>
+ <div class="winTs" hidden><img th:src="@{/assets/images/ts.png}"></div>
+ <script th:src="@{/assets/js/util.js}"></script>
+ <script th:src="@{/assets/js/custom/platform/reportForms.js}"></script>
+</body>
+</html>

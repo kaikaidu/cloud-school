@@ -1,0 +1,75 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_head :: head">
+
+<body>
+<!-- 一级菜单 -->
+<header th:replace="common/common_header :: header"></header>
+<input class="sInput" data-index="-1" hidden/>
+<input id="hide_count" th:value="${count}" hidden/>
+<article class="widthWp mainWrap">
+    <section class="wapmbx fl"><a href="#">课程管理</a><em></em><a href="#">创建课程</a><em></em><strong>手动分班</strong></section>
+    <!-- 二级菜单 -->
+    <section th:replace="common/common_menu  :: menu"></section>
+    <section class="conFl">
+        <div class="StuCon">
+            <div class="StuOp clearfix">
+                <div class="fl fontS16">手动分班</div>
+                <div class="fr btnfr btnfL"><a href="#" class="btnA" id="automatic">切换到自动分班&gt;&gt;</a></div>
+            </div>
+            <!-- 班级展示 -->
+            <div class="qubaCon bjG padd10 mart10 clearfix" hidden id="classList">
+                <div class="qubaBox qubaBox02  pf_com" id="class">
+
+                </div>
+                <div class="addQuItem swt_but addClass" data-sum="09"><strong>+</strong> 添加班级</div>
+                <div style="color: red;text-align:center;" class="promptInfo">提示: 重新分班后,别忘了重新设置演讲主题并抽签哦!</div>
+            </div>
+            <div class="dl textCent botMarTop" hidden>
+                <a href="#" class="btnAi c_red hover-shadow">重新分班</a>
+            </div>
+            <!-- 暂未有班级 -->
+            <div class="fb_teg">还没有班级，请先添加班级哦~</div>
+            <div class="addQuItem swt_but addClass" id="addClass"><strong>+</strong> 添加班级</div>
+            <div class="fb_teg" style="color: red;margin-top: 10px;font-size:14px;">提示: 重新分班后,别忘了重新设置演讲主题并抽签哦!</div>
+        </div>
+    </section>
+</article>
+
+<!-- 添加学员 -->
+<div class="codeLayer addTestQu" data-sum="92">
+    <div class="toptit">添加学员<b class="close"></b></div>
+    <div class="layCon layCon01">
+        <div class="padTB20">
+            <div class="search"><input type="search" class="ipnSearch" placeholder="请输入您要查找的学员姓名"><input type="button" value="搜 索" class="ipnBtn"></div>
+        </div>
+        <div class="clearfix scroll30 fbscfl" style="overflow:auto;height:267px;">
+            <div class="tableBox tabltHdbj">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tbody>
+                        <tr id="user">
+                            <th>姓名</th>
+                            <th>卡号</th>
+                            <th>姓别</th>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="clearfix scroll30 fbscfr" style="overflow:auto;height:267px;">
+            <div class="tit">已选择 5 位学员</div>
+            <ul class="list">
+
+            </ul>
+        </div>
+        <div class="btnBox">
+            <a href="#" class="btnA cancel but_none" data-sum="0301">取 消</a>
+            <a href="#" class="btnB" data-sum="0301" id="btn">确 定</a>
+        </div>
+    </div>
+</div>
+<div class="codeLayerbj"></div>
+<script th:src="@{/assets/js/custom/course/class-manual.js}"></script>
+</body>
+</html>
